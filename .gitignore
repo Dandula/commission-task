@@ -5,3 +5,6 @@ bin/
 
 # IDEs and editors
 /.idea
+
+# test CSV file
+src/input.csv

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Tests\Service;
 
 use PHPUnit\Framework\TestCase;
-use CommissionTask\Service\Math;
+use CommissionTask\Services\Math;
 
 class MathTest extends TestCase
 {

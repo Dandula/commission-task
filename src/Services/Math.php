@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
-namespace CommissionTask\Service;
+namespace CommissionTask\Services;
 
-class Math
+use CommissionTask\Kernel\Singleton;
+
+class Math extends Singleton
 {
     private $scale;
 
     public function __construct(int $scale)
     {
+        parent::__construct();
+
         $this->scale = $scale;
     }
 
