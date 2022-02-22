@@ -2,66 +2,67 @@
 
 namespace CommissionTask\Kernel;
 
-use CommissionTask\Components\TransactionsDataReaders\CsvTransactionsDataReader;
+use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
 use CommissionTask\Services\CommandLine;
+use CommissionTask\Services\Filesystem;
 
 class Application
 {
+    const FILEPATH_PARAMETER_NUMBER = 1;
+
     /**
      * The base path for the application installation.
-     *
-     * @var string
      */
     protected $basePath;
 
     /**
-     * The service of command line.
-     *
-     * @var CommandLine
+     * The service container for the application.
      */
-    protected $commandLineService;
+    protected $container;
 
     /**
      * Create a new application instance.
-     *
-     * @param string|null $basePath
      */
-    public function __construct(string $basePath = null)
+    public function __construct(string $basePath, Container $container)
     {
-        if ($basePath) {
-            $this->setBasePath($basePath);
-        }
-
-        $this->commandLineService = CommandLine::getInstance();
+        $this->setContainer($container)
+            ->setBasePath($basePath);
     }
 
     /**
-     * Set the base path for the application.
+     * Run the application.
      *
-     * @param string $basePath
-     * @return $this
+     * @return void
      */
-    public function setBasePath(string $basePath): Application
+    public function run()
     {
-        $this->basePath = rtrim($basePath, '\/');
+        $transactionsData = $this->readTransactionsData();
 
-        return $this;
+        $this->validateTransactionsData($transactionsData);
+
+        $transactionsFees = [];
+
+//        $transactionCommissionCalcualtor = $container->get('calc');
+//
+//        foreach ($transactionsData as $transaction) {
+//            $transactionCommissionCalcualtor->p
+//        }
+
+        $this->output($transactionsFees);
     }
 
     /**
      * Read transactions data.
-     *
-     * @return array
      */
-    public function readTransactionsData(): array
+    private function readTransactionsData(): array
     {
-        $filePath = realpath($this->basePath . DIRECTORY_SEPARATOR
-            . $this->commandLineService->getCommandLineParameterByNumber(1));
+        $commandLineService = $this->container->get(CommandLine::class);
+        $filePath = $commandLineService->getCommandLineParameterByNumber(self::FILEPATH_PARAMETER_NUMBER);
 
-        $transactionDataReader = new CsvTransactionsDataReader();
-        $transactionDataReader->setFilePath($filePath);
+        $transactionsDataReader = $this->container->get(TransactionsDataReader::class);
+        $transactionsDataReader->setFilePath($filePath);
 
-        return $transactionDataReader->readTransactionsData();
+        return $transactionsDataReader->readTransactionsData();
     }
 
     /**
@@ -70,19 +71,8 @@ class Application
      * @param string[] $basePath
      * @return void
      */
-    public function validateTransactionsData(array $basePath)
+    private function validateTransactionsData(array $basePath)
     {
-    }
-
-    /**
-     * Run the application.
-     *
-     * @param array $transactionsData
-     * @return array
-     */
-    public function run(array $transactionsData): array
-    {
-        return [];
     }
 
     /**
@@ -91,7 +81,7 @@ class Application
      * @param mixed $outputData
      * @return void
      */
-    public function output($outputData)
+    private function output($outputData)
     {
         if (is_array($outputData)) {
             foreach ($outputData as $outputItem) {
@@ -100,5 +90,34 @@ class Application
         } else {
             echo $outputData . PHP_EOL;
         }
+    }
+
+    /**
+     * Set the base path for the application.
+     *
+     * @param string $basePath
+     * @return $this
+     */
+    private function setBasePath(string $basePath): Application
+    {
+        $this->basePath = rtrim($basePath, '\/');
+
+        if ($fileSystemService = $this->container->get(Filesystem::class)) {
+            $fileSystemService->setBasePath($this->basePath);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the service container for application.
+     *
+     * @return $this
+     */
+    private function setContainer(Container $container): Application
+    {
+        $this->container = $container;
+
+        return $this;
     }
 }

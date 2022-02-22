@@ -2,25 +2,30 @@
 
 declare(strict_types=1);
 
+use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
+use CommissionTask\Kernel\Application;
+use CommissionTask\Kernel\Container;
+
 // Register the Auto Loader
 require __DIR__ . '/../vendor/autoload.php';
 
-// Create the Application
-$app = new CommissionTask\Kernel\Application(
-    realpath(__DIR__)
-);
-
 try {
-    $transactionsData = $app->readTransactionsData();
+    $container = new Container();
+    $container->init();
 
-    $app->validateTransactionsData($transactionsData);
+    // Create the Application
+    $app = new Application(
+        realpath(__DIR__),
+        $container
+    );
 
-    $transactionsFees = $app->run($transactionsData);
+    $app->run();
 
-    $app->output($transactionsFees);
-} catch (\CommissionTask\Exceptions\CommissionTaskException $exception) {
-    $app->output($exception->getMessage());
-    exit($exception->getCode());
+    $exitCode = 0;
+} catch (CommissionTaskThrowable $exception) {
+    echo $exception->getMessage();
+
+    $exitCode = $exception->getCode();
+} finally {
+    exit($exitCode);
 }
-
-exit(0);

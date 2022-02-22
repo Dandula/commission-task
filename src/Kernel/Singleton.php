@@ -7,7 +7,7 @@ namespace CommissionTask\Kernel;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
 use Exception;
 
-class Singleton
+abstract class Singleton
 {
     /**
      * @var array
@@ -17,12 +17,12 @@ class Singleton
     /**
      * @return void
      */
-    public function __construct() { }
+    protected function __construct() { }
 
     /**
      * @return void
      */
-    public function __clone() { }
+    protected function __clone() { }
 
     /**
      * @return mixed
@@ -34,6 +34,8 @@ class Singleton
     }
 
     /**
+     * Return specified singleton.
+     *
      * @return static
      */
     public static function getInstance()

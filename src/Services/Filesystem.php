@@ -9,24 +9,39 @@ use CommissionTask\Kernel\Singleton;
 class Filesystem extends Singleton
 {
     /**
-     * Check is file exists.
+     * @var string
+     */
+    private $basePath;
+
+    /**
+     * Set the base path for the filesystem service.
      *
-     * @param string $filePath
-     * @return bool
+     * @return void
+     */
+    public function setBasePath(string $basePath)
+    {
+        $this->basePath = $basePath;
+    }
+
+    /**
+     * Check is file exists.
      */
     public function isFileExists(string $filePath): bool
     {
-        return file_exists($filePath);
+        $filePath = $this->resolvePath($filePath);
+
+        return (bool)$filePath;
     }
 
     /**
      * Read file line by line to array.
      *
-     * @param string $filePath
      * @return string[]
      */
     public function readFile(string $filePath): array
     {
+        $filePath = $this->resolvePath($filePath);
+
         $fp = fopen($filePath,'r');
 
         try {
@@ -39,5 +54,20 @@ class Filesystem extends Singleton
         }
 
         return $content;
+    }
+
+    /**
+     * Resolve relative path to absolute.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function resolvePath(string $path): string
+    {
+        if ($this->basePath) {
+            $path = $this->basePath . DIRECTORY_SEPARATOR . $path;
+        }
+
+        return realpath($path);
     }
 }

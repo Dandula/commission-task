@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionsDataReaders;
 
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
-use CommissionTask\Components\TransactionsDataReaders\Traits\TransactionsReadProcess;
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Services\Filesystem;
 
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
 {
-    use TransactionsReadProcess;
-
     /**
      * @var Filesystem
      */
@@ -26,9 +23,9 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * Create a new CSV data reader instance.
      */
-    public function __construct()
+    public function __construct(Filesystem $filesystem)
     {
-        $this->filesystemService = Filesystem::getInstance();
+        $this->filesystemService = $filesystem;
     }
 
     /**
@@ -44,7 +41,20 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * @inheritDoc
      */
-    public function readTransactionsRawData(): array
+    public function readTransactionsData(): array
+    {
+        $transactionsRawData = $this->readTransactionsRawData();
+
+        return $this->prepareTransactionsData($transactionsRawData);
+    }
+
+    /**
+     * Read transactions raw data.
+     *
+     * @return array
+     * @throws CommissionTaskException
+     */
+    private function readTransactionsRawData(): array
     {
         if (!isset($this->filePath)) {
             throw new CommissionTaskException('The path to the CSV file is not specified');
@@ -60,7 +70,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * @inheritDoc
      */
-    public function prepareTransactionsData(array $transactionsRawData): array
+    private function prepareTransactionsData(array $transactionsRawData): array
     {
         $transactionsData = [];
 

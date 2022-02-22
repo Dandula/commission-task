@@ -6,45 +6,18 @@ namespace CommissionTask\Services;
 
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
-use CommissionTask\Kernel\Singleton;
 
-class CommandLine extends Singleton
+class CommandLine
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        if (!isset($_SERVER['argv']) || !isset($_SERVER['argc'])) {
-            throw new CommissionTaskKernelException('The script is not run from the command line');
-        }
-    }
-
-    /**
-     * Get command line parameters.
-     *
-     * @return array
-     */
-    public function getCommandLineParameters(): array
-    {
-        $commandLineParameters = $_SERVER['argv'];
-        $commandLineParametersCount = $_SERVER['argc'];
-
-        if ($commandLineParametersCount === 0) {
-            return [];
-        }
-
-        return array_shift($commandLineParameters);
-    }
-
     /**
      * Get command line parameters by number.
      *
-     * @param int $number
-     * @return string
-     * @throws CommissionTaskException
+     * @throws CommissionTaskKernelException|CommissionTaskException
      */
     public function getCommandLineParameterByNumber(int $number): string
     {
+        $this->checkIsCommandLineApplication();
+
         $commandLineParameters = $_SERVER['argv'];
 
         if (!isset($commandLineParameters[$number])) {
@@ -52,5 +25,18 @@ class CommandLine extends Singleton
         }
 
         return $commandLineParameters[$number];
+    }
+
+    /**
+     * Check if the application is running from the command line..
+     *
+     * @return void
+     * @throws CommissionTaskKernelException
+     */
+    private function checkIsCommandLineApplication()
+    {
+        if (!isset($_SERVER['argv']) || !isset($_SERVER['argc'])) {
+            throw new CommissionTaskKernelException('The script is not run from the command line');
+        }
     }
 }
