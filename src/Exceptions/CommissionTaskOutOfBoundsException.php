@@ -9,10 +9,12 @@ use OutOfBoundsException;
 
 class CommissionTaskOutOfBoundsException extends OutOfBoundsException implements CommissionTaskThrowable
 {
+    const DEFAULT_MESSAGE = 'ID does not exist';
+
     /**
      * Create an invalid ID exception.
      */
-    public function __construct(string $message = 'ID does not exist', int $code = self::EXCEPTION_CODE_OUT_OF_BOUNDS)
+    public function __construct(string $message = self::DEFAULT_MESSAGE, int $code = self::EXCEPTION_CODE_OUT_OF_BOUNDS)
     {
         parent::__construct($message, $code);
     }

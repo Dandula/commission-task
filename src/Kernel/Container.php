@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommissionTask\Kernel;
 
+use CommissionTask\Components\TransactionDataValidators\CsvTransactionDataValidator;
+use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionsDataReaders\CsvTransactionsDataReader;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
@@ -31,6 +35,9 @@ class Container
         // Put implemented classes instances
         $this->put(TransactionsDataReader::class, new CsvTransactionsDataReader(
             $this->get(Filesystem::class)
+        ));
+        $this->put(TransactionDataValidator::class, new CsvTransactionDataValidator(
+            $this->get(Date::class)
         ));
     }
 

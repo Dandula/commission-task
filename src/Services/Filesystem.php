@@ -60,9 +60,9 @@ class Filesystem extends Singleton
      * Resolve relative path to absolute.
      *
      * @param string $path
-     * @return string
+     * @return false|string
      */
-    private function resolvePath(string $path): string
+    private function resolvePath(string $path)
     {
         if ($this->basePath) {
             $path = $this->basePath . DIRECTORY_SEPARATOR . $path;

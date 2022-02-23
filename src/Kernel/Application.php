@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommissionTask\Kernel;
 
+use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
+use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Services\CommandLine;
 use CommissionTask\Services\Filesystem;
 
@@ -33,12 +37,13 @@ class Application
      * Run the application.
      *
      * @return void
+     * @throws CommissionTaskThrowable
      */
     public function run()
     {
-        $transactionsData = $this->readTransactionsData();
+        $rawTransactionsData = $this->readRawTransactionsData();
 
-        $this->validateTransactionsData($transactionsData);
+        $this->validateRawTransactionsData($rawTransactionsData);
 
         $transactionsFees = [];
 
@@ -52,9 +57,9 @@ class Application
     }
 
     /**
-     * Read transactions data.
+     * Read raw data of transactions.
      */
-    private function readTransactionsData(): array
+    private function readRawTransactionsData(): array
     {
         $commandLineService = $this->container->get(CommandLine::class);
         $filePath = $commandLineService->getCommandLineParameterByNumber(self::FILEPATH_PARAMETER_NUMBER);
@@ -66,13 +71,18 @@ class Application
     }
 
     /**
-     * Validate transactions data.
+     * Validate raw data of transactions.
      *
-     * @param string[] $basePath
      * @return void
+     * @throws TransactionDataValidator
      */
-    private function validateTransactionsData(array $basePath)
+    private function validateRawTransactionsData(array $rawTransactionsData)
     {
+        $transactionsDataValidator = $this->container->get(TransactionDataValidator::class);
+
+        foreach ($rawTransactionsData as $rawTransactionData) {
+            $transactionsDataValidator->validateTransactionData($rawTransactionData);
+        }
     }
 
     /**

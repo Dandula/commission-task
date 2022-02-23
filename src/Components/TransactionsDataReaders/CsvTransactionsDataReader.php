@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionsDataReaders;
 
+use CommissionTask\Components\TransactionsDataReaders\Exceptions\CommissionTaskCsvReaderException;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
-use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Services\Filesystem;
 
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
@@ -43,41 +43,38 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
      */
     public function readTransactionsData(): array
     {
-        $transactionsRawData = $this->readTransactionsRawData();
+        $transactionsRawData = $this->readCsvStrings();
 
-        return $this->prepareTransactionsData($transactionsRawData);
+        return $this->parseCsvStrings($transactionsRawData);
     }
 
     /**
-     * Read transactions raw data.
+     * Read CSV strings.
      *
-     * @return array
-     * @throws CommissionTaskException
+     * @throws CommissionTaskCsvReaderException
      */
-    private function readTransactionsRawData(): array
+    private function readCsvStrings(): array
     {
         if (!isset($this->filePath)) {
-            throw new CommissionTaskException('The path to the CSV file is not specified');
+            throw new CommissionTaskCsvReaderException('The path to the CSV file is not specified');
         }
 
         if (!$this->filesystemService->isFileExists($this->filePath)) {
-            throw new CommissionTaskException("The CSV file '$this->filePath' does not exist");
+            throw new CommissionTaskCsvReaderException("The CSV file '$this->filePath' does not exist");
         }
 
         return $this->filesystemService->readFile($this->filePath);
     }
 
     /**
-     * @inheritDoc
+     * Parse CSV strings.
      */
-    private function prepareTransactionsData(array $transactionsRawData): array
+    private function parseCsvStrings(array $transactionsRawData): array
     {
-        $transactionsData = [];
-
-        foreach ($transactionsRawData as $transactionRawData) {
-            $transactionsData[] = str_getcsv($transactionRawData);
+        foreach ($transactionsRawData as &$transactionRawData) {
+            $transactionRawData = str_getcsv($transactionRawData);
         }
 
-        return $transactionsData;
+        return $transactionsRawData;
     }
 }

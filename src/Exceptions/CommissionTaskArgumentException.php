@@ -9,13 +9,15 @@ use InvalidArgumentException;
 
 class CommissionTaskArgumentException extends InvalidArgumentException implements CommissionTaskThrowable
 {
+    const DEFAULT_MESSAGE = 'Invalid argument given';
+
     /**
      * Create an invalid argument exception.
      *
      * @param string $message
      * @param int $code
      */
-    public function __construct(string $message = 'Invalid argument given', int $code = self::EXCEPTION_CODE_BASIC)
+    public function __construct(string $message = self::DEFAULT_MESSAGE, int $code = self::EXCEPTION_CODE_ARGUMENT)
     {
         parent::__construct($message, $code);
     }
