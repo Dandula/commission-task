@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace CommissionTask\Kernel;
 
+use CommissionTask\Components\Storage\ArrayStorage;
+use CommissionTask\Components\Storage\Interfaces\Storage;
 use CommissionTask\Components\TransactionDataValidators\CsvTransactionDataValidator;
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionsDataReaders\CsvTransactionsDataReader;
@@ -33,6 +35,7 @@ class Container
         $this->put(Date::class, new Date());
 
         // Put implemented classes instances
+        $this->put(Storage::class, new ArrayStorage());
         $this->put(TransactionsDataReader::class, new CsvTransactionsDataReader(
             $this->get(Filesystem::class)
         ));
@@ -59,6 +62,7 @@ class Container
     /**
      * Put service to service container.
      *
+     * @param mixed $instance
      * @return void
      */
     public function put(string $alias, $instance)
