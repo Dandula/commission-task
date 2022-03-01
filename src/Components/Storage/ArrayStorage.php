@@ -24,6 +24,12 @@ class ArrayStorage implements StorageContract
      */
     public function findById(string $part, $id)
     {
+        if (!isset($this->array[$part][$id])) {
+            throw new CommissionTaskOutOfBoundsStorageException(
+                "The data item with the ID $id at part '$part' does not exist"
+            );
+        }
+
         return $this->array[$part][$id];
     }
 

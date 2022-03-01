@@ -9,14 +9,16 @@ use DateTime;
 
 class Date
 {
+    const DEFAULT_FORMAT = 'Y-m-d';
+
     /**
-     * Parse date at format 'Y-m-d'.
+     * Parse date at given format.
      *
      * @throws CommissionTaskArgumentException
      */
-    public function parseYmd(string $dateString): DateTime
+    public function parseDate(string $dateString, string $format = self::DEFAULT_FORMAT): DateTime
     {
-        $dateTime = DateTime::createFromFormat('Y-m-d', $dateString);
+        $dateTime = DateTime::createFromFormat($format, $dateString);
 
         if ($dateTime === false) {
             throw new CommissionTaskArgumentException('Invalid date format given');

@@ -6,7 +6,10 @@ namespace CommissionTask\Kernel;
 
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
+use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
+use CommissionTask\Factories\Interfaces\TransactionFactory;
+use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 use CommissionTask\Services\CommandLine;
 use CommissionTask\Services\Filesystem;
 
@@ -45,13 +48,9 @@ class Application
 
         $this->validateRawTransactionsData($rawTransactionsData);
 
-        $transactionsFees = [];
+        $this->saveTransactions($rawTransactionsData);
 
-//        $transactionCommissionCalcualtor = $container->get('calc');
-//
-//        foreach ($transactionsData as $transaction) {
-//            $transactionCommissionCalcualtor->p
-//        }
+        $transactionsFees = $this->calculateTransactionsFees();
 
         $this->output($transactionsFees);
     }
@@ -83,6 +82,43 @@ class Application
         foreach ($rawTransactionsData as $rawTransactionData) {
             $transactionsDataValidator->validateTransactionData($rawTransactionData);
         }
+    }
+
+    /**
+     * Save raw data of transactions to transactions entities.
+     *
+     * @return void
+     */
+    private function saveTransactions(array $rawTransactionsData)
+    {
+        $transactionsFactory = $this->container->get(TransactionFactory::class);
+        $transactionsRepository = $this->container->get(TransactionsRepository::class);
+
+        foreach ($rawTransactionsData as $rawTransactionDataItem) {
+            $transaction = $transactionsFactory->makeTransaction($rawTransactionDataItem);
+            $transactionsRepository->create($transaction);
+        }
+    }
+
+    /**
+     * Calculate fees of transactions.
+     *
+     * @return string[]
+     */
+    private function calculateTransactionsFees(): array
+    {
+        $transactionsRepository = $this->container->get(TransactionsRepository::class);
+
+        $transactionsFees = [];
+
+        /**
+         * @var Transaction $transaction
+         */
+        foreach ($transactionsRepository->all() as $transaction) {
+            $transactionsFees[] = '0';
+        }
+
+        return $transactionsFees;
     }
 
     /**

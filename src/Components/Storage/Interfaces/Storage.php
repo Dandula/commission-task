@@ -20,6 +20,7 @@ interface Storage
      *
      * @param int|string $id
      * @return mixed
+     * @throws CommissionTaskOutOfBoundsStorageException
      */
     public function findById(string $part, $id);
 

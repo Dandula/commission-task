@@ -17,10 +17,10 @@ trait FieldFormat
      * @return $this
      * @throws IncorrectFieldFormat
      */
-    private function validateDateYmdField($value)
+    private function validateDateField($value, string $format = 'Y-m-d')
     {
         try {
-            $this->dateService->parseYmd($value);
+            $this->dateService->parseDate($value, $format);
         } catch (CommissionTaskArgumentException $exception) {
             throw new IncorrectFieldFormat('Incorrect date column');
         }
