@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionDataValidators\Traits;
 
 use CommissionTask\Components\TransactionDataValidators\CsvTransactionDataValidator;
-use CommissionTask\Components\TransactionDataValidators\Exceptions\IncorrectFieldFormat;
+use CommissionTask\Components\TransactionDataValidators\Exceptions\TransactionDataValidatorException;
 use CommissionTask\Exceptions\CommissionTaskArgumentException;
 
 trait FieldFormat
@@ -15,14 +15,16 @@ trait FieldFormat
      *
      * @param mixed $value
      * @return $this
-     * @throws IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
-    private function validateDateField($value, string $format = 'Y-m-d')
+    private function validateDateField($value, string $format = self::DEFAULT_DATE_FORMAT)
     {
         try {
             $this->dateService->parseDate($value, $format);
         } catch (CommissionTaskArgumentException $exception) {
-            throw new IncorrectFieldFormat('Incorrect date column');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_DATE_COLUMN_MESSAGE
+            );
         }
 
         return $this;
@@ -33,12 +35,14 @@ trait FieldFormat
      *
      * @param mixed $value
      * @return $this
-     * @throws IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateUnsignedIntegerField($value)
     {
         if (!preg_match('/^[1-9]\d*$/', $value)) {
-            throw new IncorrectFieldFormat('Incorrect unsigned integer column');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_UNSIGNED_INTEGER_COLUMN_MESSAGE
+            );
         }
 
         return $this;
@@ -49,12 +53,14 @@ trait FieldFormat
      *
      * @param mixed $value
      * @return $this
-     * @throws IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateUnsignedFloatField($value)
     {
         if (!preg_match('/^[1-9]\d*\.?\d*$/', $value)) {
-            throw new IncorrectFieldFormat('Incorrect unsigned float column');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_UNSIGNED_FLOAT_COLUMN_MESSAGE
+            );
         }
 
         return $this;
@@ -65,12 +71,14 @@ trait FieldFormat
      *
      * @param mixed $value
      * @return $this
-     * @throws IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateInArrayField($value, array $acceptableValues)
     {
         if (!in_array($value, $acceptableValues)) {
-            throw new IncorrectFieldFormat('The value is not included in the list of acceptable values');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_IN_ARRAY_COLUMN_MESSAGE
+            );
         }
 
         return $this;
@@ -81,12 +89,14 @@ trait FieldFormat
      *
      * @param mixed $value
      * @return $this
-     * @throws IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateCurrencyCodeField($value): CsvTransactionDataValidator
     {
         if (!preg_match('/^[a-zA-Z]{3}$/', $value)) {
-            throw new IncorrectFieldFormat('Incorrect currency code column');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_CURRENCY_CODE_COLUMN_MESSAGE
+            );
         }
 
         return $this;

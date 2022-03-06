@@ -16,6 +16,13 @@ interface TransactionsRepository
     public function all(): array;
 
     /**
+     * Get filtered transactions applying given filter method.
+     *
+     * @return Transaction[]
+     */
+    public function filter(callable $filterMethod): array;
+
+    /**
      * Get transaction from repository by given ID.
      */
     public function read(int $id): Transaction;

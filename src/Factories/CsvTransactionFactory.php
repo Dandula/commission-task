@@ -21,6 +21,9 @@ class CsvTransactionFactory implements TransactionFactoryContract
      */
     private $dateService;
 
+    /**
+     * Create a new CSV transaction factory instance.
+     */
     public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, Date $dateService)
     {
         $this->csvTransactionDataFormatter = $csvTransactionDataFormatter;

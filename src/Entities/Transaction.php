@@ -12,7 +12,7 @@ class Transaction
     const TYPE_WITHDRAW = 'withdraw';
 
     const USER_TYPE_PRIVATE = 'private';
-    const TYPE_TYPE_BUSINESS = 'business';
+    const USER_TYPE_BUSINESS = 'business';
 
     /**
      * @var DateTime

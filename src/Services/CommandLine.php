@@ -21,7 +21,9 @@ class CommandLine
         $commandLineParameters = $_SERVER['argv'];
 
         if (!isset($commandLineParameters[$number])) {
-            throw new CommissionTaskException("The command line parameter #$number is not set");
+            throw new CommissionTaskException(
+                sprintf(CommissionTaskException::COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE, $number)
+            );
         }
 
         return $commandLineParameters[$number];
@@ -36,7 +38,9 @@ class CommandLine
     private function checkIsCommandLineApplication()
     {
         if (!isset($_SERVER['argv']) || !isset($_SERVER['argc'])) {
-            throw new CommissionTaskKernelException('The script is not run from the command line');
+            throw new CommissionTaskKernelException(
+                CommissionTaskKernelException::SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE
+            );
         }
     }
 }

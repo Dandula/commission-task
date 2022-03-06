@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\Storage;
 
-use CommissionTask\Components\Storage\Exceptions\CommissionTaskOutOfBoundsStorageException;
+use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
 use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
 
 class ArrayStorage implements StorageContract
 {
+    /**
+     * @var array
+     */
     private $array = [];
 
     /**
@@ -25,12 +28,20 @@ class ArrayStorage implements StorageContract
     public function findById(string $part, $id)
     {
         if (!isset($this->array[$part][$id])) {
-            throw new CommissionTaskOutOfBoundsStorageException(
-                "The data item with the ID $id at part '$part' does not exist"
+            throw new OutOfBoundsStorageException(
+                sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string)$id, $part)
             );
         }
 
         return $this->array[$part][$id];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function filter(string $part, callable $filterMethod)
+    {
+        return array_filter($this->array[$part], $filterMethod);
     }
 
     /**
@@ -47,8 +58,8 @@ class ArrayStorage implements StorageContract
     public function update(string $part, $id, $data)
     {
         if (!isset($this->array[$part][$id])) {
-            throw new CommissionTaskOutOfBoundsStorageException(
-                "The data item with the ID $id at part '$part' does not exist"
+            throw new OutOfBoundsStorageException(
+                sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string)$id, $part)
             );
         }
 

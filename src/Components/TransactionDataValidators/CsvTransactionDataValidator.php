@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionDataValidators;
 
 use CommissionTask\Components\DataFormatters\CsvTransactionDataFormatter;
-use CommissionTask\Components\TransactionDataValidators\Exceptions\IncorrectFieldFormat;
-use CommissionTask\Components\TransactionDataValidators\Exceptions\IncorrectFieldsNumber;
-use CommissionTask\Components\TransactionDataValidators\Exceptions\RequiredFieldNotSet;
+use CommissionTask\Components\TransactionDataValidators\Exceptions\TransactionDataValidatorException;
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
 use CommissionTask\Components\TransactionDataValidators\Traits\FieldFormat;
+use CommissionTask\Entities\Transaction;
 use CommissionTask\Services\Date;
 
 class CsvTransactionDataValidator implements TransactionDataValidatorContract
@@ -32,7 +31,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     private $validatedData;
 
     /**
-     * Create validator instance.
+     * Create CSV transaction data validator instance.
      */
     public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, Date $dateService)
     {
@@ -47,7 +46,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     {
         $this->validatedData = $transactionData;
 
-        $this->validateColumnsCount()
+        $this->validateColumnsNumber()
             ->validateDate()
             ->validateUserId()
             ->validateUserType()
@@ -57,15 +56,17 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     }
 
     /**
-     * Validate fields count.
+     * Validate fields number.
      *
      * @return $this
-     * @throws IncorrectFieldsNumber
+     * @throws TransactionDataValidatorException
      */
-    private function validateColumnsCount(): CsvTransactionDataValidator
+    private function validateColumnsNumber(): CsvTransactionDataValidator
     {
         if (count($this->validatedData) !== $this->csvTransactionDataFormatter::COLUMNS_NUMBER) {
-            throw new IncorrectFieldsNumber('Incorrect number of columns in the transaction data');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::INCORRECT_FIELDS_NUMBER_MESSAGE
+            );
         }
 
         return $this;
@@ -75,7 +76,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate date column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateDate(): CsvTransactionDataValidator
     {
@@ -90,7 +91,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate user ID column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateUserId(): CsvTransactionDataValidator
     {
@@ -102,14 +103,14 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate user type column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateUserType(): CsvTransactionDataValidator
     {
         return $this->validateColumnSet($this->csvTransactionDataFormatter::COLUMN_USER_TYPE_NUMBER)
             ->validateInArrayField(
                 $this->validatedData[$this->csvTransactionDataFormatter::COLUMN_USER_TYPE_NUMBER],
-                ['private', 'business']
+                [Transaction::USER_TYPE_PRIVATE, Transaction::USER_TYPE_BUSINESS]
             );
     }
 
@@ -117,14 +118,14 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate type column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateType(): CsvTransactionDataValidator
     {
         return $this->validateColumnSet($this->csvTransactionDataFormatter::COLUMN_TYPE_NUMBER)
             ->validateInArrayField(
                 $this->validatedData[$this->csvTransactionDataFormatter::COLUMN_TYPE_NUMBER],
-                ['deposit', 'withdraw']
+                [Transaction::TYPE_DEPOSIT, Transaction::TYPE_WITHDRAW]
             );
     }
 
@@ -132,7 +133,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate amount column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateAmount(): CsvTransactionDataValidator
     {
@@ -144,7 +145,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate currency code column.
      *
      * @return $this
-     * @throws RequiredFieldNotSet|IncorrectFieldFormat
+     * @throws TransactionDataValidatorException
      */
     private function validateCurrencyCode(): CsvTransactionDataValidator
     {
@@ -156,12 +157,14 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Validate column is set.
      *
      * @return $this
-     * @throws RequiredFieldNotSet
+     * @throws TransactionDataValidatorException
      */
     private function validateColumnSet(int $columnNumber): CsvTransactionDataValidator
     {
         if (empty($this->validatedData[$columnNumber])) {
-            throw new RequiredFieldNotSet('Required column is not set');
+            throw new TransactionDataValidatorException(
+                TransactionDataValidatorException::REQUIRED_FIELD_NOT_SET_MESSAGE
+            );
         }
 
         return $this;

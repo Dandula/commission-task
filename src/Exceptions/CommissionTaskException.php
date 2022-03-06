@@ -9,7 +9,9 @@ use RuntimeException;
 
 class CommissionTaskException extends RuntimeException implements CommissionTaskThrowable
 {
-    const DEFAULT_MESSAGE = 'Undefined exception of application';
+    const DEFAULT_MESSAGE                           = 'Undefined exception of application';
+
+    const COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE = "The command line parameter #%d is not set";
 
     /**
      * Create a basic application exception.

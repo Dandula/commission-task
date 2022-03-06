@@ -11,6 +11,8 @@ class CommissionTaskKernelException extends Exception implements CommissionTaskT
 {
     const DEFAULT_MESSAGE = 'Application system error';
 
+    const SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE = 'The script is not run from the command line';
+
     /**
      * Create a system application exception.
      *

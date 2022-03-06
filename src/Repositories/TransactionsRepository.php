@@ -41,6 +41,14 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * @inheritDoc
      */
+    public function filter(callable $filterMethod): array
+    {
+        return $this->storage->filter(self::TRANSACTIONS_PART, $filterMethod);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(Transaction $transaction)
     {
         $this->storage->create(self::TRANSACTIONS_PART, $transaction);

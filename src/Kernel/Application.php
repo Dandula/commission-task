@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace CommissionTask\Kernel;
 
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
+use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator;
+use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
-use CommissionTask\Factories\Interfaces\TransactionFactory;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 use CommissionTask\Services\CommandLine;
 use CommissionTask\Services\Filesystem;
@@ -91,12 +92,10 @@ class Application
      */
     private function saveTransactions(array $rawTransactionsData)
     {
-        $transactionsFactory = $this->container->get(TransactionFactory::class);
-        $transactionsRepository = $this->container->get(TransactionsRepository::class);
+        $transactionSaver = $this->container->get(TransactionSaver::class);
 
         foreach ($rawTransactionsData as $rawTransactionDataItem) {
-            $transaction = $transactionsFactory->makeTransaction($rawTransactionDataItem);
-            $transactionsRepository->create($transaction);
+            $transactionSaver->saveTransaction($rawTransactionDataItem);
         }
     }
 
@@ -108,6 +107,7 @@ class Application
     private function calculateTransactionsFees(): array
     {
         $transactionsRepository = $this->container->get(TransactionsRepository::class);
+        $transactionFeeCalculator = $this->container->get(TransactionFeeCalculator::class);
 
         $transactionsFees = [];
 
@@ -115,7 +115,7 @@ class Application
          * @var Transaction $transaction
          */
         foreach ($transactionsRepository->all() as $transaction) {
-            $transactionsFees[] = '0';
+            $transactionsFees[] = $transactionFeeCalculator->calculateTransactionFee($transaction);
         }
 
         return $transactionsFees;
