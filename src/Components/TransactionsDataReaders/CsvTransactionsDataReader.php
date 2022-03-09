@@ -21,7 +21,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     private $filePath;
 
     /**
-     * Create a new CSV data reader instance.
+     * Create a new CSV transactions data reader instance.
      */
     public function __construct(Filesystem $filesystem)
     {
@@ -51,6 +51,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * Read CSV strings.
      *
+     * @return string[]
      * @throws CsvTransactionsDataReaderException
      */
     private function readCsvStrings(): array
@@ -72,6 +73,8 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
 
     /**
      * Parse CSV strings.
+     *
+     * @param string[] $transactionsRawData
      */
     private function parseCsvStrings(array $transactionsRawData): array
     {

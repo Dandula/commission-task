@@ -10,6 +10,10 @@ interface TransactionDataValidator
 {
     const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
+    const UNSIGNED_INTEGER_REGEXP = '/^[1-9]\d*$/';
+    const UNSIGNED_FLOAT_REGEXP   = '/^[1-9]\d*\.?\d*$/';
+    const CURRENCY_CODE_REGEXP    = '/^[A-Z]{3}$/';
+
     /**
      * Read transactions data.
      *

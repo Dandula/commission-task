@@ -39,14 +39,13 @@ trait CommonCalculateOperations
         $lastDigits = substr($amount, -self::ROUNDED_OFF_DIGITS_NUMBER);
         $amount = substr($amount, 0, -self::ROUNDED_OFF_DIGITS_NUMBER);
         $previousLastDigitCharacter = substr($amount, -1);
+        $ceilMathService = new Math(max($ceilScale, Math::MIN_SCALE));
 
-        if ($previousLastDigitCharacter === '.') {
+        if ($previousLastDigitCharacter === $ceilMathService::DECIMAL_SEPARATOR) {
             $amount = substr($amount, 0, -1);
         }
 
-        if (preg_match('/^0+$/', $lastDigits)) {
-            $ceilMathService = new Math($ceilScale);
-
+        if (!preg_match(self::NOT_ROUNDED_FRACTIONAL_PART_REGEXP, $lastDigits)) {
             $amount = $ceilMathService->add(
                 $amount,
                 $ceilMathService->pow(

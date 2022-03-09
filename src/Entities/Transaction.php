@@ -45,13 +45,6 @@ class Transaction
     private $currencyCode;
 
     /**
-     * Create transaction entity instance.
-     *
-     * @return void
-     */
-    public function __construct() { }
-
-    /**
      * Date setter.
      *
      * @return void

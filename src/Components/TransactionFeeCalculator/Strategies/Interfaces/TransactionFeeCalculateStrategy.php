@@ -11,7 +11,8 @@ interface TransactionFeeCalculateStrategy
     const SCALE_NULL                = 0;
     const ROUNDED_OFF_DIGITS_NUMBER = 1;
 
-    const FRACTIONAL_PART_REGEXP    = '/\.(\d*$)/';
+    const FRACTIONAL_PART_REGEXP             = '/\.(\d*$)/';
+    const NOT_ROUNDED_FRACTIONAL_PART_REGEXP = '/^0+$/';
 
     /**
      * Calculate transaction fee for given transaction.

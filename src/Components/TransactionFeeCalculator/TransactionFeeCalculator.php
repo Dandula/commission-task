@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace CommissionTask\Components\TransactionFeeCalculator;
 
 use CommissionTask\Entities\Transaction;
@@ -16,9 +18,7 @@ class TransactionFeeCalculator implements TransactionFeeCalculatorContract
     /**
      * Create a new transaction fee calculator instance.
      */
-    public function __construct(
-        TransactionFeeCalculatorStrategyFactory $transactionFeeCalculatorStrategyFactory
-    )
+    public function __construct(TransactionFeeCalculatorStrategyFactory $transactionFeeCalculatorStrategyFactory)
     {
         $this->transactionFeeCalculatorStrategyFactory = $transactionFeeCalculatorStrategyFactory;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Kernel;
 
+use CommissionTask\Components\Outputer\Interfaces\Outputer;
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator;
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
@@ -129,13 +130,9 @@ class Application
      */
     private function output($outputData)
     {
-        if (is_array($outputData)) {
-            foreach ($outputData as $outputItem) {
-                echo $outputItem . PHP_EOL;
-            }
-        } else {
-            echo $outputData . PHP_EOL;
-        }
+        $outputer = $this->container->get(Outputer::class);
+
+        $outputer->output($outputData);
     }
 
     /**

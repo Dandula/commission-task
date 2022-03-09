@@ -16,10 +16,10 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
 {
     use CommonCalculateOperations;
 
-    const FEE_RATE                 = '0.003';
-    const FREE_LIMIT_AMOUNT        = '1000';
-    const FREE_LIMIT_CURRENCY_CODE = 'EUR';
-    const FREE_OPERATIONS_NUMBER   = 3;
+    const FEE_RATE                  = '0.003';
+    const NONTAXABLE_AMOUNT         = '1000.00';
+    const NONTAXABLE_CURRENCY_CODE  = 'EUR';
+    const FREE_OPERATIONS_NUMBER    = 3;
 
     /**
      * @var TransactionsRepository
@@ -60,15 +60,13 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $mathService = new Math($this->determineScaleOfAmount($amount) + self::ROUNDED_OFF_DIGITS_NUMBER);
+        $mathService = new Math(
+            $this->determineScaleOfAmount($amount) + self::ROUNDED_OFF_DIGITS_NUMBER
+        );
 
         $influentialTransactions = $this->getInfluentialTransactions($transaction);
 
-        if (count($influentialTransactions) >= self::FREE_OPERATIONS_NUMBER) {
-            $taxableAmount = $amount;
-        } else {
-            $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions);
-        }
+        $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions, $mathService);
 
         $feeAmount = $mathService->mul($taxableAmount, self::FEE_RATE);
 
@@ -85,12 +83,16 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         $transactionUserId = $transaction->getUserId();
         $transactionDate = $transaction->getDate();
         $transactionDateStartOfWeek = $this->dateService->getStartOfWeek($transactionDate);
+        $transactionType = $transaction::TYPE_WITHDRAW;
+        $transactionUserType = $transaction::USER_TYPE_PRIVATE;
 
         $influentialTransactionsFilterMethod = function (Transaction $checkedTransaction)
-            use ($transactionUserId, $transactionDate, $transactionDateStartOfWeek) {
+            use ($transactionUserId, $transactionDate, $transactionDateStartOfWeek, $transactionType, $transactionUserType) {
                 return $checkedTransaction->getUserId() === $transactionUserId
                     && $checkedTransaction->getDate() >= $transactionDateStartOfWeek
-                    && $checkedTransaction->getDate() < $transactionDate;
+                    && $checkedTransaction->getDate() < $transactionDate
+                    && $checkedTransaction->getType() === $transactionType
+                    && $checkedTransaction->getUserType() === $transactionUserType;
             };
 
         return $this->transactionsRepository->filter($influentialTransactionsFilterMethod);
@@ -101,10 +103,119 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      *
      * @param Transaction $transaction
      * @param Transaction[] $influentialTransactions
+     * @param Math $transactionMathService
      * @return string
      */
-    private function getTaxableAmount(Transaction $transaction, array $influentialTransactions): string
+    private function getTaxableAmount(
+        Transaction $transaction,
+        array $influentialTransactions,
+        Math $transactionMathService
+    ): string
     {
-        return $transaction->getAmount();
+        $transactionAmount = $transaction->getAmount();
+
+        // If more than 3 transactions charge commission for the full amount
+        if (count($influentialTransactions) >= self::FREE_OPERATIONS_NUMBER) {
+            return $transactionAmount;
+        }
+
+        $nontaxableAmountMathService = new Math(
+            $this->determineScaleOfAmount(self::NONTAXABLE_AMOUNT) + self::ROUNDED_OFF_DIGITS_NUMBER
+        );
+
+        // Calculate the non-taxable amount in the currency of the non-taxable limit
+        $lostNontaxableAmount = $this->calculateLostNontaxableAmount(
+            $influentialTransactions,
+            $nontaxableAmountMathService
+        );
+
+        // If the non-taxable limit is exhausted, charge the commission for the full amount
+        if ($nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
+            === $nontaxableAmountMathService::COMP_RESULT_EQ) {
+            return $transactionAmount;
+        }
+
+        $transactionCurrencyCode = $transaction->getCurrencyCode();
+
+        // Calculate the taxable amount subtracting the non-taxable amount
+        return $this->calculateTaxableAmount(
+            $transactionAmount,
+            $lostNontaxableAmount,
+            $transactionCurrencyCode,
+            $transactionMathService,
+            $nontaxableAmountMathService
+        );
+    }
+
+    /**
+     * Calculate lost non-taxable amount.
+     *
+     * @param Transaction[] $influentialTransactions
+     * @param Math $nontaxableAmountMathService
+     * @return string
+     */
+    private function calculateLostNontaxableAmount(
+        array $influentialTransactions,
+        Math $nontaxableAmountMathService
+    ): string
+    {
+        $lostNontaxableAmount = self::NONTAXABLE_AMOUNT;
+
+        // Subtracts the amount of previous transactions for the week from the non-taxable amount
+        while ($influentialTransactions
+            && $nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
+                === $nontaxableAmountMathService::COMP_RESULT_GT) {
+            $influentialTransaction = array_shift($influentialTransactions);
+            $influentialTransactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
+                $influentialTransaction->getAmount(),
+                $influentialTransaction->getCurrencyCode(),
+                self::NONTAXABLE_CURRENCY_CODE,
+                $nontaxableAmountMathService
+            );
+            $lostNontaxableAmount = $nontaxableAmountMathService->sub($lostNontaxableAmount, $influentialTransactionAmountAtNontaxableCurrency);
+        }
+
+        return $nontaxableAmountMathService->max($lostNontaxableAmount, $nontaxableAmountMathService::ZERO);
+    }
+
+    /**
+     * Calculate the taxable amount subtracting the non-taxable amount.
+     */
+    private function calculateTaxableAmount(
+        string $transactionAmount,
+        string $lostNontaxableAmount,
+        string $transactionCurrencyCode,
+        Math $transactionMathService,
+        Math $nontaxableAmountMathService
+    ): string
+    {
+        // Convert the transaction amount to the currency of the non-taxable limit
+        $transactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
+            $transactionAmount,
+            $transactionCurrencyCode,
+            self::NONTAXABLE_CURRENCY_CODE,
+            $nontaxableAmountMathService
+        );
+
+        // Calculate the part of the transaction amount taxed by the commission in the currency of the non-taxable limit
+        $taxableAmountAtNontaxableCurrency = $nontaxableAmountMathService->sub(
+            $transactionAmountAtNontaxableCurrency,
+            $lostNontaxableAmount
+        );
+        $taxableAmountAtNontaxableCurrency = $nontaxableAmountMathService->max(
+            $taxableAmountAtNontaxableCurrency,
+            $nontaxableAmountMathService::ZERO
+        );
+
+        // Convert the taxable amount to the currency of the transaction
+        $taxableAmount = $this->currencyService->convertAmountToCurrency(
+            $taxableAmountAtNontaxableCurrency,
+            self::NONTAXABLE_CURRENCY_CODE,
+            $transactionCurrencyCode,
+            $transactionMathService
+        );
+
+        // Round up the taxable amount and return it
+        return $this->ceilAmount($taxableAmount);
     }
 }

@@ -23,7 +23,7 @@ try {
 
     $exitCode = 0;
 } catch (CommissionTaskThrowable $exception) {
-    echo $exception->getMessage() . "\n";
+    echo $exception->getMessage() . PHP_EOL;
 
     $exitCode = $exception->getCode();
 } finally {

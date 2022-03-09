@@ -75,7 +75,7 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
                 return new DepositStrategy();
             default:
                 throw new TransactionFeeCalculatorStrategyFactoryException(
-                    TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_USER_TYPE_MESSAGE
+                    TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_TRANSACTION_TYPE_MESSAGE
                 );
         }
     }

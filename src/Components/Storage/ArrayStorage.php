@@ -19,7 +19,7 @@ class ArrayStorage implements StorageContract
      */
     public function findAll(string $part)
     {
-        return $this->array[$part];
+        return $this->safeAccessToPart($part);
     }
 
     /**
@@ -41,7 +41,7 @@ class ArrayStorage implements StorageContract
      */
     public function filter(string $part, callable $filterMethod)
     {
-        return array_filter($this->array[$part], $filterMethod);
+        return array_filter($this->safeAccessToPart($part), $filterMethod);
     }
 
     /**
@@ -72,5 +72,13 @@ class ArrayStorage implements StorageContract
     public function delete(string $part, $id)
     {
         unset($this->array[$part][$id]);
+    }
+
+    /**
+     * Safe access to part of repository.
+     */
+    private function safeAccessToPart(string $part): array
+    {
+        return $this->array[$part] ?? [];
     }
 }

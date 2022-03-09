@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\Storage\Interfaces;
 
-use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
+use CommissionTask\Components\Storage\Exceptions\Interfaces\StorageException;
+use CommissionTask\Components\Storage\Exceptions\UndefinedPartStorageException;
 
 interface Storage
 {
@@ -12,6 +13,7 @@ interface Storage
      * Find all data items at storage.
      *
      * @return mixed
+     * @throws UndefinedPartStorageException
      */
     public function findAll(string $part);
 
@@ -20,7 +22,7 @@ interface Storage
      *
      * @param int|string $id
      * @return mixed
-     * @throws OutOfBoundsStorageException
+     * @throws UndefinedPartStorageException|StorageException
      */
     public function findById(string $part, $id);
 
@@ -28,6 +30,7 @@ interface Storage
      * Get filtered data items applying given filter method.
      *
      * @return mixed
+     * @throws UndefinedPartStorageException
      */
     public function filter(string $part, callable $filterMethod);
 
@@ -45,7 +48,7 @@ interface Storage
      * @param int|string $id
      * @param mixed $data
      * @return void
-     * @throws OutOfBoundsStorageException
+     * @throws StorageException
      */
     public function update(string $part, $id, $data);
 

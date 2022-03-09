@@ -6,6 +6,7 @@ namespace CommissionTask\Components\TransactionDataValidators\Traits;
 
 use CommissionTask\Components\TransactionDataValidators\CsvTransactionDataValidator;
 use CommissionTask\Components\TransactionDataValidators\Exceptions\TransactionDataValidatorException;
+use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
 use CommissionTask\Exceptions\CommissionTaskArgumentException;
 
 trait FieldFormat
@@ -17,7 +18,7 @@ trait FieldFormat
      * @return $this
      * @throws TransactionDataValidatorException
      */
-    private function validateDateField($value, string $format = self::DEFAULT_DATE_FORMAT)
+    private function validateDateField($value, string $format = self::DEFAULT_DATE_FORMAT): TransactionDataValidator
     {
         try {
             $this->dateService->parseDate($value, $format);
@@ -37,9 +38,9 @@ trait FieldFormat
      * @return $this
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedIntegerField($value)
+    private function validateUnsignedIntegerField($value): TransactionDataValidator
     {
-        if (!preg_match('/^[1-9]\d*$/', $value)) {
+        if (!preg_match(self::UNSIGNED_INTEGER_REGEXP, $value)) {
             throw new TransactionDataValidatorException(
                 TransactionDataValidatorException::INCORRECT_UNSIGNED_INTEGER_COLUMN_MESSAGE
             );
@@ -55,9 +56,9 @@ trait FieldFormat
      * @return $this
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedFloatField($value)
+    private function validateUnsignedFloatField($value): TransactionDataValidator
     {
-        if (!preg_match('/^[1-9]\d*\.?\d*$/', $value)) {
+        if (!preg_match(self::UNSIGNED_FLOAT_REGEXP, $value)) {
             throw new TransactionDataValidatorException(
                 TransactionDataValidatorException::INCORRECT_UNSIGNED_FLOAT_COLUMN_MESSAGE
             );
@@ -73,7 +74,7 @@ trait FieldFormat
      * @return $this
      * @throws TransactionDataValidatorException
      */
-    private function validateInArrayField($value, array $acceptableValues)
+    private function validateInArrayField($value, array $acceptableValues): TransactionDataValidator
     {
         if (!in_array($value, $acceptableValues)) {
             throw new TransactionDataValidatorException(
@@ -91,9 +92,9 @@ trait FieldFormat
      * @return $this
      * @throws TransactionDataValidatorException
      */
-    private function validateCurrencyCodeField($value): CsvTransactionDataValidator
+    private function validateCurrencyCodeField($value): TransactionDataValidator
     {
-        if (!preg_match('/^[a-zA-Z]{3}$/', $value)) {
+        if (!preg_match(self::CURRENCY_CODE_REGEXP, $value)) {
             throw new TransactionDataValidatorException(
                 TransactionDataValidatorException::INCORRECT_CURRENCY_CODE_COLUMN_MESSAGE
             );
