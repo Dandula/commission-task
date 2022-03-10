@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesDataValidators;
 
-use CommissionTask\Components\CurrenciesDataValidators\Traits\FieldFormat;
-use CommissionTask\Components\DataFormatters\ApiCurrenciesDataFormatter;
 use CommissionTask\Components\CurrenciesDataValidators\Exceptions\ApiCurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidators\Exceptions\CurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorsContract;
+use CommissionTask\Components\CurrenciesDataValidators\Traits\FieldFormat;
+use CommissionTask\Components\DataFormatters\ApiCurrenciesDataFormatter;
 use CommissionTask\Services\Date;
 
 class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
@@ -40,7 +40,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function validateCurrenciesData(array $currenciesData)
     {
@@ -54,6 +54,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate main fields.
      *
      * @return $this
+     *
      * @throws CurrenciesDataValidatorException|ApiCurrenciesDataValidatorException
      */
     private function validateMainFields(): ApiCurrenciesDataValidator
@@ -68,6 +69,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate main fields existence.
      *
      * @return $this
+     *
      * @throws ApiCurrenciesDataValidatorException
      */
     private function validateMainFieldsExistence(): ApiCurrenciesDataValidator
@@ -76,9 +78,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
                 $this->apiCurrenciesDataFormatter::MAIN_FIELDS,
                 array_keys($this->validatedData)
             )) {
-            throw new ApiCurrenciesDataValidatorException(
-                ApiCurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE
-            );
+            throw new ApiCurrenciesDataValidatorException(ApiCurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
         }
 
         return $this;
@@ -88,6 +88,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate base currency code at main fields.
      *
      * @return $this
+     *
      * @throws ApiCurrenciesDataValidatorException
      */
     private function validateBaseCurrencyCodeMainField(): ApiCurrenciesDataValidator
@@ -101,6 +102,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate date at main fields.
      *
      * @return $this
+     *
      * @throws CurrenciesDataValidatorException
      */
     private function validateDateMainField(): ApiCurrenciesDataValidator
@@ -115,6 +117,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate rates at main fields.
      *
      * @return $this
+     *
      * @throws CurrenciesDataValidatorException
      */
     private function validateRatesMainField(): ApiCurrenciesDataValidator
@@ -126,6 +129,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Validate currencies rates fields.
      *
      * @return $this
+     *
      * @throws CurrenciesDataValidatorException|ApiCurrenciesDataValidatorException
      */
     private function validateCurrenciesRates(): ApiCurrenciesDataValidator

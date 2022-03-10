@@ -17,13 +17,16 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     private $storage;
 
+    /**
+     * Create currencies repository instance.
+     */
     public function __construct(Storage $storage)
     {
         $this->storage = $storage;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function all(): array
     {
@@ -31,7 +34,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function read(int $id): Currency
     {
@@ -39,7 +42,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function filter(callable $filterMethod): array
     {
@@ -47,7 +50,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function create(Currency $currency)
     {
@@ -55,7 +58,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function update(int $id, Currency $currency)
     {
@@ -63,7 +66,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete(int $id)
     {

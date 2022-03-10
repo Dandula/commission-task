@@ -12,7 +12,9 @@ interface Outputer
      * Output given data.
      *
      * @param string|string[] ...$outputtingDataItems
+     *
      * @return void
+     *
      * @throws OutputerException
      */
     public function output(...$outputtingDataItems);

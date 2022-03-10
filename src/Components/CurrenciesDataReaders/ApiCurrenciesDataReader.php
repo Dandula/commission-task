@@ -9,7 +9,7 @@ use CommissionTask\Components\CurrenciesDataReaders\Interfaces\CurrenciesDataRea
 
 class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
 {
-    const API_URL               = 'https://developers.paysera.com/tasks/api/currency-exchange-rates';
+    const API_URL = 'https://developers.paysera.com/tasks/api/currency-exchange-rates';
     const MAX_REQUESTS_ATTEMPTS = 3;
 
     /**
@@ -20,7 +20,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function readCurrenciesData(): array
     {
@@ -48,9 +48,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
         } while ($currenciesData === false && --$remainingRequestsAttemptsCount);
 
         if ($currenciesData === false) {
-            throw new ApiCurrenciesDataReaderException(
-                ApiCurrenciesDataReaderException::FAILED_RECEIVE_DATA_MESSAGE
-            );
+            throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::FAILED_RECEIVE_DATA_MESSAGE);
         }
 
         curl_close($curl);
@@ -68,9 +66,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
         $currenciesData = json_decode($currenciesData, true);
 
         if ($currenciesData === null) {
-            throw new ApiCurrenciesDataReaderException(
-                ApiCurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE
-            );
+            throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE);
         }
 
         return $currenciesData;

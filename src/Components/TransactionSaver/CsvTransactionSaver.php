@@ -26,14 +26,13 @@ class CsvTransactionSaver implements TransactionSaverContract
     public function __construct(
         TransactionsRepository $transactionRepository,
         TransactionFactory $transactionFactory
-    )
-    {
+    ) {
         $this->transactionsRepository = $transactionRepository;
         $this->transactionFactory = $transactionFactory;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function saveTransaction($transactionData)
     {

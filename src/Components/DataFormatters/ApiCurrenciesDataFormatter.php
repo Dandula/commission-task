@@ -7,8 +7,8 @@ namespace CommissionTask\Components\DataFormatters;
 class ApiCurrenciesDataFormatter
 {
     const BASE_CURRENCY_CODE_FIELD = 'base';
-    const DATE_FIELD               = 'date';
-    const RATES_FIELD              = 'rates';
+    const DATE_FIELD = 'date';
+    const RATES_FIELD = 'rates';
 
     const MAIN_FIELDS = [
         self::BASE_CURRENCY_CODE_FIELD,

@@ -39,7 +39,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function readTransactionsData(): array
     {
@@ -52,20 +52,17 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
      * Read CSV strings.
      *
      * @return string[]
+     *
      * @throws CsvTransactionsDataReaderException
      */
     private function readCsvStrings(): array
     {
         if (!isset($this->filePath)) {
-            throw new CsvTransactionsDataReaderException(
-                CsvTransactionsDataReaderException::UNDEFINED_CSV_FILEPATH_MESSAGE
-            );
+            throw new CsvTransactionsDataReaderException(CsvTransactionsDataReaderException::UNDEFINED_CSV_FILEPATH_MESSAGE);
         }
 
         if (!$this->filesystemService->isFileExists($this->filePath)) {
-            throw new CsvTransactionsDataReaderException(
-                sprintf(CsvTransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $this->filePath)
-            );
+            throw new CsvTransactionsDataReaderException(sprintf(CsvTransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $this->filePath));
         }
 
         return $this->filesystemService->readFile($this->filePath);

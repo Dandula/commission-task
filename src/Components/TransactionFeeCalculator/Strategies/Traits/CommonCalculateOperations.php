@@ -24,9 +24,7 @@ trait CommonCalculateOperations
         } elseif ($matchesCount === 0) {
             return self::SCALE_NULL;
         } else {
-            throw new TransactionFeeCalculatorException(
-                TransactionFeeCalculatorException::UNDEFINED_SCALE_MESSAGE
-            );
+            throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::UNDEFINED_SCALE_MESSAGE);
         }
     }
 
@@ -50,7 +48,7 @@ trait CommonCalculateOperations
                 $amount,
                 $ceilMathService->pow(
                     $ceilMathService::NUMBER_SYSTEM_BASE,
-                    (string)(-$ceilScale)
+                    (string) (-$ceilScale)
                 )
             );
         }

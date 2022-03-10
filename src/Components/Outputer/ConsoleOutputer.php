@@ -10,12 +10,12 @@ use CommissionTask\Components\Outputer\Interfaces\Outputer;
 class ConsoleOutputer implements Outputer
 {
     const STRING_TYPE = 'string';
-    const ARRAY_TYPE  = 'array';
+    const ARRAY_TYPE = 'array';
 
     const LINE_SEPARATOR = PHP_EOL;
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function output(...$outputtingDataItems)
     {
@@ -28,12 +28,10 @@ class ConsoleOutputer implements Outputer
                     $outputtingString = implode(self::LINE_SEPARATOR, $outputtingDataItem);
                     break;
                 default:
-                    throw new ConsoleOutputerException(
-                        ConsoleOutputerException::UNSUPPORTED_OUTPUT_DATA_MESSAGE
-                    );
+                    throw new ConsoleOutputerException(ConsoleOutputerException::UNSUPPORTED_OUTPUT_DATA_MESSAGE);
             }
 
-            echo $outputtingString . self::LINE_SEPARATOR;
+            echo $outputtingString.self::LINE_SEPARATOR;
         }
     }
 }

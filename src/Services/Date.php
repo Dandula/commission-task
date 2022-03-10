@@ -10,10 +10,10 @@ use DateTime;
 
 class Date
 {
-    const DEFAULT_DATE_FORMAT        = 'Y-m-d';
+    const DEFAULT_DATE_FORMAT = 'Y-m-d';
     const WEEK_MUTABLE_FORMAT_STRING = '%d days';
 
-    const HOURS_MIN   = 0;
+    const HOURS_MIN = 0;
     const MINUTES_MIN = 0;
 
     /**
@@ -55,6 +55,7 @@ class Date
     {
         $currentDate = clone $date;
         $currentDate->setTime(self::HOURS_MIN, self::MINUTES_MIN);
+
         return $currentDate;
     }
 
@@ -64,7 +65,8 @@ class Date
     public function getStartOfWeek(DateTime $date): DateTime
     {
         $currentDate = $this->getStartOfDay($date);
-        $dayOfWeekNumber = (int)$currentDate->format('N');
+        $dayOfWeekNumber = (int) $currentDate->format('N');
+
         return $this->subInterval(
             $currentDate,
             sprintf(self::WEEK_MUTABLE_FORMAT_STRING, $dayOfWeekNumber - 1)
@@ -78,6 +80,7 @@ class Date
     {
         $currentDate = clone $date;
         $subInterval = DateInterval::createFromDateString($datetime);
+
         return $currentDate->sub($subInterval);
     }
 }

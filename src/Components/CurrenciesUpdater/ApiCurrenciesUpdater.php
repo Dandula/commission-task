@@ -49,8 +49,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
         ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
         CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter,
         DateService $dateService
-    )
-    {
+    ) {
         $this->currenciesRepository = $currenciesRepository;
         $this->currencyFactory = $currencyFactory;
         $this->apiCurrenciesDataFormatter = $apiCurrenciesDataFormatter;
@@ -59,7 +58,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function updateCurrencies($currenciesData)
     {
@@ -89,10 +88,10 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
             }
 
             $currencyData = [
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_CURRENCY_CODE   => $currencyCode,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_IS_BASE         => $isBase,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE            => $currencyRate,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE_UPDATED_AT => $rateUpdatedAt
+                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_CURRENCY_CODE => $currencyCode,
+                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_IS_BASE => $isBase,
+                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE => $currencyRate,
+                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE_UPDATED_AT => $rateUpdatedAt,
             ];
 
             $this->updateCurrency($currencyData);
@@ -103,6 +102,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      * Update currency to currencies repository.
      *
      * @param mixed $currencyData
+     *
      * @return void
      */
     private function updateCurrency($currencyData)
@@ -126,8 +126,6 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
 
     /**
      * Get currency code for base currency of application.
-     *
-     * @return string
      */
     private function getApplicationBaseCurrencyCode(): string
     {
@@ -138,6 +136,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      * Get currency rate for base currency of application.
      *
      * @param float[] $rates
+     *
      * @throws ApiCurrenciesUpdaterException
      */
     private function getApplicationBaseCurrencyRate(array $rates): float
@@ -145,9 +144,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
         $applicationBaseCurrencyCode = $this->getApplicationBaseCurrencyCode();
 
         if (empty($rates[$applicationBaseCurrencyCode])) {
-            throw new ApiCurrenciesUpdaterException(
-                ApiCurrenciesUpdaterException::NO_BASE_CURRENCY_RATE_MESSAGE
-            );
+            throw new ApiCurrenciesUpdaterException(ApiCurrenciesUpdaterException::NO_BASE_CURRENCY_RATE_MESSAGE);
         }
 
         return $rates[$applicationBaseCurrencyCode];

@@ -30,7 +30,7 @@ class Filesystem extends Singleton
     {
         $filePath = $this->resolvePath($filePath);
 
-        return (bool)$filePath;
+        return (bool) $filePath;
     }
 
     /**
@@ -42,7 +42,7 @@ class Filesystem extends Singleton
     {
         $filePath = $this->resolvePath($filePath);
 
-        $fp = fopen($filePath,'r');
+        $fp = fopen($filePath, 'r');
 
         try {
             $content = [];
@@ -59,13 +59,12 @@ class Filesystem extends Singleton
     /**
      * Resolve relative path to absolute.
      *
-     * @param string $path
      * @return false|string
      */
     private function resolvePath(string $path)
     {
         if ($this->basePath) {
-            $path = $this->basePath . DIRECTORY_SEPARATOR . $path;
+            $path = $this->basePath.DIRECTORY_SEPARATOR.$path;
         }
 
         return realpath($path);

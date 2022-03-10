@@ -27,8 +27,8 @@ use CommissionTask\Components\TransactionsDataReaders\CsvTransactionsDataReader;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
 use CommissionTask\Factories\ApiCurrencyFactory;
-use CommissionTask\Factories\Interfaces\CurrencyFactory as CurrencyFactoryContract;
 use CommissionTask\Factories\CsvTransactionFactory;
+use CommissionTask\Factories\Interfaces\CurrencyFactory as CurrencyFactoryContract;
 use CommissionTask\Factories\Interfaces\TransactionFactory as TransactionFactoryContract;
 use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
 use CommissionTask\Factories\TransactionFeeCalculatorStrategyFactory;
@@ -49,6 +49,7 @@ class Container
      * Init service container.
      *
      * @return void
+     *
      * @throws CommissionTaskKernelException
      */
     public function init()
@@ -125,6 +126,7 @@ class Container
      * Get service from service container.
      *
      * @return mixed
+     *
      * @throws CommissionTaskKernelException
      */
     public function get(string $alias)
@@ -140,6 +142,7 @@ class Container
      * Put service to service container.
      *
      * @param mixed $instance
+     *
      * @return void
      */
     public function put(string $alias, $instance)

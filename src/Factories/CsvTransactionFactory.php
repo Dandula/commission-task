@@ -31,7 +31,7 @@ class CsvTransactionFactory implements TransactionFactoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function makeTransaction($transactionData): Transaction
     {

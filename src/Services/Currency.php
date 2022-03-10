@@ -10,8 +10,8 @@ use CommissionTask\Components\CurrenciesDataValidators\Exceptions\Interfaces\Cur
 use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator;
 use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\CurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
-use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Entities\Currency as CurrencyEntity;
+use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
 
 class Currency
@@ -56,8 +56,7 @@ class Currency
         CurrenciesDataValidator $currenciesDataValidator,
         CurrenciesUpdater $currenciesUpdater,
         Date $dateService
-    )
-    {
+    ) {
         $this->currenciesRepository = $currenciesRepository;
         $this->currenciesDataReader = $currenciesDataReader;
         $this->currenciesDataValidator = $currenciesDataValidator;
@@ -73,8 +72,7 @@ class Currency
         string $fromCurrencyCode,
         string $toCurrencyCode,
         Math $mathService
-    ): string
-    {
+    ): string {
         if ($fromCurrencyCode !== $toCurrencyCode) {
             $fromCurrencyRate = $this->getCurrencyRate($fromCurrencyCode);
             $toCurrencyRate = $this->getCurrencyRate($toCurrencyCode);
@@ -83,7 +81,7 @@ class Currency
             $relativeRate = self::BASE_CURRENCY_RATE;
         }
 
-        return $mathService->mul($amount, (string)$relativeRate);
+        return $mathService->mul($amount, (string) $relativeRate);
     }
 
     /**
@@ -103,11 +101,10 @@ class Currency
 
         if ($isCurrenciesEmpty || !$this->isActualRate($currency)) {
             if ($forcedCurrentRate) {
-                throw new CommissionTaskException(
-                    sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode)
-                );
+                throw new CommissionTaskException(sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode));
             } else {
                 $this->updateCurrenciesRates();
+
                 return $this->getCurrencyRate($currencyCode, true);
             }
         }
@@ -119,6 +116,7 @@ class Currency
      * Update currencies rates.
      *
      * @return void
+     *
      * @throws CurrenciesDataReaderException|CurrenciesDataValidatorException|CurrenciesUpdaterException
      */
     private function updateCurrenciesRates()

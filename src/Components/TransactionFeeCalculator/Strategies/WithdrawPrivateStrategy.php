@@ -16,10 +16,10 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
 {
     use CommonCalculateOperations;
 
-    const FEE_RATE                  = '0.003';
-    const NONTAXABLE_AMOUNT         = '1000.00';
-    const NONTAXABLE_CURRENCY_CODE  = 'EUR';
-    const FREE_OPERATIONS_NUMBER    = 3;
+    const FEE_RATE = '0.003';
+    const NONTAXABLE_AMOUNT = '1000.00';
+    const NONTAXABLE_CURRENCY_CODE = 'EUR';
+    const FREE_OPERATIONS_NUMBER = 3;
 
     /**
      * @var TransactionsRepository
@@ -38,24 +38,19 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
 
     /**
      * Create a new transaction fee calculator strategy instance for withdraw transactions of private user.
-     *
-     * @param TransactionsRepository $transactionsRepository
-     * @param Date $dateService
-     * @param Currency $currencyService
      */
     public function __construct(
         TransactionsRepository $transactionsRepository,
         Date $dateService,
         Currency $currencyService
-    )
-    {
+    ) {
         $this->transactionsRepository = $transactionsRepository;
         $this->dateService = $dateService;
         $this->currencyService = $currencyService;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {
@@ -86,14 +81,13 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         $transactionType = $transaction::TYPE_WITHDRAW;
         $transactionUserType = $transaction::USER_TYPE_PRIVATE;
 
-        $influentialTransactionsFilterMethod = function (Transaction $checkedTransaction)
-            use ($transactionUserId, $transactionDate, $transactionDateStartOfWeek, $transactionType, $transactionUserType) {
-                return $checkedTransaction->getUserId() === $transactionUserId
+        $influentialTransactionsFilterMethod = function (Transaction $checkedTransaction) use ($transactionUserId, $transactionDate, $transactionDateStartOfWeek, $transactionType, $transactionUserType) {
+            return $checkedTransaction->getUserId() === $transactionUserId
                     && $checkedTransaction->getDate() >= $transactionDateStartOfWeek
                     && $checkedTransaction->getDate() < $transactionDate
                     && $checkedTransaction->getType() === $transactionType
                     && $checkedTransaction->getUserType() === $transactionUserType;
-            };
+        };
 
         return $this->transactionsRepository->filter($influentialTransactionsFilterMethod);
     }
@@ -101,17 +95,13 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     /**
      * Get taxable amount of given transaction.
      *
-     * @param Transaction $transaction
      * @param Transaction[] $influentialTransactions
-     * @param Math $transactionMathService
-     * @return string
      */
     private function getTaxableAmount(
         Transaction $transaction,
         array $influentialTransactions,
         Math $transactionMathService
-    ): string
-    {
+    ): string {
         $transactionAmount = $transaction->getAmount();
 
         // If more than 3 transactions charge commission for the full amount
@@ -151,14 +141,11 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      * Calculate lost non-taxable amount.
      *
      * @param Transaction[] $influentialTransactions
-     * @param Math $nontaxableAmountMathService
-     * @return string
      */
     private function calculateLostNontaxableAmount(
         array $influentialTransactions,
         Math $nontaxableAmountMathService
-    ): string
-    {
+    ): string {
         $lostNontaxableAmount = self::NONTAXABLE_AMOUNT;
 
         // Subtracts the amount of previous transactions for the week from the non-taxable amount
@@ -187,8 +174,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         string $transactionCurrencyCode,
         Math $transactionMathService,
         Math $nontaxableAmountMathService
-    ): string
-    {
+    ): string {
         // Convert the transaction amount to the currency of the non-taxable limit
         $transactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
             $transactionAmount,

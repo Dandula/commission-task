@@ -16,7 +16,7 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
     const FEE_RATE = '0.0003';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {

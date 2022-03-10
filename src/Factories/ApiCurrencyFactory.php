@@ -24,7 +24,7 @@ class ApiCurrencyFactory implements CurrencyFactoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function makeCurrency($currencyData): Currency
     {

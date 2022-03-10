@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionFeeCalculator;
 
-use CommissionTask\Entities\Transaction;
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator as TransactionFeeCalculatorContract;
+use CommissionTask\Entities\Transaction;
 use CommissionTask\Factories\TransactionFeeCalculatorStrategyFactory;
 
 class TransactionFeeCalculator implements TransactionFeeCalculatorContract
@@ -24,7 +24,7 @@ class TransactionFeeCalculator implements TransactionFeeCalculatorContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace CommissionTask\Factories;
 
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\DepositStrategy;
-use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
-use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
-use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\TransactionFeeCalculateStrategy;
+use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawPrivateStrategy;
 use CommissionTask\Entities\Transaction;
+use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
+use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
 use CommissionTask\Repositories\TransactionsRepository;
 use CommissionTask\Services\Currency;
 use CommissionTask\Services\Date;
@@ -39,15 +39,14 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
         TransactionsRepository $transactionsRepository,
         Date $dateService,
         Currency $currencyService
-    )
-    {
+    ) {
         $this->transactionsRepository = $transactionsRepository;
         $this->dateService = $dateService;
         $this->currencyService = $currencyService;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function getTransactionFeeCalculatorStrategy(Transaction $transaction): TransactionFeeCalculateStrategy
     {
@@ -67,16 +66,13 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
                     case Transaction::USER_TYPE_BUSINESS:
                         return new WithdrawBusinessStrategy();
                     default:
-                        throw new TransactionFeeCalculatorStrategyFactoryException(
-                            TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_USER_TYPE_MESSAGE
-                        );
+                        throw new TransactionFeeCalculatorStrategyFactoryException(TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_USER_TYPE_MESSAGE);
                 }
+                // no break
             case Transaction::TYPE_DEPOSIT:
                 return new DepositStrategy();
             default:
-                throw new TransactionFeeCalculatorStrategyFactoryException(
-                    TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_TRANSACTION_TYPE_MESSAGE
-                );
+                throw new TransactionFeeCalculatorStrategyFactoryException(TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_TRANSACTION_TYPE_MESSAGE);
         }
     }
 }

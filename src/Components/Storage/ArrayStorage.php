@@ -15,7 +15,7 @@ class ArrayStorage implements StorageContract
     private $array = [];
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function findAll(string $part)
     {
@@ -23,21 +23,19 @@ class ArrayStorage implements StorageContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function findById(string $part, $id)
     {
         if (!isset($this->array[$part][$id])) {
-            throw new OutOfBoundsStorageException(
-                sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string)$id, $part)
-            );
+            throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
         }
 
         return $this->array[$part][$id];
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function filter(string $part, callable $filterMethod)
     {
@@ -45,7 +43,7 @@ class ArrayStorage implements StorageContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function create(string $part, $data)
     {
@@ -53,21 +51,19 @@ class ArrayStorage implements StorageContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function update(string $part, $id, $data)
     {
         if (!isset($this->array[$part][$id])) {
-            throw new OutOfBoundsStorageException(
-                sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string)$id, $part)
-            );
+            throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
         }
 
         return $this->array[$part][$id] = $data;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete(string $part, $id)
     {

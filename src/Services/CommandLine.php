@@ -21,9 +21,7 @@ class CommandLine
         $commandLineParameters = $_SERVER['argv'];
 
         if (!isset($commandLineParameters[$number])) {
-            throw new CommissionTaskException(
-                sprintf(CommissionTaskException::COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE, $number)
-            );
+            throw new CommissionTaskException(sprintf(CommissionTaskException::COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE, $number));
         }
 
         return $commandLineParameters[$number];
@@ -33,14 +31,13 @@ class CommandLine
      * Check if the application is running from the command line..
      *
      * @return void
+     *
      * @throws CommissionTaskKernelException
      */
     private function checkIsCommandLineApplication()
     {
         if (!isset($_SERVER['argv']) || !isset($_SERVER['argc'])) {
-            throw new CommissionTaskKernelException(
-                CommissionTaskKernelException::SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE
-            );
+            throw new CommissionTaskKernelException(CommissionTaskKernelException::SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE);
         }
     }
 }

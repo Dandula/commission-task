@@ -16,7 +16,7 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
     const FEE_RATE = '0.005';
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {

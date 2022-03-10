@@ -7,7 +7,7 @@ use CommissionTask\Kernel\Application;
 use CommissionTask\Kernel\Container;
 
 // Register the Auto Loader
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 try {
     $container = new Container();
@@ -23,7 +23,7 @@ try {
 
     $exitCode = 0;
 } catch (CommissionTaskThrowable $exception) {
-    echo $exception->getMessage() . PHP_EOL;
+    echo $exception->getMessage().PHP_EOL;
 
     $exitCode = $exception->getCode();
 } finally {

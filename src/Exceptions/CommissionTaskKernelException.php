@@ -15,9 +15,6 @@ class CommissionTaskKernelException extends Exception implements CommissionTaskT
 
     /**
      * Create a system application exception.
-     *
-     * @param string $message
-     * @param int $code
      */
     public function __construct(string $message = self::DEFAULT_MESSAGE, int $code = self::EXCEPTION_CODE_KERNEL)
     {

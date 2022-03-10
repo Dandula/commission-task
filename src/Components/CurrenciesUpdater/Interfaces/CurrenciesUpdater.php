@@ -16,7 +16,9 @@ interface CurrenciesUpdater
      * Update currencies to currencies repository.
      *
      * @param mixed $currenciesData
+     *
      * @return void
+     *
      * @throws CurrenciesUpdaterException
      */
     public function updateCurrencies($currenciesData);

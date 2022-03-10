@@ -16,6 +16,7 @@ interface CurrenciesDataValidator
      * Read transactions data.
      *
      * @return void
+     *
      * @throws CurrenciesDataValidatorException
      */
     public function validateCurrenciesData(array $currenciesData);

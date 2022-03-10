@@ -42,6 +42,7 @@ class Application
      * Run the application.
      *
      * @return void
+     *
      * @throws CommissionTaskThrowable
      */
     public function run()
@@ -75,6 +76,7 @@ class Application
      * Validate raw data of transactions.
      *
      * @return void
+     *
      * @throws TransactionDataValidator
      */
     private function validateRawTransactionsData(array $rawTransactionsData)
@@ -126,6 +128,7 @@ class Application
      * Output results of execution.
      *
      * @param mixed $outputData
+     *
      * @return void
      */
     private function output($outputData)
@@ -138,7 +141,6 @@ class Application
     /**
      * Set the base path for the application.
      *
-     * @param string $basePath
      * @return $this
      */
     private function setBasePath(string $basePath): Application

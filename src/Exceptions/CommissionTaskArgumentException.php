@@ -13,9 +13,6 @@ class CommissionTaskArgumentException extends InvalidArgumentException implement
 
     /**
      * Create an invalid argument exception.
-     *
-     * @param string $message
-     * @param int $code
      */
     public function __construct(string $message = self::DEFAULT_MESSAGE, int $code = self::EXCEPTION_CODE_ARGUMENT)
     {

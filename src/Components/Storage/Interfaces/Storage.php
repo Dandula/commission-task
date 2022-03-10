@@ -13,6 +13,7 @@ interface Storage
      * Find all data items at storage.
      *
      * @return mixed
+     *
      * @throws UndefinedPartStorageException
      */
     public function findAll(string $part);
@@ -21,7 +22,9 @@ interface Storage
      * Find data item at storage by given ID.
      *
      * @param int|string $id
+     *
      * @return mixed
+     *
      * @throws UndefinedPartStorageException|StorageException
      */
     public function findById(string $part, $id);
@@ -30,6 +33,7 @@ interface Storage
      * Get filtered data items applying given filter method.
      *
      * @return mixed
+     *
      * @throws UndefinedPartStorageException
      */
     public function filter(string $part, callable $filterMethod);
@@ -38,6 +42,7 @@ interface Storage
      * Create data item at storage.
      *
      * @param mixed $data
+     *
      * @return void
      */
     public function create(string $part, $data);
@@ -46,8 +51,10 @@ interface Storage
      * Update data item at storage by given ID.
      *
      * @param int|string $id
-     * @param mixed $data
+     * @param mixed      $data
+     *
      * @return void
+     *
      * @throws StorageException
      */
     public function update(string $part, $id, $data);
@@ -56,6 +63,7 @@ interface Storage
      * Delete data item from storage by given ID.
      *
      * @param int|string $id
+     *
      * @return void
      */
     public function delete(string $part, $id);

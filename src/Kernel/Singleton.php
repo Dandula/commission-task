@@ -17,15 +17,20 @@ abstract class Singleton
     /**
      * @return void
      */
-    protected function __construct() { }
+    protected function __construct()
+    {
+    }
 
     /**
      * @return void
      */
-    protected function __clone() { }
+    protected function __clone()
+    {
+    }
 
     /**
      * @return mixed
+     *
      * @throws Exception
      */
     public function __wakeup()

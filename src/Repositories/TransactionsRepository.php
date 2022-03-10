@@ -17,13 +17,16 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     private $storage;
 
+    /**
+     * Create transactions repository instance.
+     */
     public function __construct(Storage $storage)
     {
         $this->storage = $storage;
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function all(): array
     {
@@ -31,7 +34,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function read(int $id): Transaction
     {
@@ -39,7 +42,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function filter(callable $filterMethod): array
     {
@@ -47,7 +50,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function create(Transaction $transaction)
     {
@@ -55,7 +58,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function update(int $id, Transaction $transaction)
     {
@@ -63,7 +66,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     public function delete(int $id)
     {
