@@ -10,7 +10,7 @@ use CommissionTask\Repositories\Interfaces\TransactionsRepository as Transaction
 
 class TransactionsRepository implements TransactionsRepositoryContract
 {
-    const TRANSACTIONS_PART = 'transactions';
+    const REPOSITORY_PART = 'transactions';
 
     /**
      * @var Storage
@@ -30,7 +30,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function all(): array
     {
-        return $this->storage->findAll(self::TRANSACTIONS_PART);
+        return $this->storage->findAll(self::REPOSITORY_PART);
     }
 
     /**
@@ -38,7 +38,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function read(int $id): Transaction
     {
-        return $this->storage->findById(self::TRANSACTIONS_PART, $id);
+        return $this->storage->findById(self::REPOSITORY_PART, $id);
     }
 
     /**
@@ -46,7 +46,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function filter(callable $filterMethod): array
     {
-        return $this->storage->filter(self::TRANSACTIONS_PART, $filterMethod);
+        return $this->storage->filter(self::REPOSITORY_PART, $filterMethod);
     }
 
     /**
@@ -54,7 +54,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function create(Transaction $transaction)
     {
-        $this->storage->create(self::TRANSACTIONS_PART, $transaction);
+        $this->storage->create(self::REPOSITORY_PART, $transaction);
     }
 
     /**
@@ -62,7 +62,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function update(int $id, Transaction $transaction)
     {
-        $this->storage->update(self::TRANSACTIONS_PART, $id, $transaction);
+        $this->storage->update(self::REPOSITORY_PART, $id, $transaction);
     }
 
     /**
@@ -70,6 +70,14 @@ class TransactionsRepository implements TransactionsRepositoryContract
      */
     public function delete(int $id)
     {
-        $this->storage->delete(self::TRANSACTIONS_PART, $id);
+        $this->storage->delete(self::REPOSITORY_PART, $id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function deleteAll()
+    {
+        $this->storage->deleteAll(self::REPOSITORY_PART);
     }
 }

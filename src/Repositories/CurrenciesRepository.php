@@ -10,7 +10,7 @@ use CommissionTask\Repositories\Interfaces\CurrenciesRepository as CurrenciesRep
 
 class CurrenciesRepository implements CurrenciesRepositoryContract
 {
-    const CURRENCIES_PART = 'currencies';
+    const REPOSITORY_PART = 'currencies';
 
     /**
      * @var Storage
@@ -30,7 +30,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function all(): array
     {
-        return $this->storage->findAll(self::CURRENCIES_PART);
+        return $this->storage->findAll(self::REPOSITORY_PART);
     }
 
     /**
@@ -38,7 +38,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function read(int $id): Currency
     {
-        return $this->storage->findById(self::CURRENCIES_PART, $id);
+        return $this->storage->findById(self::REPOSITORY_PART, $id);
     }
 
     /**
@@ -46,7 +46,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function filter(callable $filterMethod): array
     {
-        return $this->storage->filter(self::CURRENCIES_PART, $filterMethod);
+        return $this->storage->filter(self::REPOSITORY_PART, $filterMethod);
     }
 
     /**
@@ -54,7 +54,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function create(Currency $currency)
     {
-        $this->storage->create(self::CURRENCIES_PART, $currency);
+        $this->storage->create(self::REPOSITORY_PART, $currency);
     }
 
     /**
@@ -62,7 +62,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function update(int $id, Currency $currency)
     {
-        $this->storage->update(self::CURRENCIES_PART, $id, $currency);
+        $this->storage->update(self::REPOSITORY_PART, $id, $currency);
     }
 
     /**
@@ -70,6 +70,14 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
      */
     public function delete(int $id)
     {
-        $this->storage->delete(self::CURRENCIES_PART, $id);
+        $this->storage->delete(self::REPOSITORY_PART, $id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function deleteAll()
+    {
+        $this->storage->deleteAll(self::REPOSITORY_PART);
     }
 }

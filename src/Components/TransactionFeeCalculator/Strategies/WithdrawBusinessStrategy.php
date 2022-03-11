@@ -7,7 +7,7 @@ namespace CommissionTask\Components\TransactionFeeCalculator\Strategies;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\TransactionFeeCalculateStrategy as TransactionFeeCalculateStrategyContract;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits\CommonCalculateOperations;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Services\Math;
+use CommissionTask\Services\Math as MathService;
 
 class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContract
 {
@@ -21,7 +21,7 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $mathService = new Math($this->determineScaleOfAmount($amount) + self::ROUNDED_OFF_DIGITS_NUMBER);
+        $mathService = new MathService($this->determineScaleOfAmount($amount) + self::ROUNDED_OFF_DIGITS_NUMBER);
 
         $feeAmount = $mathService->mul($amount, self::FEE_RATE);
 

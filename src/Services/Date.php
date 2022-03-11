@@ -26,7 +26,7 @@ class Date
         $dateTime = DateTime::createFromFormat($format, $dateString);
 
         if ($dateTime === false) {
-            throw new CommissionTaskArgumentException('Invalid date format given');
+            throw new CommissionTaskArgumentException(CommissionTaskArgumentException::INVALID_DATE_FORMAT_MESSAGE);
         }
 
         return $dateTime;
@@ -74,12 +74,12 @@ class Date
     }
 
     /**
-     * Subtracts DateInterval given by datetime string.
+     * Subtracts date interval given by relative datetime string.
      */
-    public function subInterval(DateTime $date, string $datetime): DateTime
+    public function subInterval(DateTime $date, string $relativeDatetime): DateTime
     {
         $currentDate = clone $date;
-        $subInterval = DateInterval::createFromDateString($datetime);
+        $subInterval = DateInterval::createFromDateString($relativeDatetime);
 
         return $currentDate->sub($subInterval);
     }

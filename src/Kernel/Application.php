@@ -12,8 +12,8 @@ use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDat
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
-use CommissionTask\Services\CommandLine;
-use CommissionTask\Services\Filesystem;
+use CommissionTask\Services\CommandLine as CommandLineService;
+use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Application
 {
@@ -63,7 +63,7 @@ class Application
      */
     private function readRawTransactionsData(): array
     {
-        $commandLineService = $this->container->get(CommandLine::class);
+        $commandLineService = $this->container->get(CommandLineService::class);
         $filePath = $commandLineService->getCommandLineParameterByNumber(self::FILEPATH_PARAMETER_NUMBER);
 
         $transactionsDataReader = $this->container->get(TransactionsDataReader::class);
@@ -147,7 +147,7 @@ class Application
     {
         $this->basePath = rtrim($basePath, '\/');
 
-        if ($fileSystemService = $this->container->get(Filesystem::class)) {
+        if ($fileSystemService = $this->container->get(FilesystemService::class)) {
             $fileSystemService->setBasePath($this->basePath);
         }
 

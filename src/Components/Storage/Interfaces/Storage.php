@@ -67,4 +67,11 @@ interface Storage
      * @return void
      */
     public function delete(string $part, $id);
+
+    /**
+     * Delete all data items from storage.
+     *
+     * @return void
+     */
+    public function deleteAll(string $part);
 }

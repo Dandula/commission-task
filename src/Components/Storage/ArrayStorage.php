@@ -71,6 +71,14 @@ class ArrayStorage implements StorageContract
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function deleteAll(string $part)
+    {
+        $this->array[$part] = [];
+    }
+
+    /**
      * Safe access to part of repository.
      */
     private function safeAccessToPart(string $part): array

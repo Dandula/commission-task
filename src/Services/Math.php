@@ -79,17 +79,26 @@ class Math
     }
 
     /**
-     * Find highest number.
+     * Find the highest number.
+     *
+     * @param string ...$otherOperands
      */
-    public function max(string $leftOperand, string $rightOperand): string
+    public function max(string $operand, ...$otherOperands): string
     {
-        switch ($this->comp($leftOperand, $rightOperand)) {
-            case self::COMP_RESULT_GT:
-            case self::COMP_RESULT_EQ:
-            default:
-                return $leftOperand;
-            case self::COMP_RESULT_LT:
-                return $rightOperand;
+        $maxOperand = $operand;
+
+        foreach ($otherOperands as $anotherOperand) {
+            switch ($this->comp($maxOperand, $anotherOperand)) {
+                case self::COMP_RESULT_GT:
+                case self::COMP_RESULT_EQ:
+                default:
+                    break;
+                case self::COMP_RESULT_LT:
+                    $maxOperand = $anotherOperand;
+                    break;
+            }
         }
+
+        return $maxOperand;
     }
 }

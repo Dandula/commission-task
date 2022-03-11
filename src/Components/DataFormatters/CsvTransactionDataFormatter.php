@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\DataFormatters;
 
-class CsvTransactionDataFormatter
+final class CsvTransactionDataFormatter
 {
     const COLUMNS_NUMBER = 6;
 

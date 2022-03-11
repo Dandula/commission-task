@@ -42,9 +42,16 @@ interface TransactionsRepository
     public function update(int $id, Transaction $transaction);
 
     /**
-     * Update transaction by given ID.
+     * Delete transaction by given ID.
      *
      * @return void
      */
     public function delete(int $id);
+
+    /**
+     * Delete all transactions.
+     *
+     * @return void
+     */
+    public function deleteAll();
 }

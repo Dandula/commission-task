@@ -9,7 +9,7 @@ use CommissionTask\Components\CurrenciesDataValidators\Exceptions\CurrenciesData
 use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorsContract;
 use CommissionTask\Components\CurrenciesDataValidators\Traits\FieldFormat;
 use CommissionTask\Components\DataFormatters\ApiCurrenciesDataFormatter;
-use CommissionTask\Services\Date;
+use CommissionTask\Services\Date as DateService;
 
 class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
 {
@@ -21,7 +21,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     private $apiCurrenciesDataFormatter;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
@@ -33,7 +33,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     /**
      * Create CSV transaction data validator instance.
      */
-    public function __construct(ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter, Date $dateService)
+    public function __construct(ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter, DateService $dateService)
     {
         $this->apiCurrenciesDataFormatter = $apiCurrenciesDataFormatter;
         $this->dateService = $dateService;

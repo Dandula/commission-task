@@ -42,9 +42,16 @@ interface CurrenciesRepository
     public function update(int $id, Currency $currency);
 
     /**
-     * Update currency by given ID.
+     * Delete currency by given ID.
      *
      * @return void
      */
     public function delete(int $id);
+
+    /**
+     * Delete all currencies.
+     *
+     * @return void
+     */
+    public function deleteAll();
 }

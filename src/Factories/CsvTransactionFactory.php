@@ -7,7 +7,7 @@ namespace CommissionTask\Factories;
 use CommissionTask\Components\DataFormatters\CsvTransactionDataFormatter;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Factories\Interfaces\TransactionFactory as TransactionFactoryContract;
-use CommissionTask\Services\Date;
+use CommissionTask\Services\Date as DateService;
 
 class CsvTransactionFactory implements TransactionFactoryContract
 {
@@ -17,14 +17,14 @@ class CsvTransactionFactory implements TransactionFactoryContract
     private $csvTransactionDataFormatter;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
     /**
      * Create a new CSV transaction factory instance.
      */
-    public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, Date $dateService)
+    public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, DateService $dateService)
     {
         $this->csvTransactionDataFormatter = $csvTransactionDataFormatter;
         $this->dateService = $dateService;

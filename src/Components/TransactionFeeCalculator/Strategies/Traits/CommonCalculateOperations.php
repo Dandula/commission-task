@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits;
 
 use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorException;
-use CommissionTask\Services\Math;
+use CommissionTask\Services\Math as MathService;
 
 trait CommonCalculateOperations
 {
@@ -37,7 +37,7 @@ trait CommonCalculateOperations
         $lastDigits = substr($amount, -self::ROUNDED_OFF_DIGITS_NUMBER);
         $amount = substr($amount, 0, -self::ROUNDED_OFF_DIGITS_NUMBER);
         $previousLastDigitCharacter = substr($amount, -1);
-        $ceilMathService = new Math(max($ceilScale, Math::MIN_SCALE));
+        $ceilMathService = new MathService(max($ceilScale, MathService::MIN_SCALE));
 
         if ($previousLastDigitCharacter === $ceilMathService::DECIMAL_SEPARATOR) {
             $amount = substr($amount, 0, -1);

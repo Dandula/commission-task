@@ -9,7 +9,7 @@ use CommissionTask\Components\TransactionDataValidators\Exceptions\TransactionDa
 use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
 use CommissionTask\Components\TransactionDataValidators\Traits\FieldFormat;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Services\Date;
+use CommissionTask\Services\Date as DateService;
 
 class CsvTransactionDataValidator implements TransactionDataValidatorContract
 {
@@ -21,7 +21,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     private $csvTransactionDataFormatter;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
@@ -33,7 +33,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     /**
      * Create CSV transaction data validator instance.
      */
-    public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, Date $dateService)
+    public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, DateService $dateService)
     {
         $this->csvTransactionDataFormatter = $csvTransactionDataFormatter;
         $this->dateService = $dateService;

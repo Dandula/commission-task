@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\DataFormatters;
 
-class ApiCurrenciesDataFormatter
+final class ApiCurrenciesDataFormatter
 {
     const BASE_CURRENCY_CODE_FIELD = 'base';
     const DATE_FIELD = 'date';

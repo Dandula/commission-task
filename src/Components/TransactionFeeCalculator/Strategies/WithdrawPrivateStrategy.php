@@ -8,9 +8,9 @@ use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\Tra
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits\CommonCalculateOperations;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
-use CommissionTask\Services\Currency;
-use CommissionTask\Services\Date;
-use CommissionTask\Services\Math;
+use CommissionTask\Services\Currency as CurrencyService;
+use CommissionTask\Services\Date as DateService;
+use CommissionTask\Services\Math as MathService;
 
 class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
 {
@@ -19,7 +19,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     const FEE_RATE = '0.003';
     const NONTAXABLE_AMOUNT = '1000.00';
     const NONTAXABLE_CURRENCY_CODE = 'EUR';
-    const FREE_OPERATIONS_NUMBER = 3;
+    const PREFERENTIAL_OPERATIONS_NUMBER = 3;
 
     /**
      * @var TransactionsRepository
@@ -27,12 +27,12 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     private $transactionsRepository;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
     /**
-     * @var Currency
+     * @var CurrencyService
      */
     private $currencyService;
 
@@ -41,8 +41,8 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     public function __construct(
         TransactionsRepository $transactionsRepository,
-        Date $dateService,
-        Currency $currencyService
+        DateService $dateService,
+        CurrencyService $currencyService
     ) {
         $this->transactionsRepository = $transactionsRepository;
         $this->dateService = $dateService;
@@ -55,7 +55,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $mathService = new Math(
+        $mathService = new MathService(
             $this->determineScaleOfAmount($amount) + self::ROUNDED_OFF_DIGITS_NUMBER
         );
 
@@ -100,16 +100,16 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     private function getTaxableAmount(
         Transaction $transaction,
         array $influentialTransactions,
-        Math $transactionMathService
+        MathService $transactionMathService
     ): string {
         $transactionAmount = $transaction->getAmount();
 
         // If more than 3 transactions charge commission for the full amount
-        if (count($influentialTransactions) >= self::FREE_OPERATIONS_NUMBER) {
+        if (count($influentialTransactions) >= self::PREFERENTIAL_OPERATIONS_NUMBER) {
             return $transactionAmount;
         }
 
-        $nontaxableAmountMathService = new Math(
+        $nontaxableAmountMathService = new MathService(
             $this->determineScaleOfAmount(self::NONTAXABLE_AMOUNT) + self::ROUNDED_OFF_DIGITS_NUMBER
         );
 
@@ -120,8 +120,10 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         );
 
         // If the non-taxable limit is exhausted, charge the commission for the full amount
-        if ($nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
-            === $nontaxableAmountMathService::COMP_RESULT_EQ) {
+        if (
+            $nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
+            === $nontaxableAmountMathService::COMP_RESULT_EQ
+        ) {
             return $transactionAmount;
         }
 
@@ -144,7 +146,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function calculateLostNontaxableAmount(
         array $influentialTransactions,
-        Math $nontaxableAmountMathService
+        MathService $nontaxableAmountMathService
     ): string {
         $lostNontaxableAmount = self::NONTAXABLE_AMOUNT;
 
@@ -172,8 +174,8 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         string $transactionAmount,
         string $lostNontaxableAmount,
         string $transactionCurrencyCode,
-        Math $transactionMathService,
-        Math $nontaxableAmountMathService
+        MathService $transactionMathService,
+        MathService $nontaxableAmountMathService
     ): string {
         // Convert the transaction amount to the currency of the non-taxable limit
         $transactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(

@@ -13,6 +13,8 @@ use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
 use CommissionTask\Entities\Currency as CurrencyEntity;
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
+use CommissionTask\Services\Date as DateService;
+use CommissionTask\Services\Math as MathService;
 
 class Currency
 {
@@ -20,7 +22,7 @@ class Currency
     const BASE_CURRENCY_CODE = 'EUR';
     const BASE_CURRENCY_RATE = 1;
 
-    const ACTUAL_RATE_PERIOD = '2 days';
+    const ACTUAL_RATE_PERIOD = '1 day';
 
     /**
      * @var CurrenciesRepository
@@ -43,7 +45,7 @@ class Currency
     private $currenciesUpdater;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
@@ -55,7 +57,7 @@ class Currency
         CurrenciesDataReader $currenciesDataReader,
         CurrenciesDataValidator $currenciesDataValidator,
         CurrenciesUpdater $currenciesUpdater,
-        Date $dateService
+        DateService $dateService
     ) {
         $this->currenciesRepository = $currenciesRepository;
         $this->currenciesDataReader = $currenciesDataReader;
@@ -71,7 +73,7 @@ class Currency
         string $amount,
         string $fromCurrencyCode,
         string $toCurrencyCode,
-        Math $mathService
+        MathService $mathService
     ): string {
         if ($fromCurrencyCode !== $toCurrencyCode) {
             $fromCurrencyRate = $this->getCurrencyRate($fromCurrencyCode);
@@ -136,6 +138,6 @@ class Currency
             self::ACTUAL_RATE_PERIOD
         );
 
-        return $currency->getRateUpdatedAt() >= $expirationDate;
+        return $currency->getRateUpdatedAt() > $expirationDate;
     }
 }

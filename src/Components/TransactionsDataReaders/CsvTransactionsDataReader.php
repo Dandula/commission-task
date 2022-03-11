@@ -6,12 +6,12 @@ namespace CommissionTask\Components\TransactionsDataReaders;
 
 use CommissionTask\Components\TransactionsDataReaders\Exceptions\CsvTransactionsDataReaderException;
 use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
-use CommissionTask\Services\Filesystem;
+use CommissionTask\Services\Filesystem as FilesystemService;
 
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
 {
     /**
-     * @var Filesystem
+     * @var FilesystemService
      */
     private $filesystemService;
 
@@ -23,7 +23,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * Create a new CSV transactions data reader instance.
      */
-    public function __construct(Filesystem $filesystem)
+    public function __construct(FilesystemService $filesystem)
     {
         $this->filesystemService = $filesystem;
     }

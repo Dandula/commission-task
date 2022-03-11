@@ -11,6 +11,8 @@ class CommissionTaskArgumentException extends InvalidArgumentException implement
 {
     const DEFAULT_MESSAGE = 'Invalid argument given';
 
+    const INVALID_DATE_FORMAT_MESSAGE = 'Invalid date format given';
+
     /**
      * Create an invalid argument exception.
      */

@@ -12,8 +12,8 @@ use CommissionTask\Entities\Transaction;
 use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
 use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
 use CommissionTask\Repositories\TransactionsRepository;
-use CommissionTask\Services\Currency;
-use CommissionTask\Services\Date;
+use CommissionTask\Services\Currency as CurrencyService;
+use CommissionTask\Services\Date as DateService;
 
 class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculatorStrategyFactoryContract
 {
@@ -23,12 +23,12 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
     private $transactionsRepository;
 
     /**
-     * @var Date
+     * @var DateService
      */
     private $dateService;
 
     /**
-     * @var Currency
+     * @var CurrencyService
      */
     private $currencyService;
 
@@ -37,8 +37,8 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
      */
     public function __construct(
         TransactionsRepository $transactionsRepository,
-        Date $dateService,
-        Currency $currencyService
+        DateService $dateService,
+        CurrencyService $currencyService
     ) {
         $this->transactionsRepository = $transactionsRepository;
         $this->dateService = $dateService;
