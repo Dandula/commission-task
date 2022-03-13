@@ -9,7 +9,10 @@ use CommissionTask\Services\Date as DateService;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
-class DateTest extends TestCase
+/**
+ * @coversDefaultClass DateService
+ */
+final class DateTest extends TestCase
 {
     /**
      * @var DateService

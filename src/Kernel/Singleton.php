@@ -35,7 +35,7 @@ abstract class Singleton
      */
     public function __wakeup()
     {
-        throw new CommissionTaskKernelException('Cannot unserialize singleton');
+        throw new CommissionTaskKernelException(CommissionTaskKernelException::CANNOT_UNSERIALIZE_SINGLETON);
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Factories;
 
-use CommissionTask\Components\DataFormatters\CsvTransactionDataFormatter;
+use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Factories\Interfaces\TransactionFactory as TransactionFactoryContract;
 use CommissionTask\Services\Date as DateService;

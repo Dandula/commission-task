@@ -7,7 +7,10 @@ namespace CommissionTask\Tests\Services;
 use CommissionTask\Services\Math as MathService;
 use PHPUnit\Framework\TestCase;
 
-class MathTest extends TestCase
+/**
+ * @coversDefaultClass MathService
+ */
+final class MathTest extends TestCase
 {
     /**
      * @var MathService

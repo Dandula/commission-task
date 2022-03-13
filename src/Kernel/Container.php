@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace CommissionTask\Kernel;
 
-use CommissionTask\Components\CurrenciesDataReaders\ApiCurrenciesDataReader;
-use CommissionTask\Components\CurrenciesDataReaders\Interfaces\CurrenciesDataReader as CurrenciesDataReaderContract;
-use CommissionTask\Components\CurrenciesDataValidators\ApiCurrenciesDataValidator;
-use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorContract;
+use CommissionTask\Components\CurrenciesDataReader\ApiCurrenciesDataReader;
+use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader as CurrenciesDataReaderContract;
+use CommissionTask\Components\CurrenciesDataValidator\ApiCurrenciesDataValidator;
+use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorContract;
 use CommissionTask\Components\CurrenciesUpdater\ApiCurrenciesUpdater;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
-use CommissionTask\Components\DataFormatters\ApiCurrenciesDataFormatter;
-use CommissionTask\Components\DataFormatters\CsvTransactionDataFormatter;
-use CommissionTask\Components\DataFormatters\CurrenciesUpdaterDataFormatter;
-use CommissionTask\Components\Outputer\ConsoleOutputer;
-use CommissionTask\Components\Outputer\Interfaces\Outputer as OutputerContract;
+use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
+use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
+use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
+use CommissionTask\Components\Outputter\ConsoleOutputter;
+use CommissionTask\Components\Outputter\Interfaces\Outputter as OutputerContract;
 use CommissionTask\Components\Storage\ArrayStorage;
 use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
-use CommissionTask\Components\TransactionDataValidators\CsvTransactionDataValidator;
-use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
+use CommissionTask\Components\TransactionDataValidator\CsvTransactionDataValidator;
+use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator as TransactionFeeCalculatorContract;
 use CommissionTask\Components\TransactionFeeCalculator\TransactionFeeCalculator;
 use CommissionTask\Components\TransactionSaver\CsvTransactionSaver;
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver as TransactionSaverContract;
-use CommissionTask\Components\TransactionsDataReaders\CsvTransactionsDataReader;
-use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
+use CommissionTask\Components\TransactionsDataReader\CsvTransactionsDataReader;
+use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
 use CommissionTask\Factories\ApiCurrencyFactory;
 use CommissionTask\Factories\CsvTransactionFactory;
@@ -119,7 +119,7 @@ class Container
         $this->put(TransactionFeeCalculatorContract::class, new TransactionFeeCalculator(
             $this->get(TransactionFeeCalculatorStrategyFactoryContract::class)
         ));
-        $this->put(OutputerContract::class, new ConsoleOutputer());
+        $this->put(OutputerContract::class, new ConsoleOutputter());
     }
 
     /**

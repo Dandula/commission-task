@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CommissionTask\Kernel;
 
-use CommissionTask\Components\Outputer\Interfaces\Outputer;
-use CommissionTask\Components\TransactionDataValidators\Interfaces\TransactionDataValidator;
+use CommissionTask\Components\Outputter\Interfaces\Outputter;
+use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator;
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator;
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
-use CommissionTask\Components\TransactionsDataReaders\Interfaces\TransactionsDataReader;
+use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
@@ -133,9 +133,9 @@ class Application
      */
     private function output($outputData)
     {
-        $outputer = $this->container->get(Outputer::class);
+        $outputter = $this->container->get(Outputter::class);
 
-        $outputer->output($outputData);
+        $outputter->output($outputData);
     }
 
     /**

@@ -6,8 +6,8 @@ namespace CommissionTask\Components\CurrenciesUpdater;
 
 use CommissionTask\Components\CurrenciesUpdater\Exceptions\ApiCurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
-use CommissionTask\Components\DataFormatters\ApiCurrenciesDataFormatter;
-use CommissionTask\Components\DataFormatters\CurrenciesUpdaterDataFormatter;
+use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
+use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Factories\Interfaces\CurrencyFactory;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;

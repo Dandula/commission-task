@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CommissionTask\Services;
 
-use CommissionTask\Components\CurrenciesDataReaders\Exceptions\Interfaces\CurrenciesDataReaderException;
-use CommissionTask\Components\CurrenciesDataReaders\Interfaces\CurrenciesDataReader;
-use CommissionTask\Components\CurrenciesDataValidators\Exceptions\Interfaces\CurrenciesDataValidatorException;
-use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator;
+use CommissionTask\Components\CurrenciesDataReader\Exceptions\Interfaces\CurrenciesDataReaderException;
+use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader;
+use CommissionTask\Components\CurrenciesDataValidator\Exceptions\Interfaces\CurrenciesDataValidatorException;
+use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator;
 use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\CurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
 use CommissionTask\Entities\Currency as CurrencyEntity;

@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace CommissionTask\Tests\Services;
 
-use CommissionTask\Components\CurrenciesDataReaders\Interfaces\CurrenciesDataReader;
-use CommissionTask\Components\CurrenciesDataValidators\Interfaces\CurrenciesDataValidator;
+use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader;
+use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
 use CommissionTask\Entities\Currency;
-use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
 use CommissionTask\Services\Currency as CurrencyService;
@@ -18,7 +17,10 @@ use DateTime;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-class CurrencyTest extends TestCase
+/**
+ * @coversDefaultClass CurrencyService
+ */
+final class CurrencyTest extends TestCase
 {
     const CURRENCY_CODE_EUR = 'EUR';
     const CURRENCY_CODE_USD = 'USD';
@@ -164,7 +166,7 @@ class CurrencyTest extends TestCase
      *
      * @dataProvider dataProviderForConvertAmountToCurrencyDifferentTesting
      */
-    public function testtestConvertAmountToCurrencyDifferent(
+    public function testConvertAmountToCurrencyDifferent(
         string $amount,
         string $fromCurrencyCode,
         string $toCurrencyCode,
@@ -201,7 +203,7 @@ class CurrencyTest extends TestCase
      *
      * @dataProvider dataProviderForConvertAmountToCurrencySameTesting
      */
-    public function testtestConvertAmountToCurrencySame(
+    public function testConvertAmountToCurrencySame(
         string $amount,
         string $fromCurrencyCode,
         string $toCurrencyCode,
@@ -321,7 +323,7 @@ class CurrencyTest extends TestCase
     }
 
     /**
-     * @return Transaction[]
+     * @return Currency[]
      */
     private function getEmptyCurrencies(): array
     {
@@ -329,7 +331,27 @@ class CurrencyTest extends TestCase
     }
 
     /**
-     * @return Transaction[]
+     * @return Currency[]
+     */
+    private function getFilteredCurrencies(
+        string $currencyCode,
+        float $rate,
+        string $rateUpdatedAtDatetimeString
+    ): array
+    {
+        $rateUpdatedAt = (new DateTime())->modify($rateUpdatedAtDatetimeString);
+
+        $currency = new Currency();
+        $currency->setCurrencyCode($currencyCode);
+        $currency->setIsBase(true);
+        $currency->setRate($rate);
+        $currency->setRateUpdatedAt($rateUpdatedAt);
+
+        return [$currency];
+    }
+
+    /**
+     * @return Currency[]
      */
     private function getFilteredCurrenciesEur(string $rateUpdatedAtDatetimeString): array
     {
@@ -345,7 +367,7 @@ class CurrencyTest extends TestCase
     }
 
     /**
-     * @return Transaction[]
+     * @return Currency[]
      */
     private function getFilteredCurrenciesUsd(string $rateUpdatedAtDatetimeString): array
     {

@@ -10,9 +10,10 @@ use CommissionTask\Services\CommandLine as CommandLineService;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @backupGlobals enabled
+ * @backupGlobals      enabled
+ * @coversDefaultClass CommandLineService
  */
-class CommandLineTest extends TestCase
+final class CommandLineTest extends TestCase
 {
     /**
      * @var CommandLineService

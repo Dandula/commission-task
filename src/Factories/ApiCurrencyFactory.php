@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Factories;
 
-use CommissionTask\Components\DataFormatters\CurrenciesUpdaterDataFormatter;
+use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Factories\Interfaces\CurrencyFactory as CurrencyFactoryContract;
 
