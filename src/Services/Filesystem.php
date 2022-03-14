@@ -42,15 +42,15 @@ class Filesystem extends Singleton
     {
         $resolvedFilePath = $this->resolvePath($filePath);
 
-        $fp = fopen($resolvedFilePath, 'rb');
+        $fileResource = fopen($resolvedFilePath, 'rb');
 
         try {
             $content = [];
-            while (!feof($fp) && ($buffer = fgets($fp)) !== false) {
+            while (!feof($fileResource) && ($buffer = fgets($fileResource)) !== false) {
                 $content[] = rtrim($buffer);
             }
         } finally {
-            fclose($fp);
+            fclose($fileResource);
         }
 
         return $content;
