@@ -60,14 +60,6 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function update(int $id, Transaction $transaction)
-    {
-        $this->storage->update(self::REPOSITORY_PART, $id, $transaction);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function delete(int $id)
     {
         $this->storage->delete(self::REPOSITORY_PART, $id);

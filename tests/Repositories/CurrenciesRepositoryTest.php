@@ -12,7 +12,8 @@ use DateTime;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass CurrenciesRepository
+ * @coversDefaultClass \CommissionTask\Repositories\CurrenciesRepository
+ *
  */
 final class CurrenciesRepositoryTest extends TestCase
 {
@@ -107,7 +108,6 @@ final class CurrenciesRepositoryTest extends TestCase
     }
 
     /**
-     * @param int $id
      * @param CurrenciesRepository $currenciesRepository
      *
      * @return CurrenciesRepository

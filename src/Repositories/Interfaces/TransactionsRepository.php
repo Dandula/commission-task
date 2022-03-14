@@ -35,13 +35,6 @@ interface TransactionsRepository
     public function create(Transaction $transaction);
 
     /**
-     * Update transaction by given ID.
-     *
-     * @return void
-     */
-    public function update(int $id, Transaction $transaction);
-
-    /**
      * Delete transaction by given ID.
      *
      * @return void
