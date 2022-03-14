@@ -14,7 +14,7 @@ use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
 use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Components\Outputter\ConsoleOutputter;
-use CommissionTask\Components\Outputter\Interfaces\Outputter as OutputerContract;
+use CommissionTask\Components\Outputter\Interfaces\Outputter as OutputterContract;
 use CommissionTask\Components\Storage\ArrayStorage;
 use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
 use CommissionTask\Components\TransactionDataValidator\CsvTransactionDataValidator;
@@ -119,7 +119,7 @@ class Container
         $this->put(TransactionFeeCalculatorContract::class, new TransactionFeeCalculator(
             $this->get(TransactionFeeCalculatorStrategyFactoryContract::class)
         ));
-        $this->put(OutputerContract::class, new ConsoleOutputter());
+        $this->put(OutputterContract::class, new ConsoleOutputter());
     }
 
     /**

@@ -44,7 +44,7 @@ class CsvTransactionFactory implements TransactionFactoryContract
         $date = $this->dateService->getStartOfDay($date);
 
         $transaction->setDate($date);
-        $transaction->setUserId(intval($transactionData[$this->csvTransactionDataFormatter::COLUMN_USER_ID_NUMBER]));
+        $transaction->setUserId((int) $transactionData[$this->csvTransactionDataFormatter::COLUMN_USER_ID_NUMBER]);
         $transaction->setUserType($transactionData[$this->csvTransactionDataFormatter::COLUMN_USER_TYPE_NUMBER]);
         $transaction->setType($transactionData[$this->csvTransactionDataFormatter::COLUMN_TYPE_NUMBER]);
         $transaction->setAmount($transactionData[$this->csvTransactionDataFormatter::COLUMN_AMOUNT_NUMBER]);

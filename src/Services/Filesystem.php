@@ -28,9 +28,9 @@ class Filesystem extends Singleton
      */
     public function isFileExists(string $filePath): bool
     {
-        $filePath = $this->resolvePath($filePath);
+        $resolvedFilePath = $this->resolvePath($filePath);
 
-        return (bool) $filePath;
+        return (bool) $resolvedFilePath;
     }
 
     /**
@@ -40,9 +40,9 @@ class Filesystem extends Singleton
      */
     public function readFile(string $filePath): array
     {
-        $filePath = $this->resolvePath($filePath);
+        $resolvedFilePath = $this->resolvePath($filePath);
 
-        $fp = fopen($filePath, 'r');
+        $fp = fopen($resolvedFilePath, 'rb');
 
         try {
             $content = [];

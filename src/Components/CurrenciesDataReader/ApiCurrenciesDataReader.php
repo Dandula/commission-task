@@ -47,11 +47,11 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
             $currenciesData = curl_exec($curl);
         } while ($currenciesData === false && --$remainingRequestsAttemptsCount);
 
+        curl_close($curl);
+
         if ($currenciesData === false) {
             throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::FAILED_RECEIVE_DATA_MESSAGE);
         }
-
-        curl_close($curl);
 
         return $currenciesData;
     }

@@ -89,7 +89,7 @@ class Currency
     /**
      * Get currency rate by given currency code.
      *
-     * @throws CommissionTaskException
+     * @throws CommissionTaskException|CurrenciesDataValidatorException
      */
     public function getCurrencyRate(string $currencyCode, bool $forcedCurrentRate = false): float
     {
@@ -104,11 +104,11 @@ class Currency
         if ($isCurrenciesEmpty || !$this->isActualRate($currency)) {
             if ($forcedCurrentRate) {
                 throw new CommissionTaskException(sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode));
-            } else {
-                $this->updateCurrenciesRates();
-
-                return $this->getCurrencyRate($currencyCode, true);
             }
+
+            $this->updateCurrenciesRates();
+
+            return $this->getCurrencyRate($currencyCode, true);
         }
 
         return $currency->getRate();

@@ -21,11 +21,13 @@ trait CommonCalculateOperations
 
         if ($matchesCount === 1) {
             return strlen($matches[1]);
-        } elseif ($matchesCount === 0) {
-            return self::SCALE_NULL;
-        } else {
-            throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::UNDEFINED_SCALE_MESSAGE);
         }
+
+        if ($matchesCount === 0) {
+            return self::SCALE_NULL;
+        }
+
+        throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::UNDEFINED_SCALE_MESSAGE);
     }
 
     /**
