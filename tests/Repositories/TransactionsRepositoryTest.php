@@ -192,7 +192,6 @@ final class TransactionsRepositoryTest extends TestCase
                 $filterByTransactionType,
                 [
                     0 => $this->getTransaction1(),
-                    3 => $this->getTransaction4(),
                 ]
             ],
             'filter transactions with user with ID=2' => [
@@ -264,7 +263,7 @@ final class TransactionsRepositoryTest extends TestCase
         $transaction->setDate($date);
         $transaction->setUserId(2);
         $transaction->setUserType(Transaction::USER_TYPE_BUSINESS);
-        $transaction->setType(Transaction::TYPE_DEPOSIT);
+        $transaction->setType(Transaction::TYPE_WITHDRAW);
         $transaction->setAmount('3000.00');
         $transaction->setCurrencyCode('EUR');
 
