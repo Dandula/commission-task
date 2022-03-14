@@ -11,6 +11,8 @@ class CommissionTaskException extends RuntimeException implements CommissionTask
 {
     const DEFAULT_MESSAGE = 'Undefined exception of application';
 
+    const UNRESOLVED_CONFIG_NAME = "Unresolved config name '%s'";
+
     const COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE = 'The command line parameter #%d is not set';
 
     const UNDEFINED_CURRENCY_RATE_MESSAGE = "Undetermined currency '%s' rate";

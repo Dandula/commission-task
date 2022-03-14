@@ -1,0 +1,12 @@
+currencies:
+  baseCurrency: 'EUR'
+currenciesApi:
+  maxRequestsAttempts: 3
+feeCalculator:
+  roundedOffDigitsNumber: 1
+  feeRateDeposit: '0.0003'
+  feeRateWithdrawPrivate: '0.003'
+  feeRateWithdrawBusiness: '0.005'
+  nontaxableAmountWithdrawPrivate: '1000.00'
+  nontaxableCurrencyCodeWithdrawPrivate: 'EUR'
+  preferentialOperationsNumberWithdrawPrivate: 3

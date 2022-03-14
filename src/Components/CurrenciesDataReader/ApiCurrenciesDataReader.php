@@ -6,12 +6,10 @@ namespace CommissionTask\Components\CurrenciesDataReader;
 
 use CommissionTask\Components\CurrenciesDataReader\Exceptions\ApiCurrenciesDataReaderException;
 use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader as CurrenciesDataReaderContract;
+use CommissionTask\Services\Config as ConfigService;
 
 class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
 {
-    const API_URL = 'https://developers.paysera.com/tasks/api/currency-exchange-rates';
-    const MAX_REQUESTS_ATTEMPTS = 3;
-
     /**
      * Create a new API currencies data reader instance.
      */
@@ -38,10 +36,10 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, self::API_URL);
+        curl_setopt($curl, CURLOPT_URL, ConfigService::getEnvByName('CURRENCIES_API_URL'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-        $remainingRequestsAttemptsCount = self::MAX_REQUESTS_ATTEMPTS;
+        $remainingRequestsAttemptsCount = ConfigService::getConfigByName('currenciesApi.maxRequestsAttempts');
 
         do {
             $currenciesData = curl_exec($curl);

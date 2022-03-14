@@ -13,6 +13,7 @@ use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 use CommissionTask\Services\CommandLine as CommandLineService;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Application
@@ -47,6 +48,8 @@ class Application
      */
     public function run()
     {
+        $this->initApplication();
+
         $rawTransactionsData = $this->readRawTransactionsData();
 
         $this->validateRawTransactionsData($rawTransactionsData);
@@ -56,6 +59,16 @@ class Application
         $transactionsFees = $this->calculateTransactionsFees();
 
         $this->output($transactionsFees);
+    }
+
+    /**
+     * Read raw data of transactions.
+     *
+     * @return void
+     */
+    private function initApplication()
+    {
+        ConfigService::initConfig();
     }
 
     /**

@@ -5,10 +5,21 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits;
 
 use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorException;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Math as MathService;
 
 trait CommonCalculateOperations
 {
+    /**
+     * Get rounded off digits number.
+     *
+     * @throws TransactionFeeCalculatorException
+     */
+    private function getRoundedOffDigitsNumber(): int
+    {
+        return ConfigService::getConfigByName('feeCalculator.roundedOffDigitsNumber');
+    }
+
     /**
      * Determine the scale of given amount.
      *
@@ -35,9 +46,10 @@ trait CommonCalculateOperations
      */
     private function ceilAmount(string $amount): string
     {
-        $ceilScale = $this->determineScaleOfAmount($amount) - self::ROUNDED_OFF_DIGITS_NUMBER;
-        $lastDigits = substr($amount, -self::ROUNDED_OFF_DIGITS_NUMBER);
-        $amount = substr($amount, 0, -self::ROUNDED_OFF_DIGITS_NUMBER);
+        $roundedOffDigitsNumber = $this->getRoundedOffDigitsNumber();
+        $ceilScale = $this->determineScaleOfAmount($amount) - $roundedOffDigitsNumber;
+        $lastDigits = substr($amount, -$roundedOffDigitsNumber);
+        $amount = substr($amount, 0, -$roundedOffDigitsNumber);
         $previousLastDigitCharacter = substr($amount, -1);
         $ceilMathService = new MathService(max($ceilScale, MathService::MIN_SCALE));
 

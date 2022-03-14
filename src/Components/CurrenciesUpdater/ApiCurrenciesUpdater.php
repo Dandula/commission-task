@@ -11,6 +11,7 @@ use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Factories\Interfaces\CurrencyFactory;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Date as DateService;
 
 class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
@@ -129,7 +130,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     private function getApplicationBaseCurrencyCode(): string
     {
-        return self::BASE_CURRENCY_CODE;
+        return ConfigService::getConfigByName('currencies.baseCurrency');
     }
 
     /**

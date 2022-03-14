@@ -18,8 +18,6 @@ use CommissionTask\Services\Math as MathService;
 
 class Currency
 {
-    // TODO: move to config
-    const BASE_CURRENCY_CODE = 'EUR';
     const BASE_CURRENCY_RATE = 1;
 
     const ACTUAL_RATE_PERIOD = '1 day';

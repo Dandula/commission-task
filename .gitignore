@@ -1,6 +1,7 @@
 vendor/
 phpunit.xml
 composer.lock
+.env
 bin/
 
 # IDEs and editors

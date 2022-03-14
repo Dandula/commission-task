@@ -8,8 +8,6 @@ use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\Currencies
 
 interface CurrenciesUpdater
 {
-    // TODO: move to config
-    const BASE_CURRENCY_CODE = 'EUR';
     const BASE_CURRENCY_RATE = 1;
 
     /**
