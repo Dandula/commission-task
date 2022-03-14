@@ -98,10 +98,9 @@ class Currency
         };
 
         $currencies = $this->currenciesRepository->filter($currenciesFilterMethod);
-        $isCurrenciesEmpty = empty($currencies);
         $currency = array_shift($currencies);
 
-        if ($isCurrenciesEmpty || !$this->isActualRate($currency)) {
+        if ($currency === null || !$this->isActualRate($currency)) {
             if ($forcedCurrentRate) {
                 throw new CommissionTaskException(sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode));
             }
