@@ -17,7 +17,7 @@ final class MathTest extends TestCase
      */
     private $mathService;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mathService = new MathService(2);
     }
@@ -25,11 +25,11 @@ final class MathTest extends TestCase
     /**
      * @param string $leftOperand
      * @param string $rightOperand
-     * @param string $expectation
+     * @param int $expectation
      *
      * @dataProvider dataProviderForCompTesting
      */
-    public function testComp(string $leftOperand, string $rightOperand, string $expectation)
+    public function testComp(string $leftOperand, string $rightOperand, int $expectation)
     {
         $this->assertEquals(
             $expectation,
@@ -127,8 +127,8 @@ final class MathTest extends TestCase
     public function dataProviderForAddTesting(): array
     {
         return [
-            'add 2 natural numbers' => ['1', '2', '3'],
-            'add negative number to a positive' => ['-1', '2', '1'],
+            'add 2 natural numbers' => ['1', '2', '3.00'],
+            'add negative number to a positive' => ['-1', '2', '1.00'],
             'add natural number to a float' => ['1', '1.05123', '2.05'],
         ];
     }
@@ -136,9 +136,9 @@ final class MathTest extends TestCase
     public function dataProviderForSubTesting(): array
     {
         return [
-            'subtract one natural number from another' => ['8', '5', '3'],
-            'subtract a negative number from a positive' => ['5', '-2', '7'],
-            'subtract a positive number from a negative' => ['-5', '2', '-7'],
+            'subtract one natural number from another' => ['8', '5', '3.00'],
+            'subtract a negative number from a positive' => ['5', '-2', '7.00'],
+            'subtract a positive number from a negative' => ['-5', '2', '-7.00'],
             'subtract a natural number from a float' => ['7.33', '5', '2.33'],
             'subtract a float number from a natural' => ['7', '2.33', '4.67'],
         ];
@@ -147,9 +147,9 @@ final class MathTest extends TestCase
     public function dataProviderForMulTesting(): array
     {
         return [
-            'multiple 2 natural numbers' => ['5', '2', '10'],
-            'multiply a negative number by a positive number' => ['-5', '8', '-40'],
-            'multiply 2 negative numbers' => ['-6', '-4', '24'],
+            'multiple 2 natural numbers' => ['5', '2', '10.00'],
+            'multiply a negative number by a positive number' => ['-5', '8', '-40.00'],
+            'multiply 2 negative numbers' => ['-6', '-4', '24.00'],
             'multiply a natural number to a float' => ['4', '1.054', '4.21'],
         ];
     }
@@ -157,10 +157,10 @@ final class MathTest extends TestCase
     public function dataProviderForPowTesting(): array
     {
         return [
-            'raise a natural number to the power given by the natural number' => ['3', '3', '27'],
+            'raise a natural number to the power given by the natural number' => ['3', '3', '27.00'],
             'raise a natural number to the power given by the negative number' => ['3', '-1', '0.33'],
             'raise a float number to the power given by the natural number' => ['0.3', '2', '0.09'],
-            'raise a float number to the power given by the negative number' => ['0.5', '-2', '4'],
+            'raise a float number to the power given by the negative number' => ['0.5', '-2', '4.00'],
         ];
     }
 

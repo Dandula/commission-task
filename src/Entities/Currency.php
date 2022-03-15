@@ -8,32 +8,15 @@ use DateTime;
 
 class Currency
 {
-    /**
-     * @var string
-     */
-    private $currencyCode;
-
-    /**
-     * @var bool
-     */
-    private $isBase;
-
-    /**
-     * @var float
-     */
-    private $rate;
-
-    /**
-     * @var DateTime
-     */
-    private $rateUpdatedAt;
+    private string $currencyCode;
+    private bool $isBase;
+    private float $rate;
+    private DateTime $rateUpdatedAt;
 
     /**
      * Currency code setter.
-     *
-     * @return void
      */
-    public function setCurrencyCode(string $currencyCode)
+    public function setCurrencyCode(string $currencyCode): void
     {
         $this->currencyCode = $currencyCode;
     }
@@ -48,10 +31,8 @@ class Currency
 
     /**
      * Is base currency flag setter.
-     *
-     * @return void
      */
-    public function setIsBase(bool $isBase)
+    public function setIsBase(bool $isBase): void
     {
         $this->isBase = $isBase;
     }
@@ -66,10 +47,8 @@ class Currency
 
     /**
      * Rate setter.
-     *
-     * @return void
      */
-    public function setRate(float $rate)
+    public function setRate(float $rate): void
     {
         $this->rate = $rate;
     }
@@ -84,10 +63,8 @@ class Currency
 
     /**
      * Rate updated at setter.
-     *
-     * @return void
      */
-    public function setRateUpdatedAt(DateTime $rateUpdatedAt)
+    public function setRateUpdatedAt(DateTime $rateUpdatedAt): void
     {
         $this->rateUpdatedAt = $rateUpdatedAt;
     }

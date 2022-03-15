@@ -9,9 +9,9 @@ use InvalidArgumentException;
 
 class CommissionTaskArgumentException extends InvalidArgumentException implements CommissionTaskThrowable
 {
-    const DEFAULT_MESSAGE = 'Invalid argument given';
+    public const DEFAULT_MESSAGE = 'Invalid argument given';
 
-    const INVALID_DATE_FORMAT_MESSAGE = 'Invalid date format given';
+    public const INVALID_DATE_FORMAT_MESSAGE = 'Invalid date format given';
 
     /**
      * Create an invalid argument exception.

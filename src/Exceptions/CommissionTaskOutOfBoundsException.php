@@ -9,7 +9,7 @@ use OutOfBoundsException;
 
 class CommissionTaskOutOfBoundsException extends OutOfBoundsException implements CommissionTaskThrowable
 {
-    const DEFAULT_MESSAGE = 'ID does not exist';
+    public const DEFAULT_MESSAGE = 'ID does not exist';
 
     /**
      * Create an invalid ID exception.

@@ -9,5 +9,5 @@ use CommissionTask\Exceptions\CommissionTaskException;
 
 final class TransactionFeeCalculatorException extends CommissionTaskException implements TransactionFeeCalculatorExceptionContract
 {
-    const UNDEFINED_SCALE_MESSAGE = 'Undefined scale of amount';
+    public const UNDEFINED_SCALE_MESSAGE = 'Undefined scale of amount';
 }

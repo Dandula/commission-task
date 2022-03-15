@@ -9,5 +9,5 @@ use CommissionTask\Exceptions\CommissionTaskArgumentException;
 
 final class ConsoleOutputterException extends CommissionTaskArgumentException implements OutputterExceptionContract
 {
-    const UNSUPPORTED_OUTPUT_DATA_MESSAGE = 'Unsupported output data';
+    public const UNSUPPORTED_OUTPUT_DATA_MESSAGE = 'Unsupported output data';
 }

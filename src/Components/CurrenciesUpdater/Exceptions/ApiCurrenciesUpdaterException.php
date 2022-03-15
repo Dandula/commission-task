@@ -9,5 +9,5 @@ use CommissionTask\Exceptions\CommissionTaskException;
 
 final class ApiCurrenciesUpdaterException extends CommissionTaskException implements CurrenciesUpdaterExceptionContract
 {
-    const NO_BASE_CURRENCY_RATE_MESSAGE = 'No base currency rate';
+    public const NO_BASE_CURRENCY_RATE_MESSAGE = 'No base currency rate';
 }

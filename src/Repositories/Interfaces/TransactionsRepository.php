@@ -29,22 +29,16 @@ interface TransactionsRepository
 
     /**
      * Save transaction to repository.
-     *
-     * @return void
      */
-    public function create(Transaction $transaction);
+    public function create(Transaction $transaction): void;
 
     /**
      * Delete transaction by given ID.
-     *
-     * @return void
      */
-    public function delete(int $id);
+    public function delete(int $id): void;
 
     /**
      * Delete all transactions.
-     *
-     * @return void
      */
-    public function deleteAll();
+    public function deleteAll(): void;
 }

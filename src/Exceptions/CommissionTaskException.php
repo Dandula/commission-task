@@ -9,13 +9,11 @@ use RuntimeException;
 
 class CommissionTaskException extends RuntimeException implements CommissionTaskThrowable
 {
-    const DEFAULT_MESSAGE = 'Undefined exception of application';
+    public const DEFAULT_MESSAGE = 'Undefined exception of application';
 
-    const UNRESOLVED_CONFIG_NAME = "Unresolved config name '%s'";
+    public const COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE = 'The command line parameter #%d is not set';
 
-    const COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE = 'The command line parameter #%d is not set';
-
-    const UNDEFINED_CURRENCY_RATE_MESSAGE = "Undetermined currency '%s' rate";
+    public const UNDEFINED_CURRENCY_RATE_MESSAGE = "Undetermined currency '%s' rate";
 
     /**
      * Create a basic application exception.

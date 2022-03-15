@@ -11,11 +11,6 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
 {
     /**
-     * @var FilesystemService
-     */
-    private $filesystemService;
-
-    /**
      * @var string
      */
     private $filePath;
@@ -23,17 +18,14 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * Create a new CSV transactions data reader instance.
      */
-    public function __construct(FilesystemService $filesystem)
+    public function __construct(private FilesystemService $filesystemService)
     {
-        $this->filesystemService = $filesystem;
     }
 
     /**
      * Set path to CSV file.
-     *
-     * @return void
      */
-    public function setFilePath(string $filePath)
+    public function setFilePath(string $filePath): void
     {
         $this->filePath = $filePath;
     }

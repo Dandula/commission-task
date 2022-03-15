@@ -8,18 +8,16 @@ use CommissionTask\Components\TransactionDataValidator\Exceptions\Interfaces\Tra
 
 interface TransactionDataValidator
 {
-    const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    const UNSIGNED_INTEGER_REGEXP = '/^[1-9]\d*$/';
-    const UNSIGNED_FLOAT_REGEXP = '/^[1-9]\d*\.?\d*$/';
-    const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
+    public const UNSIGNED_INTEGER_REGEXP = '/^[1-9]\d*$/';
+    public const UNSIGNED_FLOAT_REGEXP = '/^[1-9]\d*\.?\d*$/';
+    public const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
 
     /**
      * Read transactions data.
      *
-     * @return void
-     *
      * @throws TransactionDataValidatorException
      */
-    public function validateTransactionData(array $transactionData);
+    public function validateTransactionData(array $transactionData): void;
 }

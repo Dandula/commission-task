@@ -18,31 +18,13 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     use CommonCalculateOperations;
 
     /**
-     * @var TransactionsRepository
-     */
-    private $transactionsRepository;
-
-    /**
-     * @var DateService
-     */
-    private $dateService;
-
-    /**
-     * @var CurrencyService
-     */
-    private $currencyService;
-
-    /**
      * Create a new transaction fee calculator strategy instance for withdraw transactions of private user.
      */
     public function __construct(
-        TransactionsRepository $transactionsRepository,
-        DateService $dateService,
-        CurrencyService $currencyService
+        private TransactionsRepository $transactionsRepository,
+        private DateService $dateService,
+        private CurrencyService $currencyService
     ) {
-        $this->transactionsRepository = $transactionsRepository;
-        $this->dateService = $dateService;
-        $this->currencyService = $currencyService;
     }
 
     /**
@@ -80,13 +62,11 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         $transactionType = $transaction::TYPE_WITHDRAW;
         $transactionUserType = $transaction::USER_TYPE_PRIVATE;
 
-        $influentialTransactionsFilterMethod = function (Transaction $checkedTransaction) use ($transactionUserId, $transactionDate, $transactionDateStartOfWeek, $transactionType, $transactionUserType) {
-            return $checkedTransaction->getUserId() === $transactionUserId
-                    && $checkedTransaction->getDate() >= $transactionDateStartOfWeek
-                    && $checkedTransaction->getDate() < $transactionDate
-                    && $checkedTransaction->getType() === $transactionType
-                    && $checkedTransaction->getUserType() === $transactionUserType;
-        };
+        $influentialTransactionsFilterMethod = fn (Transaction $checkedTransaction) => $checkedTransaction->getUserId() === $transactionUserId
+            && $checkedTransaction->getDate() >= $transactionDateStartOfWeek
+            && $checkedTransaction->getDate() < $transactionDate
+            && $checkedTransaction->getType() === $transactionType
+            && $checkedTransaction->getUserType() === $transactionUserType;
 
         return $this->transactionsRepository->filter($influentialTransactionsFilterMethod);
     }

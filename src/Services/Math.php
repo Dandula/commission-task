@@ -6,36 +6,28 @@ namespace CommissionTask\Services;
 
 class Math
 {
-    const NUMBER_SYSTEM_BASE = '10';
-    const DECIMAL_SEPARATOR = '.';
-    const ZERO = '0';
-    const MIN_SCALE = 0;
+    public const NUMBER_SYSTEM_BASE = '10';
+    public const DECIMAL_SEPARATOR = '.';
+    public const ZERO = '0';
+    public const MIN_SCALE = 0;
 
-    const COMP_RESULT_LT = -1;
-    const COMP_RESULT_EQ = 0;
-    const COMP_RESULT_GT = 1;
-    const COMP_RESULTS_LTE = [
+    public const COMP_RESULT_LT = -1;
+    public const COMP_RESULT_EQ = 0;
+    public const COMP_RESULT_GT = 1;
+    public const COMP_RESULTS_LTE = [
         self::COMP_RESULT_LT,
         self::COMP_RESULT_EQ,
     ];
-    const COMP_RESULTS_GTE = [
+    public const COMP_RESULTS_GTE = [
         self::COMP_RESULT_GT,
         self::COMP_RESULT_EQ,
     ];
 
     /**
-     * @var int
-     */
-    private $scale;
-
-    /**
      * Create math service instance.
-     *
-     * @return void
      */
-    public function __construct(int $scale)
+    public function __construct(private int $scale)
     {
-        $this->scale = $scale;
     }
 
     /**
@@ -80,10 +72,8 @@ class Math
 
     /**
      * Find the highest number.
-     *
-     * @param string ...$otherOperands
      */
-    public function max(string $operand, ...$otherOperands): string
+    public function max(string $operand, string ...$otherOperands): string
     {
         $maxOperand = $operand;
 

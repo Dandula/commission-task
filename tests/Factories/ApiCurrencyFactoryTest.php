@@ -20,7 +20,7 @@ final class ApiCurrencyFactoryTest extends TestCase
      */
     private $apiCurrencyFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $currenciesUpdaterDataFormatter = new CurrenciesUpdaterDataFormatter();
         $this->apiCurrencyFactory = new ApiCurrencyFactory($currenciesUpdaterDataFormatter);

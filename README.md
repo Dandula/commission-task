@@ -1,10 +1,9 @@
 # Commission Task
 
 ## System requirements
-* PHP v7.0 with extensions:
-  * curl
-  * json
-  * bcmath
+* PHP v8.0 with extensions:
+  * cURL
+  * BC Math
 * Composer 2
 
 ## Installation

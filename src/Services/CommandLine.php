@@ -30,11 +30,9 @@ class CommandLine
     /**
      * Check if the application is running from the command line.
      *
-     * @return void
-     *
      * @throws CommissionTaskKernelException
      */
-    private function checkIsCommandLineApplication()
+    private function checkIsCommandLineApplication(): void
     {
         if (!isset($_SERVER['argv'], $_SERVER['argc'])) {
             throw new CommissionTaskKernelException(CommissionTaskKernelException::SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE);

@@ -11,13 +11,6 @@ use CommissionTask\Services\Config as ConfigService;
 class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
 {
     /**
-     * Create a new API currencies data reader instance.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function readCurrenciesData(): array
@@ -36,8 +29,8 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, ConfigService::getEnvByName('CURRENCIES_API_URL'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, option: CURLOPT_URL, value: ConfigService::getEnvByName('CURRENCIES_API_URL'));
+        curl_setopt($curl, option: CURLOPT_RETURNTRANSFER, value: 1);
 
         $remainingRequestsAttemptsCount = ConfigService::getConfigByName('currenciesApi.maxRequestsAttempts');
 
@@ -61,7 +54,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
      */
     private function parseJsonString(string $currenciesData): array
     {
-        $currenciesData = json_decode($currenciesData, true);
+        $currenciesData = json_decode($currenciesData, associative: true);
 
         if ($currenciesData === null) {
             throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE);

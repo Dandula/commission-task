@@ -48,13 +48,13 @@ trait CommonCalculateOperations
     {
         $roundedOffDigitsNumber = $this->getRoundedOffDigitsNumber();
         $ceilScale = $this->determineScaleOfAmount($amount) - $roundedOffDigitsNumber;
-        $lastDigits = substr($amount, -$roundedOffDigitsNumber);
-        $amount = substr($amount, 0, -$roundedOffDigitsNumber);
-        $previousLastDigitCharacter = substr($amount, -1);
+        $lastDigits = substr($amount, offset: -$roundedOffDigitsNumber);
+        $amount = substr($amount, offset: 0, length: -$roundedOffDigitsNumber);
+        $previousLastDigitCharacter = substr($amount, offset: -1);
         $ceilMathService = new MathService(max($ceilScale, MathService::MIN_SCALE));
 
         if ($previousLastDigitCharacter === $ceilMathService::DECIMAL_SEPARATOR) {
-            $amount = substr($amount, 0, -1);
+            $amount = substr($amount, offset: 0, length: -1);
         }
 
         if (!preg_match(self::NOT_ROUNDED_FRACTIONAL_PART_REGEXP, $lastDigits)) {

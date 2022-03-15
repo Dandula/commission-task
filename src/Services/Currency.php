@@ -18,50 +18,20 @@ use CommissionTask\Services\Math as MathService;
 
 class Currency
 {
-    const BASE_CURRENCY_RATE = 1;
+    public const BASE_CURRENCY_RATE = 1;
 
-    const ACTUAL_RATE_PERIOD = '1 day';
-
-    /**
-     * @var CurrenciesRepository
-     */
-    private $currenciesRepository;
-
-    /**
-     * @var CurrenciesDataReader
-     */
-    private $currenciesDataReader;
-
-    /**
-     * @var CurrenciesDataValidator
-     */
-    private $currenciesDataValidator;
-
-    /**
-     * @var CurrenciesUpdater
-     */
-    private $currenciesUpdater;
-
-    /**
-     * @var DateService
-     */
-    private $dateService;
+    public const ACTUAL_RATE_PERIOD = '1 day';
 
     /**
      * Create currency service instance.
      */
     public function __construct(
-        CurrenciesRepository $currenciesRepository,
-        CurrenciesDataReader $currenciesDataReader,
-        CurrenciesDataValidator $currenciesDataValidator,
-        CurrenciesUpdater $currenciesUpdater,
-        DateService $dateService
+        private CurrenciesRepository $currenciesRepository,
+        private CurrenciesDataReader $currenciesDataReader,
+        private CurrenciesDataValidator $currenciesDataValidator,
+        private CurrenciesUpdater $currenciesUpdater,
+        private DateService $dateService
     ) {
-        $this->currenciesRepository = $currenciesRepository;
-        $this->currenciesDataReader = $currenciesDataReader;
-        $this->currenciesDataValidator = $currenciesDataValidator;
-        $this->currenciesUpdater = $currenciesUpdater;
-        $this->dateService = $dateService;
     }
 
     /**
@@ -91,9 +61,7 @@ class Currency
      */
     public function getCurrencyRate(string $currencyCode, bool $forcedCurrentRate = false): float
     {
-        $currenciesFilterMethod = function (CurrencyEntity $currency) use ($currencyCode) {
-            return $currency->getCurrencyCode() === $currencyCode;
-        };
+        $currenciesFilterMethod = fn (CurrencyEntity $currency) => $currency->getCurrencyCode() === $currencyCode;
 
         $currencies = $this->currenciesRepository->filter($currenciesFilterMethod);
         $currency = array_shift($currencies);
@@ -105,7 +73,7 @@ class Currency
 
             $this->updateCurrenciesRates();
 
-            return $this->getCurrencyRate($currencyCode, true);
+            return $this->getCurrencyRate($currencyCode, forcedCurrentRate: true);
         }
 
         return $currency->getRate();
@@ -114,11 +82,9 @@ class Currency
     /**
      * Update currencies rates.
      *
-     * @return void
-     *
      * @throws CurrenciesDataReaderException|CurrenciesDataValidatorException|CurrenciesUpdaterException
      */
-    private function updateCurrenciesRates()
+    private function updateCurrenciesRates(): void
     {
         $currenciesData = $this->currenciesDataReader->readCurrenciesData();
         $this->currenciesDataValidator->validateCurrenciesData($currenciesData);
@@ -132,7 +98,7 @@ class Currency
     {
         $expirationDate = $this->dateService->subInterval(
             $this->dateService->getNow(),
-            self::ACTUAL_RATE_PERIOD
+            relativeDatetime: self::ACTUAL_RATE_PERIOD
         );
 
         return $currency->getRateUpdatedAt() > $expirationDate;

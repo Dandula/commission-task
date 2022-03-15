@@ -8,17 +8,12 @@ use CommissionTask\Kernel\Singleton;
 
 class Filesystem extends Singleton
 {
-    /**
-     * @var string
-     */
-    private $basePath;
+    private string $basePath;
 
     /**
      * Set the base path for the filesystem service.
-     *
-     * @return void
      */
-    public function setBasePath(string $basePath)
+    public function setBasePath(string $basePath): void
     {
         $this->basePath = $basePath;
     }
@@ -58,10 +53,8 @@ class Filesystem extends Singleton
 
     /**
      * Resolve relative path to absolute.
-     *
-     * @return false|string
      */
-    private function resolvePath(string $path)
+    private function resolvePath(string $path): false|string
     {
         if ($this->basePath) {
             $path = $this->basePath.DIRECTORY_SEPARATOR.$path;

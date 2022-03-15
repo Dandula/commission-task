@@ -10,8 +10,6 @@ interface CurrencyFactory
 {
     /**
      * Make currency entity.
-     *
-     * @param mixed $currencyData
      */
-    public function makeCurrency($currencyData): Currency;
+    public function makeCurrency(mixed $currencyData): Currency;
 }

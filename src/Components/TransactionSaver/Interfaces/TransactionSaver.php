@@ -8,10 +8,6 @@ interface TransactionSaver
 {
     /**
      * Save transaction to transaction repository.
-     *
-     * @param mixed $transactionData
-     *
-     * @return void
      */
-    public function saveTransaction($transactionData);
+    public function saveTransaction(mixed $transactionData): void;
 }

@@ -15,34 +15,21 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
 {
     use FieldFormat;
 
-    /**
-     * @var ApiCurrenciesDataFormatter
-     */
-    private $apiCurrenciesDataFormatter;
-
-    /**
-     * @var DateService
-     */
-    private $dateService;
-
-    /**
-     * @var array
-     */
-    private $validatedData;
+    private array $validatedData;
 
     /**
      * Create CSV transaction data validator instance.
      */
-    public function __construct(ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter, DateService $dateService)
-    {
-        $this->apiCurrenciesDataFormatter = $apiCurrenciesDataFormatter;
-        $this->dateService = $dateService;
+    public function __construct(
+        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
+        private DateService $dateService
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function validateCurrenciesData(array $currenciesData)
+    public function validateCurrenciesData(array $currenciesData): void
     {
         $this->validatedData = $currenciesData;
 
@@ -55,9 +42,9 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws CurrenciesDataValidatorException|ApiCurrenciesDataValidatorException
+     * @throws ApiCurrenciesDataValidatorException|CurrenciesDataValidatorException
      */
-    private function validateMainFields(): ApiCurrenciesDataValidator
+    private function validateMainFields(): self
     {
         return $this->validateMainFieldsExistence()
             ->validateBaseCurrencyCodeMainField()
@@ -72,12 +59,12 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @throws ApiCurrenciesDataValidatorException
      */
-    private function validateMainFieldsExistence(): ApiCurrenciesDataValidator
+    private function validateMainFieldsExistence(): self
     {
         if (array_diff(
-                $this->apiCurrenciesDataFormatter::MAIN_FIELDS,
-                array_keys($this->validatedData)
-            )) {
+            $this->apiCurrenciesDataFormatter::MAIN_FIELDS,
+            array_keys($this->validatedData)
+        )) {
             throw new ApiCurrenciesDataValidatorException(ApiCurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
         }
 
@@ -91,7 +78,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @throws ApiCurrenciesDataValidatorException
      */
-    private function validateBaseCurrencyCodeMainField(): ApiCurrenciesDataValidator
+    private function validateBaseCurrencyCodeMainField(): self
     {
         return $this->validateCurrencyCodeField(
             $this->validatedData[$this->apiCurrenciesDataFormatter::BASE_CURRENCY_CODE_FIELD]
@@ -105,7 +92,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @throws CurrenciesDataValidatorException
      */
-    private function validateDateMainField(): ApiCurrenciesDataValidator
+    private function validateDateMainField(): self
     {
         return $this->validateDateField(
             $this->validatedData[$this->apiCurrenciesDataFormatter::DATE_FIELD],
@@ -120,7 +107,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @throws CurrenciesDataValidatorException
      */
-    private function validateRatesMainField(): ApiCurrenciesDataValidator
+    private function validateRatesMainField(): self
     {
         return $this->validateIsArrayField($this->validatedData[$this->apiCurrenciesDataFormatter::RATES_FIELD]);
     }
@@ -130,9 +117,9 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws CurrenciesDataValidatorException|ApiCurrenciesDataValidatorException
+     * @throws ApiCurrenciesDataValidatorException|CurrenciesDataValidatorException
      */
-    private function validateCurrenciesRates(): ApiCurrenciesDataValidator
+    private function validateCurrenciesRates(): self
     {
         $currenciesRatesData = $this->validatedData[$this->apiCurrenciesDataFormatter::RATES_FIELD];
 

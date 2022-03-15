@@ -50,7 +50,7 @@ final class CurrencyTest extends TestCase
      */
     private $dateService;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockCurrenciesDataReader = $this->getMockBuilder(CurrenciesDataReader::class)
             ->setMethods(['readCurrenciesData'])
@@ -76,7 +76,7 @@ final class CurrencyTest extends TestCase
         $this->dateService = new DateService();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         unset($this->mockCurrenciesDataReader);
         unset($this->mockCurrenciesDataValidator);

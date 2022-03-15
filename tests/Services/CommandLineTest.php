@@ -20,7 +20,7 @@ final class CommandLineTest extends TestCase
      */
     private $commandLineService;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->commandLineService = new CommandLineService();
     }

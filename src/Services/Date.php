@@ -10,11 +10,11 @@ use DateTime;
 
 class Date
 {
-    const DEFAULT_DATE_FORMAT = 'Y-m-d';
-    const WEEK_MUTABLE_FORMAT_STRING = '%d days';
+    public const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    public const WEEK_MUTABLE_FORMAT_STRING = '%d days';
 
-    const HOURS_MIN = 0;
-    const MINUTES_MIN = 0;
+    public const HOURS_MIN = 0;
+    public const MINUTES_MIN = 0;
 
     /**
      * Parse date at given format.
@@ -54,7 +54,7 @@ class Date
     public function getStartOfDay(DateTime $date): DateTime
     {
         $currentDate = clone $date;
-        $currentDate->setTime(self::HOURS_MIN, self::MINUTES_MIN);
+        $currentDate->setTime(hour: self::HOURS_MIN, minute: self::MINUTES_MIN);
 
         return $currentDate;
     }

@@ -8,16 +8,14 @@ use CommissionTask\Components\CurrenciesDataValidator\Exceptions\Interfaces\Curr
 
 interface CurrenciesDataValidator
 {
-    const DEFAULT_DATE_FORMAT = 'Y-m-d';
+    public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
-    const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
+    public const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
 
     /**
      * Read transactions data.
      *
-     * @return void
-     *
      * @throws CurrenciesDataValidatorException
      */
-    public function validateCurrenciesData(array $currenciesData);
+    public function validateCurrenciesData(array $currenciesData): void;
 }

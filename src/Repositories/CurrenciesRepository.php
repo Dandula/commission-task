@@ -10,19 +10,13 @@ use CommissionTask\Repositories\Interfaces\CurrenciesRepository as CurrenciesRep
 
 class CurrenciesRepository implements CurrenciesRepositoryContract
 {
-    const REPOSITORY_PART = 'currencies';
-
-    /**
-     * @var Storage
-     */
-    private $storage;
+    private const REPOSITORY_PART = 'currencies';
 
     /**
      * Create currencies repository instance.
      */
-    public function __construct(Storage $storage)
+    public function __construct(private Storage $storage)
     {
-        $this->storage = $storage;
     }
 
     /**
@@ -52,7 +46,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function create(Currency $currency)
+    public function create(Currency $currency): void
     {
         $this->storage->create(self::REPOSITORY_PART, $currency);
     }
@@ -60,7 +54,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function update(int $id, Currency $currency)
+    public function update(int $id, Currency $currency): void
     {
         $this->storage->update(self::REPOSITORY_PART, $id, $currency);
     }
@@ -68,7 +62,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $this->storage->delete(self::REPOSITORY_PART, $id);
     }
@@ -76,7 +70,7 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function deleteAll()
+    public function deleteAll(): void
     {
         $this->storage->deleteAll(self::REPOSITORY_PART);
     }

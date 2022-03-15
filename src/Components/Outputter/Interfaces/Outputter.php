@@ -13,9 +13,7 @@ interface Outputter
      *
      * @param string|string[] ...$outputtingDataItems
      *
-     * @return void
-     *
      * @throws OutputterException
      */
-    public function output(...$outputtingDataItems);
+    public function output(string|array ...$outputtingDataItems): void;
 }

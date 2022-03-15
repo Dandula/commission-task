@@ -10,19 +10,13 @@ use CommissionTask\Repositories\Interfaces\TransactionsRepository as Transaction
 
 class TransactionsRepository implements TransactionsRepositoryContract
 {
-    const REPOSITORY_PART = 'transactions';
-
-    /**
-     * @var Storage
-     */
-    private $storage;
+    private const REPOSITORY_PART = 'transactions';
 
     /**
      * Create transactions repository instance.
      */
-    public function __construct(Storage $storage)
+    public function __construct(private Storage $storage)
     {
-        $this->storage = $storage;
     }
 
     /**
@@ -52,7 +46,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function create(Transaction $transaction)
+    public function create(Transaction $transaction): void
     {
         $this->storage->create(self::REPOSITORY_PART, $transaction);
     }
@@ -60,7 +54,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function delete(int $id)
+    public function delete(int $id): void
     {
         $this->storage->delete(self::REPOSITORY_PART, $id);
     }
@@ -68,7 +62,7 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function deleteAll()
+    public function deleteAll(): void
     {
         $this->storage->deleteAll(self::REPOSITORY_PART);
     }

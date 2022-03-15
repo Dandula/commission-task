@@ -10,14 +10,14 @@ use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
 class ArrayStorage implements StorageContract
 {
     /**
-     * @var array
+     * @var array[]
      */
-    private $array = [];
+    private array $array = [];
 
     /**
      * {@inheritDoc}
      */
-    public function findAll(string $part)
+    public function findAll(string $part): array
     {
         return $this->safeAccessToPart($part);
     }
@@ -25,7 +25,7 @@ class ArrayStorage implements StorageContract
     /**
      * {@inheritDoc}
      */
-    public function findById(string $part, $id)
+    public function findById(string $part, int|string $id): mixed
     {
         if (!isset($this->array[$part][$id])) {
             throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
@@ -37,7 +37,7 @@ class ArrayStorage implements StorageContract
     /**
      * {@inheritDoc}
      */
-    public function filter(string $part, callable $filterMethod)
+    public function filter(string $part, callable $filterMethod): array
     {
         return array_filter($this->safeAccessToPart($part), $filterMethod);
     }
@@ -45,27 +45,27 @@ class ArrayStorage implements StorageContract
     /**
      * {@inheritDoc}
      */
-    public function create(string $part, $data)
+    public function create(string $part, mixed $data): void
     {
-        return $this->array[$part][] = $data;
+        $this->array[$part][] = $data;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function update(string $part, $id, $data)
+    public function update(string $part, int|string $id, mixed $data): void
     {
         if (!isset($this->array[$part][$id])) {
             throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
         }
 
-        return $this->array[$part][$id] = $data;
+        $this->array[$part][$id] = $data;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function delete(string $part, $id)
+    public function delete(string $part, int|string $id): void
     {
         unset($this->array[$part][$id]);
     }
@@ -73,7 +73,7 @@ class ArrayStorage implements StorageContract
     /**
      * {@inheritDoc}
      */
-    public function deleteAll(string $part)
+    public function deleteAll(string $part): void
     {
         $this->array[$part] = [];
     }

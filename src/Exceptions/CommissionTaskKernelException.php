@@ -9,11 +9,11 @@ use Exception;
 
 class CommissionTaskKernelException extends Exception implements CommissionTaskThrowable
 {
-    const DEFAULT_MESSAGE = 'Application system error';
+    public const DEFAULT_MESSAGE = 'Application system error';
 
-    const CANNOT_DESERIALIZE_SINGLETON = 'Cannot deserialize singleton';
+    public const CANNOT_DESERIALIZE_SINGLETON = 'Cannot deserialize singleton';
 
-    const SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE = 'The script is not run from the command line';
+    public const SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE = 'The script is not run from the command line';
 
     /**
      * Create a system application exception.

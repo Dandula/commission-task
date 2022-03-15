@@ -10,8 +10,6 @@ interface TransactionFactory
 {
     /**
      * Make transaction entity.
-     *
-     * @param mixed $transactionData
      */
-    public function makeTransaction($transactionData): Transaction;
+    public function makeTransaction(mixed $transactionData): Transaction;
 }

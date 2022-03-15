@@ -8,10 +8,10 @@ use CommissionTask\Entities\Transaction;
 
 interface TransactionFeeCalculateStrategy
 {
-    const SCALE_NULL = 0;
+    public const SCALE_NULL = 0;
 
-    const FRACTIONAL_PART_REGEXP = '/\.(\d*$)/';
-    const NOT_ROUNDED_FRACTIONAL_PART_REGEXP = '/^0+$/';
+    public const FRACTIONAL_PART_REGEXP = '/\.(\d*$)/';
+    public const NOT_ROUNDED_FRACTIONAL_PART_REGEXP = '/^0+$/';
 
     /**
      * Calculate transaction fee for given transaction.

@@ -26,7 +26,7 @@ final class TransactionFeeCalculatorStrategyFactoryTest extends TestCase
      */
     private $transactionFeeCalculatorStrategyFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $mockTransactionsRepository = $this->getMockBuilder(TransactionsRepository::class)
             ->disableOriginalConstructor()

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionDataValidator\Traits;
 
 use CommissionTask\Components\TransactionDataValidator\Exceptions\TransactionDataValidatorException;
-use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator;
 use CommissionTask\Exceptions\CommissionTaskArgumentException;
 
 trait FieldFormat
@@ -13,13 +12,11 @@ trait FieldFormat
     /**
      * Validate date field.
      *
-     * @param mixed $value
-     *
      * @return $this
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateDateField($value, string $format = self::DEFAULT_DATE_FORMAT): TransactionDataValidator
+    private function validateDateField(mixed $value, string $format = self::DEFAULT_DATE_FORMAT): self
     {
         try {
             $this->dateService->parseDate($value, $format);
@@ -33,13 +30,11 @@ trait FieldFormat
     /**
      * Validate unsigned integer field.
      *
-     * @param mixed $value
-     *
      * @return $this
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedIntegerField($value): TransactionDataValidator
+    private function validateUnsignedIntegerField(mixed $value): self
     {
         if (!preg_match(self::UNSIGNED_INTEGER_REGEXP, $value)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_UNSIGNED_INTEGER_COLUMN_MESSAGE);
@@ -51,13 +46,11 @@ trait FieldFormat
     /**
      * Validate unsigned float field.
      *
-     * @param mixed $value
-     *
      * @return $this
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedFloatField($value): TransactionDataValidator
+    private function validateUnsignedFloatField(mixed $value): self
     {
         if (!preg_match(self::UNSIGNED_FLOAT_REGEXP, $value)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_UNSIGNED_FLOAT_COLUMN_MESSAGE);
@@ -69,15 +62,13 @@ trait FieldFormat
     /**
      * Validate field in array of acceptable values.
      *
-     * @param mixed $value
-     *
      * @return $this
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateInArrayField($value, array $acceptableValues): TransactionDataValidator
+    private function validateInArrayField(mixed $value, array $acceptableValues): self
     {
-        if (!in_array($value, $acceptableValues, true)) {
+        if (!in_array($value, $acceptableValues, strict: true)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_IN_ARRAY_COLUMN_MESSAGE);
         }
 
@@ -87,13 +78,11 @@ trait FieldFormat
     /**
      * Validate currency code field.
      *
-     * @param mixed $value
-     *
      * @return $this
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateCurrencyCodeField($value): TransactionDataValidator
+    private function validateCurrencyCodeField(mixed $value): self
     {
         if (!preg_match(self::CURRENCY_CODE_REGEXP, $value)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_CURRENCY_CODE_COLUMN_MESSAGE);

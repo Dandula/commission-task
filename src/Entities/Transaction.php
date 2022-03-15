@@ -8,48 +8,23 @@ use DateTime;
 
 class Transaction
 {
-    const TYPE_DEPOSIT = 'deposit';
-    const TYPE_WITHDRAW = 'withdraw';
+    public const TYPE_DEPOSIT = 'deposit';
+    public const TYPE_WITHDRAW = 'withdraw';
 
-    const USER_TYPE_PRIVATE = 'private';
-    const USER_TYPE_BUSINESS = 'business';
+    public const USER_TYPE_PRIVATE = 'private';
+    public const USER_TYPE_BUSINESS = 'business';
 
-    /**
-     * @var DateTime
-     */
-    private $date;
-
-    /**
-     * @var int
-     */
-    private $userId;
-
-    /**
-     * @var string
-     */
-    private $userType;
-
-    /**
-     * @var string
-     */
-    private $type;
-
-    /**
-     * @var string
-     */
-    private $amount;
-
-    /**
-     * @var string
-     */
-    private $currencyCode;
+    private DateTime $date;
+    private int $userId;
+    private string $userType;
+    private string $type;
+    private string $amount;
+    private string $currencyCode;
 
     /**
      * Date setter.
-     *
-     * @return void
      */
-    public function setDate(DateTime $date)
+    public function setDate(DateTime $date): void
     {
         $this->date = $date;
     }
@@ -64,10 +39,8 @@ class Transaction
 
     /**
      * User ID setter.
-     *
-     * @return void
      */
-    public function setUserId(int $userId)
+    public function setUserId(int $userId): void
     {
         $this->userId = $userId;
     }
@@ -82,10 +55,8 @@ class Transaction
 
     /**
      * User type setter.
-     *
-     * @return void
      */
-    public function setUserType(string $userType)
+    public function setUserType(string $userType): void
     {
         $this->userType = $userType;
     }
@@ -100,10 +71,8 @@ class Transaction
 
     /**
      * Type setter.
-     *
-     * @return void
      */
-    public function setType(string $type)
+    public function setType(string $type): void
     {
         $this->type = $type;
     }
@@ -118,10 +87,8 @@ class Transaction
 
     /**
      * Amount setter.
-     *
-     * @return void
      */
-    public function setAmount(string $amount)
+    public function setAmount(string $amount): void
     {
         $this->amount = $amount;
     }
@@ -136,10 +103,8 @@ class Transaction
 
     /**
      * Currency code setter.
-     *
-     * @return void
      */
-    public function setCurrencyCode(string $currencyCode)
+    public function setCurrencyCode(string $currencyCode): void
     {
         $this->currencyCode = $currencyCode;
     }

@@ -8,16 +8,12 @@ use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\Currencies
 
 interface CurrenciesUpdater
 {
-    const BASE_CURRENCY_RATE = 1;
+    public const BASE_CURRENCY_RATE = 1;
 
     /**
      * Update currencies to currencies repository.
      *
-     * @param mixed $currenciesData
-     *
-     * @return void
-     *
      * @throws CurrenciesUpdaterException
      */
-    public function updateCurrencies($currenciesData);
+    public function updateCurrencies(mixed $currenciesData): void;
 }

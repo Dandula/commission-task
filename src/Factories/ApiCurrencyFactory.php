@@ -11,22 +11,17 @@ use CommissionTask\Factories\Interfaces\CurrencyFactory as CurrencyFactoryContra
 class ApiCurrencyFactory implements CurrencyFactoryContract
 {
     /**
-     * @var CurrenciesUpdaterDataFormatter
-     */
-    private $currenciesUpdaterDataFormatter;
-
-    /**
      * Create a new API currency factory instance.
      */
-    public function __construct(CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter)
-    {
-        $this->currenciesUpdaterDataFormatter = $currenciesUpdaterDataFormatter;
+    public function __construct(
+        private CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function makeCurrency($currencyData): Currency
+    public function makeCurrency(mixed $currencyData): Currency
     {
         $currency = new Currency();
 

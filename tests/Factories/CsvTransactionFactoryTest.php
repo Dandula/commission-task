@@ -21,7 +21,7 @@ final class CsvTransactionFactoryTest extends TestCase
      */
     private $csvTransactionFactory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $csvTransactionDataFormatter = new CsvTransactionDataFormatter();
         $dateService = new DateService();

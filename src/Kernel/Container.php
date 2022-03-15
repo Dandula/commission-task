@@ -43,16 +43,12 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Container
 {
-    private $instances = [];
+    private array $instances = [];
 
     /**
      * Init service container.
-     *
-     * @return void
-     *
-     * @throws CommissionTaskKernelException
      */
-    public function init()
+    public function init(): void
     {
         // Put singletons
         $this->put(FilesystemService::class, FilesystemService::getInstance());
@@ -125,11 +121,9 @@ class Container
     /**
      * Get service from service container.
      *
-     * @return mixed
-     *
      * @throws CommissionTaskKernelException
      */
-    public function get(string $alias)
+    public function get(string $alias): mixed
     {
         if (!isset($this->instances[$alias])) {
             throw new CommissionTaskKernelException("Undefined service $alias");
@@ -140,12 +134,8 @@ class Container
 
     /**
      * Put service to service container.
-     *
-     * @param mixed $instance
-     *
-     * @return void
      */
-    public function put(string $alias, $instance)
+    public function put(string $alias, mixed $instance): void
     {
         $this->instances[$alias] = $instance;
     }

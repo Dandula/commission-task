@@ -11,30 +11,18 @@ use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 class CsvTransactionSaver implements TransactionSaverContract
 {
     /**
-     * @var TransactionsRepository
-     */
-    private $transactionsRepository;
-
-    /**
-     * @var TransactionFactory
-     */
-    private $transactionFactory;
-
-    /**
      * Create a new CSV transaction saver instance.
      */
     public function __construct(
-        TransactionsRepository $transactionRepository,
-        TransactionFactory $transactionFactory
+        private TransactionsRepository $transactionsRepository,
+        private TransactionFactory $transactionFactory
     ) {
-        $this->transactionsRepository = $transactionRepository;
-        $this->transactionFactory = $transactionFactory;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function saveTransaction($transactionData)
+    public function saveTransaction(mixed $transactionData): void
     {
         $transaction = $this->transactionFactory->makeTransaction($transactionData);
         $this->transactionsRepository->create($transaction);

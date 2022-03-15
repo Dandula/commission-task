@@ -27,5 +27,5 @@ try {
 
     $exitCode = $exception->getCode();
 } finally {
-    exit($exitCode);
+//    exit($exitCode);
 }

@@ -29,29 +29,21 @@ interface CurrenciesRepository
 
     /**
      * Save currency to repository.
-     *
-     * @return void
      */
-    public function create(Currency $currency);
+    public function create(Currency $currency): void;
 
     /**
      * Update currency by given ID.
-     *
-     * @return void
      */
-    public function update(int $id, Currency $currency);
+    public function update(int $id, Currency $currency): void;
 
     /**
      * Delete currency by given ID.
-     *
-     * @return void
      */
-    public function delete(int $id);
+    public function delete(int $id): void;
 
     /**
      * Delete all currencies.
-     *
-     * @return void
      */
-    public function deleteAll();
+    public function deleteAll(): void;
 }

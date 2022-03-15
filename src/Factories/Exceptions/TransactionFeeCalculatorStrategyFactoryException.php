@@ -9,6 +9,6 @@ use CommissionTask\Factories\Exceptions\Interfaces\TransactionFeeCalculatorStrat
 
 final class TransactionFeeCalculatorStrategyFactoryException extends CommissionTaskException implements TransactionFeeCalculatorStrategyFactoryExceptionContract
 {
-    const UNDEFINED_TRANSACTION_TYPE_MESSAGE = 'Undefined transaction type';
-    const UNDEFINED_USER_TYPE_MESSAGE = 'Undefined user type';
+    public const UNDEFINED_TRANSACTION_TYPE_MESSAGE = 'Undefined transaction type';
+    public const UNDEFINED_USER_TYPE_MESSAGE = 'Undefined user type';
 }

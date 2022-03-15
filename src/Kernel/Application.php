@@ -18,17 +18,17 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Application
 {
-    const FILEPATH_PARAMETER_NUMBER = 1;
+    public const FILEPATH_PARAMETER_NUMBER = 1;
 
     /**
      * The base path for the application installation.
      */
-    protected $basePath;
+    protected string $basePath;
 
     /**
      * The service container for the application.
      */
-    protected $container;
+    protected Container $container;
 
     /**
      * Create a new application instance.
@@ -42,11 +42,9 @@ class Application
     /**
      * Run the application.
      *
-     * @return void
-     *
      * @throws CommissionTaskThrowable
      */
-    public function run()
+    public function run(): void
     {
         $this->initApplication();
 
@@ -63,10 +61,8 @@ class Application
 
     /**
      * Read raw data of transactions.
-     *
-     * @return void
      */
-    private function initApplication()
+    private function initApplication(): void
     {
         ConfigService::initConfig();
     }
@@ -87,12 +83,8 @@ class Application
 
     /**
      * Validate raw data of transactions.
-     *
-     * @return void
-     *
-     * @throws TransactionDataValidator
      */
-    private function validateRawTransactionsData(array $rawTransactionsData)
+    private function validateRawTransactionsData(array $rawTransactionsData): void
     {
         $transactionsDataValidator = $this->container->get(TransactionDataValidator::class);
 
@@ -103,10 +95,8 @@ class Application
 
     /**
      * Save raw data of transactions to transactions entities.
-     *
-     * @return void
      */
-    private function saveTransactions(array $rawTransactionsData)
+    private function saveTransactions(array $rawTransactionsData): void
     {
         $transactionSaver = $this->container->get(TransactionSaver::class);
 
@@ -139,12 +129,8 @@ class Application
 
     /**
      * Output results of execution.
-     *
-     * @param mixed $outputData
-     *
-     * @return void
      */
-    private function output($outputData)
+    private function output(mixed $outputData): void
     {
         $outputter = $this->container->get(Outputter::class);
 
@@ -156,7 +142,7 @@ class Application
      *
      * @return $this
      */
-    private function setBasePath(string $basePath): Application
+    private function setBasePath(string $basePath): self
     {
         $this->basePath = rtrim($basePath, '\/');
 
@@ -172,7 +158,7 @@ class Application
      *
      * @return $this
      */
-    private function setContainer(Container $container): Application
+    private function setContainer(Container $container): self
     {
         $this->container = $container;
 

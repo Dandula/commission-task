@@ -10,63 +10,40 @@ interface Storage
 {
     /**
      * Find all data items at storage.
-     *
-     * @return mixed
      */
-    public function findAll(string $part);
+    public function findAll(string $part): array;
 
     /**
      * Find data item at storage by given ID.
      *
-     * @param int|string $id
-     *
-     * @return mixed
-     *
      * @throws StorageException
      */
-    public function findById(string $part, $id);
+    public function findById(string $part, int|string $id): mixed;
 
     /**
      * Get filtered data items applying given filter method.
-     *
-     * @return mixed
      */
-    public function filter(string $part, callable $filterMethod);
+    public function filter(string $part, callable $filterMethod): array;
 
     /**
      * Create data item at storage.
-     *
-     * @param mixed $data
-     *
-     * @return void
      */
-    public function create(string $part, $data);
+    public function create(string $part, mixed $data): void;
 
     /**
      * Update data item at storage by given ID.
      *
-     * @param int|string $id
-     * @param mixed      $data
-     *
-     * @return void
-     *
      * @throws StorageException
      */
-    public function update(string $part, $id, $data);
+    public function update(string $part, int|string $id, mixed $data): void;
 
     /**
      * Delete data item from storage by given ID.
-     *
-     * @param int|string $id
-     *
-     * @return void
      */
-    public function delete(string $part, $id);
+    public function delete(string $part, int|string $id): void;
 
     /**
      * Delete all data items from storage.
-     *
-     * @return void
      */
-    public function deleteAll(string $part);
+    public function deleteAll(string $part): void;
 }

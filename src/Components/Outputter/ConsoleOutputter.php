@@ -9,15 +9,15 @@ use CommissionTask\Components\Outputter\Interfaces\Outputter;
 
 class ConsoleOutputter implements Outputter
 {
-    const STRING_TYPE = 'string';
-    const ARRAY_TYPE = 'array';
+    public const STRING_TYPE = 'string';
+    public const ARRAY_TYPE = 'array';
 
-    const LINE_SEPARATOR = PHP_EOL;
+    public const LINE_SEPARATOR = PHP_EOL;
 
     /**
      * {@inheritDoc}
      */
-    public function output(...$outputtingDataItems)
+    public function output(string|array ...$outputtingDataItems): void
     {
         foreach ($outputtingDataItems as $outputtingDataItem) {
             switch (gettype($outputtingDataItem)) {
@@ -25,7 +25,7 @@ class ConsoleOutputter implements Outputter
                     echo $outputtingDataItem.self::LINE_SEPARATOR;
                     break;
                 case self::ARRAY_TYPE:
-                    call_user_func_array([$this, 'output'], $outputtingDataItem);
+                    $this->output(...$outputtingDataItem);
                     break;
                 default:
                     throw new ConsoleOutputterException(ConsoleOutputterException::UNSUPPORTED_OUTPUT_DATA_MESSAGE);

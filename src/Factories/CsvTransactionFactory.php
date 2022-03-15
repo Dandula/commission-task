@@ -12,28 +12,18 @@ use CommissionTask\Services\Date as DateService;
 class CsvTransactionFactory implements TransactionFactoryContract
 {
     /**
-     * @var CsvTransactionDataFormatter
-     */
-    private $csvTransactionDataFormatter;
-
-    /**
-     * @var DateService
-     */
-    private $dateService;
-
-    /**
      * Create a new CSV transaction factory instance.
      */
-    public function __construct(CsvTransactionDataFormatter $csvTransactionDataFormatter, DateService $dateService)
-    {
-        $this->csvTransactionDataFormatter = $csvTransactionDataFormatter;
-        $this->dateService = $dateService;
+    public function __construct(
+        private CsvTransactionDataFormatter $csvTransactionDataFormatter,
+        private DateService $dateService
+    ) {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function makeTransaction($transactionData): Transaction
+    public function makeTransaction(mixed $transactionData): Transaction
     {
         $transaction = new Transaction();
 

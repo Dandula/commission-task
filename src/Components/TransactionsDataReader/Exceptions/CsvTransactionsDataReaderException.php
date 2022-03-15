@@ -9,6 +9,6 @@ use CommissionTask\Exceptions\CommissionTaskException;
 
 final class CsvTransactionsDataReaderException extends CommissionTaskException implements TransactionsDataReaderExceptionContract
 {
-    const UNDEFINED_CSV_FILEPATH_MESSAGE = 'The path to the CSV file is not specified';
-    const CSV_FILE_DOESNT_EXISTS_MESSAGE = "The CSV file %s doesn't exist";
+    public const UNDEFINED_CSV_FILEPATH_MESSAGE = 'The path to the CSV file is not specified';
+    public const CSV_FILE_DOESNT_EXISTS_MESSAGE = "The CSV file %s doesn't exist";
 }

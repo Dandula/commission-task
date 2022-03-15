@@ -19,7 +19,7 @@ final class DateTest extends TestCase
      */
     private $dateService;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->dateService = new DateService();
     }

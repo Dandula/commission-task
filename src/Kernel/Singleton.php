@@ -5,33 +5,21 @@ declare(strict_types=1);
 namespace CommissionTask\Kernel;
 
 use CommissionTask\Exceptions\CommissionTaskKernelException;
-use Exception;
 
 abstract class Singleton
 {
-    /**
-     * @var array
-     */
-    private static $instances = [];
+    private static array $instances = [];
 
-    /**
-     * @return void
-     */
     protected function __construct()
     {
     }
 
-    /**
-     * @return void
-     */
     protected function __clone()
     {
     }
 
     /**
-     * @return mixed
-     *
-     * @throws Exception
+     * @throws CommissionTaskKernelException
      */
     public function __wakeup()
     {
@@ -40,10 +28,8 @@ abstract class Singleton
 
     /**
      * Return specified singleton.
-     *
-     * @return static
      */
-    public static function getInstance()
+    public static function getInstance(): static
     {
         $subclass = static::class;
 

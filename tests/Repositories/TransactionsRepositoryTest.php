@@ -21,7 +21,7 @@ final class TransactionsRepositoryTest extends TestCase
      */
     private $transactionsRepository;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $arrayStorage = new ArrayStorage();
         $this->transactionsRepository = new TransactionsRepository($arrayStorage);

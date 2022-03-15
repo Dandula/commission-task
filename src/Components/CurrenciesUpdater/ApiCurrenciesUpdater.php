@@ -17,51 +17,21 @@ use CommissionTask\Services\Date as DateService;
 class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
 {
     /**
-     * @var CurrenciesRepository
-     */
-    private $currenciesRepository;
-
-    /**
-     * @var CurrencyFactory
-     */
-    private $currencyFactory;
-
-    /**
-     * @var ApiCurrenciesDataFormatter
-     */
-    private $apiCurrenciesDataFormatter;
-
-    /**
-     * @var CurrenciesUpdaterDataFormatter
-     */
-    private $currenciesUpdaterDataFormatter;
-
-    /**
-     * @var DateService
-     */
-    private $dateService;
-
-    /**
      * Create a new API currency saver instance.
      */
     public function __construct(
-        CurrenciesRepository $currenciesRepository,
-        CurrencyFactory $currencyFactory,
-        ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
-        CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter,
-        DateService $dateService
+        private CurrenciesRepository $currenciesRepository,
+        private CurrencyFactory $currencyFactory,
+        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
+        private CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter,
+        private DateService $dateService
     ) {
-        $this->currenciesRepository = $currenciesRepository;
-        $this->currencyFactory = $currencyFactory;
-        $this->apiCurrenciesDataFormatter = $apiCurrenciesDataFormatter;
-        $this->currenciesUpdaterDataFormatter = $currenciesUpdaterDataFormatter;
-        $this->dateService = $dateService;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function updateCurrencies($currenciesData)
+    public function updateCurrencies($currenciesData): void
     {
         $baseCurrencyCode = $currenciesData[$this->apiCurrenciesDataFormatter::BASE_CURRENCY_CODE_FIELD];
         $rateUpdatedAt = $this->dateService->parseDate(
@@ -81,11 +51,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
             $isBase = $currencyCode === $applicationBaseCurrencyCode;
 
             if ($isNeedRateRecalculation) {
-                if ($isBase) {
-                    $currencyRate = self::BASE_CURRENCY_RATE;
-                } else {
-                    $currencyRate /= $applicationBaseCurrencyRate;
-                }
+                $currencyRate = $isBase ? self::BASE_CURRENCY_RATE : $currencyRate / $applicationBaseCurrencyRate;
             }
 
             $currencyData = [
@@ -101,20 +67,14 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
 
     /**
      * Update currency to currencies repository.
-     *
-     * @param mixed $currencyData
-     *
-     * @return void
      */
-    private function updateCurrency($currencyData)
+    private function updateCurrency(mixed $currencyData): void
     {
         $currency = $this->currencyFactory->makeCurrency($currencyData);
 
         $currencyCode = $currency->getCurrencyCode();
 
-        $updatingCurrencyFilterMethod = function (Currency $checkedCurrency) use ($currencyCode) {
-            return $checkedCurrency->getCurrencyCode() === $currencyCode;
-        };
+        $updatingCurrencyFilterMethod = fn (Currency $checkedCurrency) => $checkedCurrency->getCurrencyCode() === $currencyCode;
 
         $existingCurrencies = $this->currenciesRepository->filter($updatingCurrencyFilterMethod);
 

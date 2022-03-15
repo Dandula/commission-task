@@ -9,5 +9,5 @@ use CommissionTask\Exceptions\CommissionTaskOutOfBoundsException;
 
 final class OutOfBoundsStorageException extends CommissionTaskOutOfBoundsException implements StorageExceptionContract
 {
-    const DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE = "The data item with the ID %s at part '%s' doesn't exist";
+    public const DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE = "The data item with the ID %s at part '%s' doesn't exist";
 }

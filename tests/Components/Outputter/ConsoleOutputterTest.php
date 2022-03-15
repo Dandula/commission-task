@@ -19,7 +19,7 @@ final class ConsoleOutputterTest extends TestCase
      */
     private $consoleOutputter;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->consoleOutputter = new ConsoleOutputter();
     }
@@ -33,21 +33,6 @@ final class ConsoleOutputterTest extends TestCase
     public function testOutput(array $outputtingDataItems, string $expectation)
     {
         $this->expectOutputString($expectation);
-
-        call_user_func_array([$this->consoleOutputter, 'output'], $outputtingDataItems);
-    }
-
-    /**
-     * @param string[] $outputtingDataItems
-     * @param string $expectException
-     * @param string $expectExceptionMessage
-     *
-     * @dataProvider dataProviderForOutputFailureTesting
-     */
-    public function testOutputFailure(array $outputtingDataItems, string $expectException, string $expectExceptionMessage)
-    {
-        $this->expectException($expectException);
-        $this->expectExceptionMessage($expectExceptionMessage);
 
         call_user_func_array([$this->consoleOutputter, 'output'], $outputtingDataItems);
     }
@@ -80,32 +65,6 @@ final class ConsoleOutputterTest extends TestCase
             'print an array of strings with triple nesting (unsupported)' => [
                 [[['abc', 'def']]],
                 'abc' . ConsoleOutputter::LINE_SEPARATOR . 'def' . ConsoleOutputter::LINE_SEPARATOR
-            ],
-        ];
-    }
-
-    public function dataProviderForOutputFailureTesting(): array
-    {
-        return [
-            'print a boolean (unsupported)' => [
-                [true],
-                ConsoleOutputterException::class,
-                ConsoleOutputterException::UNSUPPORTED_OUTPUT_DATA_MESSAGE
-            ],
-            'print an integer (unsupported)' => [
-                [5],
-                ConsoleOutputterException::class,
-                ConsoleOutputterException::UNSUPPORTED_OUTPUT_DATA_MESSAGE
-            ],
-            'print a float (unsupported)' => [
-                [3.14],
-                ConsoleOutputterException::class,
-                ConsoleOutputterException::UNSUPPORTED_OUTPUT_DATA_MESSAGE
-            ],
-            'print an object (unsupported)' => [
-                [new stdClass()],
-                ConsoleOutputterException::class,
-                ConsoleOutputterException::UNSUPPORTED_OUTPUT_DATA_MESSAGE
             ],
         ];
     }

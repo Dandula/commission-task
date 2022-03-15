@@ -31,7 +31,7 @@ final class CurrenciesRepositoryTest extends TestCase
      */
     private $currenciesRepository;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $arrayStorage = new ArrayStorage();
         $this->currenciesRepository = new CurrenciesRepository($arrayStorage);
