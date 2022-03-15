@@ -20,7 +20,7 @@ trait FieldFormat
     {
         try {
             $this->dateService->parseDate($value, $format);
-        } catch (CommissionTaskArgumentException $exception) {
+        } catch (CommissionTaskArgumentException) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_DATE_COLUMN_MESSAGE);
         }
 

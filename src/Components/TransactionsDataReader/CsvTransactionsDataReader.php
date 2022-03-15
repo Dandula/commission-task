@@ -13,7 +13,7 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
     /**
      * @var string
      */
-    private $filePath;
+    private string $filePath;
 
     /**
      * Create a new CSV transactions data reader instance.

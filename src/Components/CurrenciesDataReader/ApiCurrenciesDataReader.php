@@ -7,6 +7,7 @@ namespace CommissionTask\Components\CurrenciesDataReader;
 use CommissionTask\Components\CurrenciesDataReader\Exceptions\ApiCurrenciesDataReaderException;
 use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader as CurrenciesDataReaderContract;
 use CommissionTask\Services\Config as ConfigService;
+use JsonException;
 
 class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
 {
@@ -54,12 +55,16 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
      */
     private function parseJsonString(string $currenciesData): array
     {
-        $currenciesData = json_decode($currenciesData, associative: true);
+        try {
+            $parsedCurrenciesData = json_decode($currenciesData, associative: true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            $parsedCurrenciesData = null;
+        }
 
-        if ($currenciesData === null) {
+        if ($parsedCurrenciesData === null) {
             throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE);
         }
 
-        return $currenciesData;
+        return $parsedCurrenciesData;
     }
 }

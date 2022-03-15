@@ -37,7 +37,7 @@ trait FieldFormat
     {
         try {
             $this->dateService->parseDate($value, $format);
-        } catch (CommissionTaskArgumentException $exception) {
+        } catch (CommissionTaskArgumentException) {
             throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::INCORRECT_DATE_FIELD_MESSAGE);
         }
 

@@ -16,10 +16,8 @@ abstract class Config
 
     /**
      * Init configuration.
-     *
-     * @return void
      */
-    public static function initConfig()
+    public static function initConfig(): void
     {
         self::initEnvironments();
         self::initConfigSet();

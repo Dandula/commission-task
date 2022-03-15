@@ -10,6 +10,7 @@ use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFee
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
 use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader;
 use CommissionTask\Entities\Transaction;
+use CommissionTask\Exceptions\CommissionTaskKernelException;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 use CommissionTask\Services\CommandLine as CommandLineService;
@@ -109,6 +110,8 @@ class Application
      * Calculate fees of transactions.
      *
      * @return string[]
+     *
+     * @throws CommissionTaskKernelException
      */
     private function calculateTransactionsFees(): array
     {
@@ -141,6 +144,8 @@ class Application
      * Set the base path for the application.
      *
      * @return $this
+     *
+     * @throws CommissionTaskKernelException
      */
     private function setBasePath(string $basePath): self
     {
