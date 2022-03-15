@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesDataReader;
 
-use CommissionTask\Components\CurrenciesDataReader\Exceptions\ApiCurrenciesDataReaderException;
+use CommissionTask\Components\CurrenciesDataReader\Exceptions\CurrenciesDataReaderException;
 use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader as CurrenciesDataReaderContract;
 use CommissionTask\Services\Config as ConfigService;
 use JsonException;
@@ -24,7 +24,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     /**
      * Read JSON string.
      *
-     * @throws ApiCurrenciesDataReaderException
+     * @throws CurrenciesDataReaderException
      */
     private function readJsonString(): string
     {
@@ -42,7 +42,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
         curl_close($curl);
 
         if ($currenciesData === false) {
-            throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::FAILED_RECEIVE_DATA_MESSAGE);
+            throw new CurrenciesDataReaderException(CurrenciesDataReaderException::FAILED_RECEIVE_DATA_MESSAGE);
         }
 
         return $currenciesData;
@@ -51,7 +51,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     /**
      * Parse JSON string.
      *
-     * @throws ApiCurrenciesDataReaderException
+     * @throws CurrenciesDataReaderException
      */
     private function parseJsonString(string $currenciesData): array
     {
@@ -62,7 +62,7 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
         }
 
         if ($parsedCurrenciesData === null) {
-            throw new ApiCurrenciesDataReaderException(ApiCurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE);
+            throw new CurrenciesDataReaderException(CurrenciesDataReaderException::INVALID_JSON_DATA_MESSAGE);
         }
 
         return $parsedCurrenciesData;

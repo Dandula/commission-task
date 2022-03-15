@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionDataValidator\Interfaces;
 
-use CommissionTask\Components\TransactionDataValidator\Exceptions\Interfaces\TransactionDataValidatorException;
+use CommissionTask\Components\TransactionDataValidator\Exceptions\TransactionDataValidatorException;
 
 interface TransactionDataValidator
 {

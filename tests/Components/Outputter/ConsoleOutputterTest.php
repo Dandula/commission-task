@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Tests\Components\Outputter;
 
 use CommissionTask\Components\Outputter\ConsoleOutputter;
-use CommissionTask\Components\Outputter\Exceptions\ConsoleOutputterException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 /**
  * @coversDefaultClass ConsoleOutputter

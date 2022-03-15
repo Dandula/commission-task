@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\Storage\Interfaces;
 
-use CommissionTask\Components\Storage\Exceptions\Interfaces\StorageException;
+use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
 
 interface Storage
 {
@@ -16,7 +16,7 @@ interface Storage
     /**
      * Find data item at storage by given ID.
      *
-     * @throws StorageException
+     * @throws OutOfBoundsStorageException
      */
     public function findById(string $part, int|string $id): mixed;
 
@@ -33,7 +33,7 @@ interface Storage
     /**
      * Update data item at storage by given ID.
      *
-     * @throws StorageException
+     * @throws OutOfBoundsStorageException
      */
     public function update(string $part, int|string $id, mixed $data): void;
 

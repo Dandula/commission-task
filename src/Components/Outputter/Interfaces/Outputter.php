@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\Outputter\Interfaces;
 
-use CommissionTask\Components\Outputter\Exceptions\Interfaces\OutputterException;
+use CommissionTask\Components\Outputter\Exceptions\OutputterException;
 
 interface Outputter
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesUpdater\Interfaces;
 
-use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\CurrenciesUpdaterException;
+use CommissionTask\Components\CurrenciesUpdater\Exceptions\CurrenciesUpdaterException;
 
 interface CurrenciesUpdater
 {

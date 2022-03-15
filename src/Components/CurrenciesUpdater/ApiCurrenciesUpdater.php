@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesUpdater;
 
-use CommissionTask\Components\CurrenciesUpdater\Exceptions\ApiCurrenciesUpdaterException;
+use CommissionTask\Components\CurrenciesUpdater\Exceptions\CurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
 use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
@@ -98,14 +98,14 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      *
      * @param float[] $rates
      *
-     * @throws ApiCurrenciesUpdaterException
+     * @throws CurrenciesUpdaterException
      */
     private function getApplicationBaseCurrencyRate(array $rates): float
     {
         $applicationBaseCurrencyCode = $this->getApplicationBaseCurrencyCode();
 
         if (empty($rates[$applicationBaseCurrencyCode])) {
-            throw new ApiCurrenciesUpdaterException(ApiCurrenciesUpdaterException::NO_BASE_CURRENCY_RATE_MESSAGE);
+            throw new CurrenciesUpdaterException(CurrenciesUpdaterException::NO_BASE_CURRENCY_RATE_MESSAGE);
         }
 
         return $rates[$applicationBaseCurrencyCode];

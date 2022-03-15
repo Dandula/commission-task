@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Tests\Repositories;
 
 use CommissionTask\Components\Storage\ArrayStorage;
-use CommissionTask\Components\Storage\Exceptions\Interfaces\StorageException;
+use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Repositories\TransactionsRepository;
 use DateTime;
@@ -129,7 +129,7 @@ final class TransactionsRepositoryTest extends TestCase
      */
     public function testReadFailure(TransactionsRepository $transactionsRepository)
     {
-        $this->expectException(StorageException::class);
+        $this->expectException(OutOfBoundsStorageException::class);
 
         $transactionsRepository->read(1);
     }

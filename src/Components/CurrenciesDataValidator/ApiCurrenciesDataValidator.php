@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesDataValidator;
 
-use CommissionTask\Components\CurrenciesDataValidator\Exceptions\ApiCurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidator\Exceptions\CurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorsContract;
 use CommissionTask\Components\CurrenciesDataValidator\Traits\FieldFormat;
@@ -42,7 +41,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws ApiCurrenciesDataValidatorException|CurrenciesDataValidatorException
+     * @throws CurrenciesDataValidatorException|CurrenciesDataValidatorException
      */
     private function validateMainFields(): self
     {
@@ -57,7 +56,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws ApiCurrenciesDataValidatorException
+     * @throws CurrenciesDataValidatorException
      */
     private function validateMainFieldsExistence(): self
     {
@@ -65,7 +64,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
             $this->apiCurrenciesDataFormatter::MAIN_FIELDS,
             array_keys($this->validatedData)
         )) {
-            throw new ApiCurrenciesDataValidatorException(ApiCurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
+            throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
         }
 
         return $this;
@@ -76,7 +75,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws ApiCurrenciesDataValidatorException
+     * @throws CurrenciesDataValidatorException
      */
     private function validateBaseCurrencyCodeMainField(): self
     {
@@ -117,7 +116,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      *
      * @return $this
      *
-     * @throws ApiCurrenciesDataValidatorException|CurrenciesDataValidatorException
+     * @throws CurrenciesDataValidatorException|CurrenciesDataValidatorException
      */
     private function validateCurrenciesRates(): self
     {

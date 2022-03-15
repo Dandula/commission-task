@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionsDataReader;
 
-use CommissionTask\Components\TransactionsDataReader\Exceptions\CsvTransactionsDataReaderException;
+use CommissionTask\Components\TransactionsDataReader\Exceptions\TransactionsDataReaderException;
 use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
 use CommissionTask\Services\Filesystem as FilesystemService;
 
@@ -45,16 +45,16 @@ class CsvTransactionsDataReader implements TransactionsDataReaderContract
      *
      * @return string[]
      *
-     * @throws CsvTransactionsDataReaderException
+     * @throws TransactionsDataReaderException
      */
     private function readCsvStrings(): array
     {
         if (!isset($this->filePath)) {
-            throw new CsvTransactionsDataReaderException(CsvTransactionsDataReaderException::UNDEFINED_CSV_FILEPATH_MESSAGE);
+            throw new TransactionsDataReaderException(TransactionsDataReaderException::UNDEFINED_CSV_FILEPATH_MESSAGE);
         }
 
         if (!$this->filesystemService->isFileExists($this->filePath)) {
-            throw new CsvTransactionsDataReaderException(sprintf(CsvTransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $this->filePath));
+            throw new TransactionsDataReaderException(sprintf(TransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $this->filePath));
         }
 
         return $this->filesystemService->readFile($this->filePath);

@@ -15,6 +15,9 @@ class CommissionTaskException extends RuntimeException implements CommissionTask
 
     public const UNDEFINED_CURRENCY_RATE_MESSAGE = "Undetermined currency '%s' rate";
 
+    public const UNDEFINED_TRANSACTION_TYPE_MESSAGE = 'Undefined transaction type';
+    public const UNDEFINED_USER_TYPE_MESSAGE = 'Undefined user type';
+
     /**
      * Create a basic application exception.
      */

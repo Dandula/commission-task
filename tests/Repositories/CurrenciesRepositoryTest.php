@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Tests\Repositories;
 
 use CommissionTask\Components\Storage\ArrayStorage;
-use CommissionTask\Components\Storage\Exceptions\Interfaces\StorageException;
+use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Repositories\CurrenciesRepository;
 use DateTime;
@@ -160,7 +160,7 @@ final class CurrenciesRepositoryTest extends TestCase
      */
     public function testReadFailure(CurrenciesRepository $currenciesRepository)
     {
-        $this->expectException(StorageException::class);
+        $this->expectException(OutOfBoundsStorageException::class);
 
         $currenciesRepository->read(1);
     }
@@ -174,7 +174,7 @@ final class CurrenciesRepositoryTest extends TestCase
     {
         $updatedCurrency = $this->getCurrencyUsd();
 
-        $this->expectException(StorageException::class);
+        $this->expectException(OutOfBoundsStorageException::class);
 
         $currenciesRepository->update(1, $updatedCurrency);
     }
@@ -232,7 +232,7 @@ final class CurrenciesRepositoryTest extends TestCase
         ];
     }
 
-    private static function getCurrencyEur(): Currency
+    private function getCurrencyEur(): Currency
     {
         $currency = new Currency();
         $currency->setCurrencyCode(self::CURRENCY_CODE_EUR);
@@ -243,7 +243,7 @@ final class CurrenciesRepositoryTest extends TestCase
         return $currency;
     }
 
-    private static function getCurrencyUsd(): Currency
+    private function getCurrencyUsd(): Currency
     {
         $currency = new Currency();
         $currency->setCurrencyCode(self::CURRENCY_CODE_USD);
@@ -254,7 +254,7 @@ final class CurrenciesRepositoryTest extends TestCase
         return $currency;
     }
 
-    private static function getCurrencyJpy(): Currency
+    private function getCurrencyJpy(): Currency
     {
         $currency = new Currency();
         $currency->setCurrencyCode(self::CURRENCY_CODE_JPY);

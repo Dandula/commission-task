@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionsDataReader\Interfaces;
 
-use CommissionTask\Components\TransactionsDataReader\Exceptions\Interfaces\TransactionsDataReaderException;
+use CommissionTask\Components\TransactionsDataReader\Exceptions\TransactionsDataReaderException;
 
 interface TransactionsDataReader
 {

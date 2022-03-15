@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesDataReader\Interfaces;
 
-use CommissionTask\Components\CurrenciesDataReader\Exceptions\Interfaces\CurrenciesDataReaderException;
+use CommissionTask\Components\CurrenciesDataReader\Exceptions\CurrenciesDataReaderException;
 
 interface CurrenciesDataReader
 {

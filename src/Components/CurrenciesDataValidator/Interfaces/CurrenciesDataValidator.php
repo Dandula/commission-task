@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\CurrenciesDataValidator\Interfaces;
 
-use CommissionTask\Components\CurrenciesDataValidator\Exceptions\Interfaces\CurrenciesDataValidatorException;
+use CommissionTask\Components\CurrenciesDataValidator\Exceptions\CurrenciesDataValidatorException;
 
 interface CurrenciesDataValidator
 {

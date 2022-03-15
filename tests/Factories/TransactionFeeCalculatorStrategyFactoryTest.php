@@ -8,6 +8,7 @@ use CommissionTask\Components\TransactionFeeCalculator\Strategies\DepositStrateg
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawPrivateStrategy;
 use CommissionTask\Entities\Transaction;
+use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
 use CommissionTask\Factories\TransactionFeeCalculatorStrategyFactory;
 use CommissionTask\Repositories\TransactionsRepository;
@@ -105,13 +106,13 @@ final class TransactionFeeCalculatorStrategyFactoryTest extends TestCase
         return [
             'get strategy for transaction #5' => [
                 $this->getTransaction5(),
-                TransactionFeeCalculatorStrategyFactoryException::class,
-                TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_TRANSACTION_TYPE_MESSAGE,
+                CommissionTaskException::class,
+                CommissionTaskException::UNDEFINED_TRANSACTION_TYPE_MESSAGE,
             ],
             'get strategy for transaction #6' => [
                 $this->getTransaction6(),
-                TransactionFeeCalculatorStrategyFactoryException::class,
-                TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_USER_TYPE_MESSAGE,
+                CommissionTaskException::class,
+                CommissionTaskException::UNDEFINED_USER_TYPE_MESSAGE,
             ],
         ];
     }

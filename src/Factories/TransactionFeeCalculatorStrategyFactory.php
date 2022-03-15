@@ -9,7 +9,7 @@ use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\Tra
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawPrivateStrategy;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
+use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
 use CommissionTask\Repositories\TransactionsRepository;
 use CommissionTask\Services\Currency as CurrencyService;
@@ -45,13 +45,13 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
                         $this->currencyService
                     ),
                     Transaction::USER_TYPE_BUSINESS => new WithdrawBusinessStrategy(),
-                    default => throw new TransactionFeeCalculatorStrategyFactoryException(TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_USER_TYPE_MESSAGE),
+                    default => throw new CommissionTaskException(CommissionTaskException::UNDEFINED_USER_TYPE_MESSAGE),
                 };
                 // no break
             case Transaction::TYPE_DEPOSIT:
                 return new DepositStrategy();
             default:
-                throw new TransactionFeeCalculatorStrategyFactoryException(TransactionFeeCalculatorStrategyFactoryException::UNDEFINED_TRANSACTION_TYPE_MESSAGE);
+                throw new CommissionTaskException(CommissionTaskException::UNDEFINED_TRANSACTION_TYPE_MESSAGE);
         }
     }
 }

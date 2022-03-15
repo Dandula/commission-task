@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionDataValidator\Exceptions;
 
-use CommissionTask\Components\TransactionDataValidator\Exceptions\Interfaces\TransactionDataValidatorException as TransactionDataValidatorExceptionContract;
 use CommissionTask\Exceptions\CommissionTaskException;
 
-final class TransactionDataValidatorException extends CommissionTaskException implements TransactionDataValidatorExceptionContract
+final class TransactionDataValidatorException extends CommissionTaskException
 {
     public const REQUIRED_FIELD_NOT_SET_MESSAGE = 'Required column is not set';
 
