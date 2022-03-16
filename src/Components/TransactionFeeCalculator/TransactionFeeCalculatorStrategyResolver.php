@@ -2,28 +2,25 @@
 
 declare(strict_types=1);
 
-namespace CommissionTask\Factories;
+namespace CommissionTask\Components\TransactionFeeCalculator;
 
+use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculatorStrategyResolver as TransactionFeeCalculatorStrategyResolverContract;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\DepositStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\TransactionFeeCalculateStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawPrivateStrategy;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\CommissionTaskException;
-use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
-use CommissionTask\Repositories\TransactionsRepository;
-use CommissionTask\Services\Currency as CurrencyService;
-use CommissionTask\Services\Date as DateService;
 
-class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculatorStrategyFactoryContract
+class TransactionFeeCalculatorStrategyResolver implements TransactionFeeCalculatorStrategyResolverContract
 {
     /**
      * Create a new transaction fee calculator strategy factory instance.
      */
     public function __construct(
-        private TransactionsRepository $transactionsRepository,
-        private DateService $dateService,
-        private CurrencyService $currencyService
+        private DepositStrategy $depositStrategy,
+        private WithdrawPrivateStrategy $withdrawPrivateStrategy,
+        private WithdrawBusinessStrategy $withdrawBusinessStrategy
     ) {
     }
 
@@ -39,17 +36,13 @@ class TransactionFeeCalculatorStrategyFactory implements TransactionFeeCalculato
                 $transactionUserType = $transaction->getUserType();
 
                 return match ($transactionUserType) {
-                    Transaction::USER_TYPE_PRIVATE => new WithdrawPrivateStrategy(
-                        $this->transactionsRepository,
-                        $this->dateService,
-                        $this->currencyService
-                    ),
-                    Transaction::USER_TYPE_BUSINESS => new WithdrawBusinessStrategy(),
+                    Transaction::USER_TYPE_PRIVATE => $this->withdrawPrivateStrategy,
+                    Transaction::USER_TYPE_BUSINESS => $this->withdrawBusinessStrategy,
                     default => throw new CommissionTaskException(CommissionTaskException::UNDEFINED_USER_TYPE_MESSAGE),
                 };
                 // no break
             case Transaction::TYPE_DEPOSIT:
-                return new DepositStrategy();
+                return $this->depositStrategy;
             default:
                 throw new CommissionTaskException(CommissionTaskException::UNDEFINED_TRANSACTION_TYPE_MESSAGE);
         }

@@ -20,14 +20,17 @@ use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
 use CommissionTask\Components\TransactionDataValidator\CsvTransactionDataValidator;
 use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator as TransactionFeeCalculatorContract;
+use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculatorStrategyResolver as TransactionFeeCalculatorStrategyResolverContract;
+use CommissionTask\Components\TransactionFeeCalculator\Strategies\DepositStrategy;
+use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawBusinessStrategy;
+use CommissionTask\Components\TransactionFeeCalculator\Strategies\WithdrawPrivateStrategy;
 use CommissionTask\Components\TransactionFeeCalculator\TransactionFeeCalculator;
+use CommissionTask\Components\TransactionFeeCalculator\TransactionFeeCalculatorStrategyResolver;
 use CommissionTask\Components\TransactionSaver\CsvTransactionSaver;
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver as TransactionSaverContract;
 use CommissionTask\Components\TransactionsDataReader\CsvTransactionsDataReader;
 use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader as TransactionsDataReaderContract;
 use CommissionTask\Exceptions\CommissionTaskKernelException;
-use CommissionTask\Factories\Interfaces\TransactionFeeCalculatorStrategyFactory as TransactionFeeCalculatorStrategyFactoryContract;
-use CommissionTask\Factories\TransactionFeeCalculatorStrategyFactory;
 use CommissionTask\Repositories\CurrenciesRepository;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository as CurrenciesRepositoryContract;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository as TransactionsRepositoryContract;
@@ -96,13 +99,21 @@ class Container
             $this->get(DateService::class)
         ));
 
-        $this->put(TransactionFeeCalculatorStrategyFactoryContract::class, new TransactionFeeCalculatorStrategyFactory(
+        $this->put(DepositStrategy::class, new DepositStrategy());
+        $this->put(WithdrawPrivateStrategy::class, new WithdrawPrivateStrategy(
             $this->get(TransactionsRepositoryContract::class),
             $this->get(DateService::class),
             $this->get(CurrencyService::class)
         ));
+        $this->put(WithdrawBusinessStrategy::class, new WithdrawBusinessStrategy());
+
+        $this->put(TransactionFeeCalculatorStrategyResolverContract::class, new TransactionFeeCalculatorStrategyResolver(
+            $this->get(DepositStrategy::class),
+            $this->get(WithdrawPrivateStrategy::class),
+            $this->get(WithdrawBusinessStrategy::class)
+        ));
         $this->put(TransactionFeeCalculatorContract::class, new TransactionFeeCalculator(
-            $this->get(TransactionFeeCalculatorStrategyFactoryContract::class)
+            $this->get(TransactionFeeCalculatorStrategyResolverContract::class)
         ));
         $this->put(OutputterContract::class, new ConsoleOutputter());
     }

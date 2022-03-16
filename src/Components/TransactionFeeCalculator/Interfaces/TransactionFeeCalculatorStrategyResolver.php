@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace CommissionTask\Factories\Interfaces;
+namespace CommissionTask\Components\TransactionFeeCalculator\Interfaces;
 
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\TransactionFeeCalculateStrategy;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Factories\Exceptions\TransactionFeeCalculatorStrategyFactoryException;
+use CommissionTask\Exceptions\CommissionTaskException;
 
-interface TransactionFeeCalculatorStrategyFactory
+interface TransactionFeeCalculatorStrategyResolver
 {
     /**
-     * Get transaction fee calculator strategy.
+     * Resolve transaction fee calculator strategy.
      *
-     * @throws TransactionFeeCalculatorStrategyFactoryException
+     * @throws CommissionTaskException
      */
     public function getTransactionFeeCalculatorStrategy(Transaction $transaction): TransactionFeeCalculateStrategy;
 }

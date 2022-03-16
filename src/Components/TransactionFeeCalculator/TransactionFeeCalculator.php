@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionFeeCalculator;
 
 use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator as TransactionFeeCalculatorContract;
+use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculatorStrategyResolver as TransactionFeeCalculatorStrategyResolverContract;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Factories\TransactionFeeCalculatorStrategyFactory;
 
 class TransactionFeeCalculator implements TransactionFeeCalculatorContract
 {
@@ -14,7 +14,7 @@ class TransactionFeeCalculator implements TransactionFeeCalculatorContract
      * Create a new transaction fee calculator instance.
      */
     public function __construct(
-        private TransactionFeeCalculatorStrategyFactory $transactionFeeCalculatorStrategyFactory
+        private TransactionFeeCalculatorStrategyResolverContract $transactionFeeCalculatorStrategyFactory
     ) {
     }
 
