@@ -29,7 +29,7 @@ class Date
             throw new CommissionTaskArgumentException(CommissionTaskArgumentException::INVALID_DATE_FORMAT_MESSAGE);
         }
 
-        return $dateTime;
+        return $this->getStartOfDay($dateTime);
     }
 
     /**

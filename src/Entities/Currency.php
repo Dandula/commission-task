@@ -6,12 +6,18 @@ namespace CommissionTask\Entities;
 
 use DateTime;
 
-class Currency
+class Currency extends BaseEntity
 {
-    private string $currencyCode;
-    private bool $isBase;
-    private float $rate;
-    private DateTime $rateUpdatedAt;
+    /**
+     * Create currency entity instance.
+     */
+    public function __construct(
+        private string $currencyCode,
+        private bool $isBase,
+        private float $rate,
+        private DateTime $rateUpdatedAt
+    ) {
+    }
 
     /**
      * Currency code setter.

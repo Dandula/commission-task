@@ -6,7 +6,7 @@ namespace CommissionTask\Entities;
 
 use DateTime;
 
-class Transaction
+class Transaction extends BaseEntity
 {
     public const TYPE_DEPOSIT = 'deposit';
     public const TYPE_WITHDRAW = 'withdraw';
@@ -14,12 +14,18 @@ class Transaction
     public const USER_TYPE_PRIVATE = 'private';
     public const USER_TYPE_BUSINESS = 'business';
 
-    private DateTime $date;
-    private int $userId;
-    private string $userType;
-    private string $type;
-    private string $amount;
-    private string $currencyCode;
+    /**
+     * Create currency entity instance.
+     */
+    public function __construct(
+        private DateTime $date,
+        private int $userId,
+        private string $userType,
+        private string $type,
+        private string $amount,
+        private string $currencyCode
+    ) {
+    }
 
     /**
      * Date setter.

@@ -10,9 +10,6 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
 {
-    /**
-     * @var string
-     */
     private string $filePath;
 
     /**

@@ -9,7 +9,6 @@ use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as 
 use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Entities\Currency;
-use CommissionTask\Factories\Interfaces\CurrencyFactory;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
 use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Date as DateService;
@@ -21,7 +20,6 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function __construct(
         private CurrenciesRepository $currenciesRepository,
-        private CurrencyFactory $currencyFactory,
         private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
         private CurrenciesUpdaterDataFormatter $currenciesUpdaterDataFormatter,
         private DateService $dateService
@@ -54,27 +52,24 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
                 $currencyRate = $isBase ? self::BASE_CURRENCY_RATE : $currencyRate / $applicationBaseCurrencyRate;
             }
 
-            $currencyData = [
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_CURRENCY_CODE => $currencyCode,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_IS_BASE => $isBase,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE => $currencyRate,
-                $this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE_UPDATED_AT => $rateUpdatedAt,
-            ];
+            $currency = new Currency(
+                currencyCode: $currencyCode,
+                isBase: $isBase,
+                rate: $currencyRate,
+                rateUpdatedAt: $rateUpdatedAt
+            );
 
-            $this->updateCurrency($currencyData);
+            $this->updateCurrency($currency);
         }
     }
 
     /**
      * Update currency to currencies repository.
      */
-    private function updateCurrency(mixed $currencyData): void
+    private function updateCurrency(Currency $currency): void
     {
-        $currency = $this->currencyFactory->makeCurrency($currencyData);
-
-        $currencyCode = $currency->getCurrencyCode();
-
-        $updatingCurrencyFilterMethod = fn (Currency $checkedCurrency) => $checkedCurrency->getCurrencyCode() === $currencyCode;
+        $updatingCurrencyFilterMethod =
+            fn (Currency $checkedCurrency) => $checkedCurrency->getCurrencyCode() === $currency->getCurrencyCode();
 
         $existingCurrencies = $this->currenciesRepository->filter($updatingCurrencyFilterMethod);
 
@@ -109,5 +104,18 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
         }
 
         return $rates[$applicationBaseCurrencyCode];
+    }
+
+    /**
+     * Make currency instance.
+     */
+    private function makeCurrency(array $currencyData): Currency
+    {
+        return new Currency(
+            $currencyData[$this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_CURRENCY_CODE],
+            $currencyData[$this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_IS_BASE],
+            $currencyData[$this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE],
+            $currencyData[$this->currenciesUpdaterDataFormatter::CURRENCIES_RATES_RATE_UPDATED_AT]
+        );
     }
 }
