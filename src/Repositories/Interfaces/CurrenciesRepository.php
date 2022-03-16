@@ -46,4 +46,9 @@ interface CurrenciesRepository
      * Delete all currencies.
      */
     public function deleteAll(): void;
+
+    /**
+     * Get currency by currency code.
+     */
+    public function getCurrencyByCode(string $currencyCode): ?Currency;
 }

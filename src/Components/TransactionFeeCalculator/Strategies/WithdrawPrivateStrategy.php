@@ -22,6 +22,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     public function __construct(
         private TransactionsRepository $transactionsRepository,
+        private MathService $mathService,
         private DateService $dateService,
         private CurrencyService $currencyService
     ) {
@@ -33,17 +34,16 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $mathService = new MathService(
-            $this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber()
-        );
 
         $influentialTransactions = $this->getInfluentialTransactions($transaction);
 
-        $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions, $mathService);
+        $taxableAmountScale = $this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber();
+        $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions, $taxableAmountScale);
 
-        $feeAmount = $mathService->mul(
+        $feeAmount = $this->mathService->mul(
             $taxableAmount,
-            ConfigService::getConfigByName('feeCalculator.feeRateWithdrawPrivate')
+            ConfigService::getConfigByName('feeCalculator.feeRateWithdrawPrivate'),
+            $taxableAmountScale
         );
 
         return $this->ceilAmount($feeAmount);
@@ -56,19 +56,13 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getInfluentialTransactions(Transaction $transaction): array
     {
-        $transactionUserId = $transaction->getUserId();
         $transactionDate = $transaction->getDate();
-        $transactionDateStartOfWeek = $this->dateService->getStartOfWeek($transactionDate);
-        $transactionType = $transaction::TYPE_WITHDRAW;
-        $transactionUserType = $transaction::USER_TYPE_PRIVATE;
 
-        $influentialTransactionsFilterMethod = fn (Transaction $checkedTransaction) => $checkedTransaction->getUserId() === $transactionUserId
-            && $checkedTransaction->getDate() >= $transactionDateStartOfWeek
-            && $checkedTransaction->getDate() < $transactionDate
-            && $checkedTransaction->getType() === $transactionType
-            && $checkedTransaction->getUserType() === $transactionUserType;
-
-        return $this->transactionsRepository->filter($influentialTransactionsFilterMethod);
+        return $this->transactionsRepository->getUserWithdrawTransactionsBetweenDates(
+            $transaction->getUserId(),
+            $this->dateService->getStartOfWeek($transactionDate),
+            $transactionDate
+        );
     }
 
     /**
@@ -79,34 +73,26 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     private function getTaxableAmount(
         Transaction $transaction,
         array $influentialTransactions,
-        MathService $transactionMathService
+        int $taxableAmountScale
     ): string {
         $transactionAmount = $transaction->getAmount();
 
         // If more than 3 transactions charge commission for the full amount
-        if (
-            count($influentialTransactions)
-            >= ConfigService::getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate')
-        ) {
+        if (count($influentialTransactions) >= ConfigService::getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate')) {
             return $transactionAmount;
         }
 
-        $nontaxableAmountMathService = new MathService(
-            $this->determineScaleOfAmount(ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate'))
-            + $this->getRoundedOffDigitsNumber()
-        );
+        $nontaxableAmountScale = $this->determineScaleOfAmount(ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate'))
+            + $this->getRoundedOffDigitsNumber();
 
         // Calculate the non-taxable amount in the currency of the non-taxable limit
         $lostNontaxableAmount = $this->calculateLostNontaxableAmount(
             $influentialTransactions,
-            $nontaxableAmountMathService
+            $nontaxableAmountScale
         );
 
         // If the non-taxable limit is exhausted, charge the commission for the full amount
-        if (
-            $nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
-            === $nontaxableAmountMathService::COMP_RESULT_EQ
-        ) {
+        if ($this->mathService->comp($lostNontaxableAmount, $this->mathService::ZERO, $nontaxableAmountScale) === $this->mathService::COMP_RESULT_EQ) {
             return $transactionAmount;
         }
 
@@ -117,8 +103,8 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             $transactionAmount,
             $lostNontaxableAmount,
             $transactionCurrencyCode,
-            $transactionMathService,
-            $nontaxableAmountMathService
+            $taxableAmountScale,
+            $nontaxableAmountScale
         );
     }
 
@@ -127,27 +113,30 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      *
      * @param Transaction[] $influentialTransactions
      */
-    private function calculateLostNontaxableAmount(
-        array $influentialTransactions,
-        MathService $nontaxableAmountMathService
-    ): string {
+    private function calculateLostNontaxableAmount(array $influentialTransactions, int $nontaxableAmountScale): string
+    {
         $lostNontaxableAmount = ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate');
 
         // Subtracts the amount of previous transactions for the week from the non-taxable amount
-        while ($influentialTransactions
-            && $nontaxableAmountMathService->comp($lostNontaxableAmount, $nontaxableAmountMathService::ZERO)
-                === $nontaxableAmountMathService::COMP_RESULT_GT) {
+        while (
+            $influentialTransactions
+            && $this->mathService->comp($lostNontaxableAmount, $this->mathService::ZERO, $nontaxableAmountScale) === $this->mathService::COMP_RESULT_GT
+        ) {
             $influentialTransaction = array_shift($influentialTransactions);
             $influentialTransactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
                 $influentialTransaction->getAmount(),
                 $influentialTransaction->getCurrencyCode(),
                 ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate'),
-                $nontaxableAmountMathService
+                $nontaxableAmountScale
             );
-            $lostNontaxableAmount = $nontaxableAmountMathService->sub($lostNontaxableAmount, $influentialTransactionAmountAtNontaxableCurrency);
+            $lostNontaxableAmount = $this->mathService->sub(
+                $lostNontaxableAmount,
+                $influentialTransactionAmountAtNontaxableCurrency,
+                $nontaxableAmountScale
+            );
         }
 
-        return $nontaxableAmountMathService->max($lostNontaxableAmount, $nontaxableAmountMathService::ZERO);
+        return $this->mathService->max($lostNontaxableAmount, $this->mathService::ZERO, $nontaxableAmountScale);
     }
 
     /**
@@ -157,8 +146,8 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         string $transactionAmount,
         string $lostNontaxableAmount,
         string $transactionCurrencyCode,
-        MathService $transactionMathService,
-        MathService $nontaxableAmountMathService
+        int $taxableAmountScale,
+        int $nontaxableAmountScale
     ): string {
         $nontaxableCurrencyCode = ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate');
 
@@ -167,17 +156,19 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             $transactionAmount,
             $transactionCurrencyCode,
             $nontaxableCurrencyCode,
-            $nontaxableAmountMathService
+            $nontaxableAmountScale
         );
 
         // Calculate the part of the transaction amount taxed by the commission in the currency of the non-taxable limit
-        $taxableAmountAtNontaxableCurrency = $nontaxableAmountMathService->sub(
+        $taxableAmountAtNontaxableCurrency = $this->mathService->sub(
             $transactionAmountAtNontaxableCurrency,
-            $lostNontaxableAmount
+            $lostNontaxableAmount,
+            $nontaxableAmountScale
         );
-        $taxableAmountAtNontaxableCurrency = $nontaxableAmountMathService->max(
+        $taxableAmountAtNontaxableCurrency = $this->mathService->max(
             $taxableAmountAtNontaxableCurrency,
-            $nontaxableAmountMathService::ZERO
+            $this->mathService::ZERO,
+            $nontaxableAmountScale
         );
 
         // Convert the taxable amount to the currency of the transaction
@@ -185,7 +176,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             $taxableAmountAtNontaxableCurrency,
             $nontaxableCurrencyCode,
             $transactionCurrencyCode,
-            $transactionMathService
+            $taxableAmountScale
         );
 
         // Round up the taxable amount and return it

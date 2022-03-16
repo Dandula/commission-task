@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Repositories\Interfaces;
 
 use CommissionTask\Entities\Transaction;
+use DateTime;
 
 interface TransactionsRepository
 {
@@ -41,4 +42,11 @@ interface TransactionsRepository
      * Delete all transactions.
      */
     public function deleteAll(): void;
+
+    /**
+     * Get withdraw transactions of user from one date to another date.
+     *
+     * @return Transaction[]
+     */
+    public function getUserWithdrawTransactionsBetweenDates(int $userId, DateTime $fromDate, DateTime $toDate): array;
 }

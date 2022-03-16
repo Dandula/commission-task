@@ -12,7 +12,6 @@ use CommissionTask\Components\CurrenciesUpdater\ApiCurrenciesUpdater;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
 use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
-use CommissionTask\Components\DataFormatter\CurrenciesUpdaterDataFormatter;
 use CommissionTask\Components\Outputter\ConsoleOutputter;
 use CommissionTask\Components\Outputter\Interfaces\Outputter as OutputterContract;
 use CommissionTask\Components\Storage\ArrayStorage;
@@ -39,6 +38,7 @@ use CommissionTask\Services\CommandLine as CommandLineService;
 use CommissionTask\Services\Currency as CurrencyService;
 use CommissionTask\Services\Date as DateService;
 use CommissionTask\Services\Filesystem as FilesystemService;
+use CommissionTask\Services\Math as MathService;
 
 class Container
 {
@@ -52,14 +52,13 @@ class Container
         // Put singletons
         $this->put(FilesystemService::class, FilesystemService::getInstance());
 
-        // Put classes instances
+        // Put other classes instances
         $this->put(CommandLineService::class, new CommandLineService());
+        $this->put(MathService::class, new MathService());
         $this->put(DateService::class, new DateService());
         $this->put(CsvTransactionDataFormatter::class, new CsvTransactionDataFormatter());
         $this->put(ApiCurrenciesDataFormatter::class, new ApiCurrenciesDataFormatter());
-        $this->put(CurrenciesUpdaterDataFormatter::class, new CurrenciesUpdaterDataFormatter());
 
-        // Put implemented classes instances
         $this->put(StorageContract::class, new ArrayStorage());
         $this->put(TransactionsRepositoryContract::class, new TransactionsRepository(
             $this->get(StorageContract::class)
@@ -86,27 +85,29 @@ class Container
         ));
         $this->put(CurrenciesUpdaterContract::class, new ApiCurrenciesUpdater(
             $this->get(CurrenciesRepositoryContract::class),
-            $this->get(ApiCurrenciesDataFormatter::class),
-            $this->get(CurrenciesUpdaterDataFormatter::class),
-            $this->get(DateService::class)
+            $this->get(ApiCurrenciesDataFormatter::class)
         ));
 
+        // Put classes of fee calculations instances
         $this->put(CurrencyService::class, new CurrencyService(
             $this->get(CurrenciesRepositoryContract::class),
             $this->get(CurrenciesDataReaderContract::class),
             $this->get(CurrenciesDataValidatorContract::class),
             $this->get(CurrenciesUpdaterContract::class),
-            $this->get(DateService::class)
+            $this->get(MathService::class)
         ));
-
-        $this->put(DepositStrategy::class, new DepositStrategy());
+        $this->put(DepositStrategy::class, new DepositStrategy(
+            $this->get(MathService::class)
+        ));
         $this->put(WithdrawPrivateStrategy::class, new WithdrawPrivateStrategy(
             $this->get(TransactionsRepositoryContract::class),
+            $this->get(MathService::class),
             $this->get(DateService::class),
             $this->get(CurrencyService::class)
         ));
-        $this->put(WithdrawBusinessStrategy::class, new WithdrawBusinessStrategy());
-
+        $this->put(WithdrawBusinessStrategy::class, new WithdrawBusinessStrategy(
+            $this->get(MathService::class)
+        ));
         $this->put(TransactionFeeCalculatorStrategyResolverContract::class, new TransactionFeeCalculatorStrategyResolver(
             $this->get(DepositStrategy::class),
             $this->get(WithdrawPrivateStrategy::class),
@@ -115,6 +116,7 @@ class Container
         $this->put(TransactionFeeCalculatorContract::class, new TransactionFeeCalculator(
             $this->get(TransactionFeeCalculatorStrategyResolverContract::class)
         ));
+
         $this->put(OutputterContract::class, new ConsoleOutputter());
     }
 

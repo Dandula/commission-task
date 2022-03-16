@@ -7,6 +7,7 @@ namespace CommissionTask\Repositories;
 use CommissionTask\Components\Storage\Interfaces\Storage;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository as TransactionsRepositoryContract;
+use DateTime;
 
 class TransactionsRepository implements TransactionsRepositoryContract
 {
@@ -65,5 +66,26 @@ class TransactionsRepository implements TransactionsRepositoryContract
     public function deleteAll(): void
     {
         $this->storage->deleteAll(self::REPOSITORY_PART);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUserWithdrawTransactionsBetweenDates(int $userId, DateTime $fromDate, DateTime $toDate): array
+    {
+        $filteredTransactions = [];
+
+        foreach ($this->all() as $id => $transaction) {
+            if (
+                $transaction->getUserId() === $userId
+                && $transaction->getType() === Transaction::TYPE_WITHDRAW
+                && $transaction->getDate() >= $fromDate
+                && $transaction->getDate() < $toDate
+            ) {
+                $filteredTransactions[$id] = $transaction;
+            }
+        }
+
+        return $filteredTransactions;
     }
 }

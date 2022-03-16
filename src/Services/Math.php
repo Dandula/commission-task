@@ -14,81 +14,59 @@ class Math
     public const COMP_RESULT_LT = -1;
     public const COMP_RESULT_EQ = 0;
     public const COMP_RESULT_GT = 1;
-    public const COMP_RESULTS_LTE = [
-        self::COMP_RESULT_LT,
-        self::COMP_RESULT_EQ,
-    ];
-    public const COMP_RESULTS_GTE = [
-        self::COMP_RESULT_GT,
-        self::COMP_RESULT_EQ,
-    ];
-
-    /**
-     * Create math service instance.
-     */
-    public function __construct(private int $scale)
-    {
-    }
 
     /**
      * Compare two numbers.
      */
-    public function comp(string $leftOperand, string $rightOperand): int
+    public function comp(string $leftOperand, string $rightOperand, int $scale): int
     {
-        return bccomp($leftOperand, $rightOperand, $this->scale);
+        return bccomp($leftOperand, $rightOperand, $scale);
     }
 
     /**
      * Add two numbers.
      */
-    public function add(string $leftOperand, string $rightOperand): string
+    public function add(string $leftOperand, string $rightOperand, int $scale): string
     {
-        return bcadd($leftOperand, $rightOperand, $this->scale);
+        return bcadd($leftOperand, $rightOperand, $scale);
     }
 
     /**
      * Subtract one number from another.
      */
-    public function sub(string $leftOperand, string $rightOperand): string
+    public function sub(string $leftOperand, string $rightOperand, int $scale): string
     {
-        return bcsub($leftOperand, $rightOperand, $this->scale);
+        return bcsub($leftOperand, $rightOperand, $scale);
     }
 
     /**
      * Multiply two numbers.
      */
-    public function mul(string $leftOperand, string $rightOperand): string
+    public function mul(string $leftOperand, string $rightOperand, int $scale): string
     {
-        return bcmul($leftOperand, $rightOperand, $this->scale);
+        return bcmul($leftOperand, $rightOperand, $scale);
     }
 
     /**
      * Raise number to another.
      */
-    public function pow(string $degreeBase, string $exponent): string
+    public function pow(string $degreeBase, string $exponent, int $scale): string
     {
-        return bcpow($degreeBase, $exponent, $this->scale);
+        return bcpow($degreeBase, $exponent, $scale);
     }
 
     /**
      * Find the highest number.
      */
-    public function max(string $operand, string ...$otherOperands): string
+    public function max(string $leftOperand, string $rightOperand, int $scale): string
     {
-        $maxOperand = $operand;
-
-        foreach ($otherOperands as $anotherOperand) {
-            switch ($this->comp($maxOperand, $anotherOperand)) {
-                case self::COMP_RESULT_GT:
-                case self::COMP_RESULT_EQ:
-                default:
-                    break;
-                case self::COMP_RESULT_LT:
-                    $maxOperand = $anotherOperand;
-                    break;
-            }
+        switch ($this->comp($leftOperand, $rightOperand, $scale)) {
+            case self::COMP_RESULT_GT:
+            case self::COMP_RESULT_EQ:
+            default:
+                return $leftOperand;
+            case self::COMP_RESULT_LT:
+                return $rightOperand;
         }
-
-        return $maxOperand;
     }
 }

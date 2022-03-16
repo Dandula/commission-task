@@ -8,8 +8,6 @@ use CommissionTask\Components\CurrenciesUpdater\Exceptions\CurrenciesUpdaterExce
 
 interface CurrenciesUpdater
 {
-    public const BASE_CURRENCY_RATE = 1;
-
     /**
      * Update currencies to currencies repository.
      *

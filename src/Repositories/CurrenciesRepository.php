@@ -74,4 +74,18 @@ class CurrenciesRepository implements CurrenciesRepositoryContract
     {
         $this->storage->deleteAll(self::REPOSITORY_PART);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrencyByCode(string $currencyCode): ?Currency
+    {
+        foreach ($this->all() as $currency) {
+            if ($currency->getCurrencyCode() === $currencyCode) {
+                return $currency;
+            }
+        }
+
+        return null;
+    }
 }

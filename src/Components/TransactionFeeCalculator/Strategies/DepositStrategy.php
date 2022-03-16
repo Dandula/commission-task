@@ -15,16 +15,25 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
     use CommonCalculateOperations;
 
     /**
+     * Create a new transaction fee calculator strategy instance for deposit transactions.
+     */
+    public function __construct(
+        private MathService $mathService
+    ) {
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $mathService = new MathService($this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber());
+        $taxableAmountScale = $this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber();
 
-        $feeAmount = $mathService->mul(
+        $feeAmount = $this->mathService->mul(
             $amount,
-            ConfigService::getConfigByName('feeCalculator.feeRateDeposit')
+            ConfigService::getConfigByName('feeCalculator.feeRateDeposit'),
+            $taxableAmountScale
         );
 
         return $this->ceilAmount($feeAmount);

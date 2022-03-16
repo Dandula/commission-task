@@ -47,23 +47,29 @@ trait CommonCalculateOperations
     private function ceilAmount(string $amount): string
     {
         $roundedOffDigitsNumber = $this->getRoundedOffDigitsNumber();
-        $ceilScale = $this->determineScaleOfAmount($amount) - $roundedOffDigitsNumber;
+        $ceilScale = max(
+            $this->determineScaleOfAmount($amount) - $roundedOffDigitsNumber,
+            MathService::MIN_SCALE
+        );
         $lastDigits = substr($amount, offset: -$roundedOffDigitsNumber);
         $amount = substr($amount, offset: 0, length: -$roundedOffDigitsNumber);
         $previousLastDigitCharacter = substr($amount, offset: -1);
-        $ceilMathService = new MathService(max($ceilScale, MathService::MIN_SCALE));
 
-        if ($previousLastDigitCharacter === $ceilMathService::DECIMAL_SEPARATOR) {
+        if ($previousLastDigitCharacter === $this->mathService::DECIMAL_SEPARATOR) {
             $amount = substr($amount, offset: 0, length: -1);
         }
 
         if (!preg_match(self::NOT_ROUNDED_FRACTIONAL_PART_REGEXP, $lastDigits)) {
-            $amount = $ceilMathService->add(
+            $additionalCorrection = $this->mathService->pow(
+                $this->mathService::NUMBER_SYSTEM_BASE,
+                (string) (-$ceilScale),
+                $ceilScale
+            );
+
+            $amount = $this->mathService->add(
                 $amount,
-                $ceilMathService->pow(
-                    $ceilMathService::NUMBER_SYSTEM_BASE,
-                    (string) (-$ceilScale)
-                )
+                $additionalCorrection,
+                $ceilScale
             );
         }
 

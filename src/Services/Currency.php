@@ -4,23 +4,16 @@ declare(strict_types=1);
 
 namespace CommissionTask\Services;
 
-use CommissionTask\Components\CurrenciesDataReader\Exceptions\Interfaces\CurrenciesDataReaderException;
 use CommissionTask\Components\CurrenciesDataReader\Interfaces\CurrenciesDataReader;
-use CommissionTask\Components\CurrenciesDataValidator\Exceptions\Interfaces\CurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator;
-use CommissionTask\Components\CurrenciesUpdater\Exceptions\Interfaces\CurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
-use CommissionTask\Entities\Currency as CurrencyEntity;
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
-use CommissionTask\Services\Date as DateService;
 use CommissionTask\Services\Math as MathService;
 
 class Currency
 {
     public const BASE_CURRENCY_RATE = 1;
-
-    public const ACTUAL_RATE_PERIOD = '1 day';
 
     /**
      * Create currency service instance.
@@ -30,7 +23,7 @@ class Currency
         private CurrenciesDataReader $currenciesDataReader,
         private CurrenciesDataValidator $currenciesDataValidator,
         private CurrenciesUpdater $currenciesUpdater,
-        private DateService $dateService
+        private MathService $mathService
     ) {
     }
 
@@ -41,7 +34,7 @@ class Currency
         string $amount,
         string $fromCurrencyCode,
         string $toCurrencyCode,
-        MathService $mathService
+        int $scale
     ): string {
         if ($fromCurrencyCode !== $toCurrencyCode) {
             $fromCurrencyRate = $this->getCurrencyRate($fromCurrencyCode);
@@ -51,56 +44,38 @@ class Currency
             $relativeRate = self::BASE_CURRENCY_RATE;
         }
 
-        return $mathService->mul($amount, (string) $relativeRate);
+        return $this->mathService->mul($amount, (string) $relativeRate, $scale);
     }
 
     /**
      * Get currency rate by given currency code.
      *
-     * @throws CommissionTaskException|CurrenciesDataValidatorException
+     * @throws CommissionTaskException
      */
     public function getCurrencyRate(string $currencyCode, bool $forcedCurrentRate = false): float
     {
-        $currenciesFilterMethod = fn (CurrencyEntity $currency) => $currency->getCurrencyCode() === $currencyCode;
+        $currency = $this->currenciesRepository->getCurrencyByCode($currencyCode);
 
-        $currencies = $this->currenciesRepository->filter($currenciesFilterMethod);
-        $currency = array_shift($currencies);
-
-        if ($currency === null || !$this->isActualRate($currency)) {
-            if ($forcedCurrentRate) {
-                throw new CommissionTaskException(sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode));
-            }
-
-            $this->updateCurrenciesRates();
-
-            return $this->getCurrencyRate($currencyCode, forcedCurrentRate: true);
+        if ($currency !== null) {
+            return $currency->getRate();
         }
 
-        return $currency->getRate();
+        if ($forcedCurrentRate) {
+            throw new CommissionTaskException(sprintf(CommissionTaskException::UNDEFINED_CURRENCY_RATE_MESSAGE, $currencyCode));
+        }
+
+        $this->updateCurrenciesRates();
+
+        return $this->getCurrencyRate($currencyCode, forcedCurrentRate: true);
     }
 
     /**
      * Update currencies rates.
-     *
-     * @throws CurrenciesDataReaderException|CurrenciesDataValidatorException|CurrenciesUpdaterException
      */
     private function updateCurrenciesRates(): void
     {
         $currenciesData = $this->currenciesDataReader->readCurrenciesData();
         $this->currenciesDataValidator->validateCurrenciesData($currenciesData);
         $this->currenciesUpdater->updateCurrencies($currenciesData);
-    }
-
-    /**
-     * Check is actual rate of currency by given currency.
-     */
-    private function isActualRate(CurrencyEntity $currency): bool
-    {
-        $expirationDate = $this->dateService->subInterval(
-            $this->dateService->getNow(),
-            relativeDatetime: self::ACTUAL_RATE_PERIOD
-        );
-
-        return $currency->getRateUpdatedAt() > $expirationDate;
     }
 }

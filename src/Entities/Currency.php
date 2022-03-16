@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace CommissionTask\Entities;
 
-use DateTime;
-
 class Currency extends BaseEntity
 {
     /**
@@ -14,8 +12,7 @@ class Currency extends BaseEntity
     public function __construct(
         private string $currencyCode,
         private bool $isBase,
-        private float $rate,
-        private DateTime $rateUpdatedAt
+        private float $rate
     ) {
     }
 
@@ -65,21 +62,5 @@ class Currency extends BaseEntity
     public function getRate(): float
     {
         return $this->rate;
-    }
-
-    /**
-     * Rate updated at setter.
-     */
-    public function setRateUpdatedAt(DateTime $rateUpdatedAt): void
-    {
-        $this->rateUpdatedAt = $rateUpdatedAt;
-    }
-
-    /**
-     * Rate updated at getter.
-     */
-    public function getRateUpdatedAt(): DateTime
-    {
-        return $this->rateUpdatedAt;
     }
 }
