@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits;
 
-use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorException;
+use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorLogicException;
 use CommissionTask\Services\Config as ConfigService;
 
 trait CommonCalculateOperations
@@ -15,27 +15,6 @@ trait CommonCalculateOperations
     private function getRoundedOffDigitsNumber(): int
     {
         return ConfigService::getConfigByName('feeCalculator.roundedOffDigitsNumber');
-    }
-
-    /**
-     * Determine the scale of given amount.
-     *
-     * @throws TransactionFeeCalculatorException
-     */
-    private function determineScaleOfAmount(string $amount): int
-    {
-        $matches = [];
-        $matchesCount = preg_match(self::FRACTIONAL_PART_REGEXP, $amount, $matches);
-
-        if ($matchesCount === 1) {
-            return strlen($matches[1]);
-        }
-
-        if ($matchesCount === 0) {
-            return self::SCALE_NULL;
-        }
-
-        throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::UNDEFINED_SCALE_MESSAGE);
     }
 
     /**
@@ -56,7 +35,7 @@ trait CommonCalculateOperations
 
         // Check if there are enough digits in the amount for rounding
         if (str_contains($lastDigits, $this->mathService::FRACTION_SEPARATOR)) {
-            throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::INSUFFICIENT_ACCURACY_MESSAGE);
+            throw new TransactionFeeCalculatorLogicException(TransactionFeeCalculatorLogicException::INSUFFICIENT_ACCURACY_MESSAGE);
         }
 
         // Discard the rounded digits

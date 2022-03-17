@@ -9,6 +9,7 @@ use CommissionTask\Components\TransactionDataValidator\Exceptions\TransactionDat
 use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator as TransactionDataValidatorContract;
 use CommissionTask\Components\TransactionDataValidator\Traits\FieldFormat;
 use CommissionTask\Entities\Transaction;
+use CommissionTask\Services\Currency as CurrencyService;
 use CommissionTask\Services\Date as DateService;
 
 class CsvTransactionDataValidator implements TransactionDataValidatorContract
@@ -22,7 +23,8 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     public function __construct(
         private CsvTransactionDataFormatter $csvTransactionDataFormatter,
-        private DateService $dateService
+        private DateService $dateService,
+        private CurrencyService $currencyService
     ) {
     }
 
@@ -125,7 +127,10 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     private function validateCurrencyCode(): self
     {
         return $this->validateColumnSet($this->csvTransactionDataFormatter::COLUMN_CURRENCY_CODE_NUMBER)
-            ->validateCurrencyCodeField($this->validatedData[$this->csvTransactionDataFormatter::COLUMN_CURRENCY_CODE_NUMBER]);
+            ->validateInArrayField(
+                $this->validatedData[$this->csvTransactionDataFormatter::COLUMN_CURRENCY_CODE_NUMBER],
+                $this->currencyService->getAcceptableCurrenciesCodes()
+            );
     }
 
     /**

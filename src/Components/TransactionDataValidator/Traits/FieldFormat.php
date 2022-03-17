@@ -74,20 +74,4 @@ trait FieldFormat
 
         return $this;
     }
-
-    /**
-     * Validate currency code field.
-     *
-     * @return $this
-     *
-     * @throws TransactionDataValidatorException
-     */
-    private function validateCurrencyCodeField(mixed $value): self
-    {
-        if (!preg_match(self::CURRENCY_CODE_REGEXP, $value)) {
-            throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_CURRENCY_CODE_COLUMN_MESSAGE);
-        }
-
-        return $this;
-    }
 }

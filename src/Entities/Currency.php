@@ -11,8 +11,7 @@ class Currency extends BaseEntity
      */
     public function __construct(
         private string $currencyCode,
-        private bool $isBase,
-        private float $rate
+        private string $rate
     ) {
     }
 
@@ -33,25 +32,9 @@ class Currency extends BaseEntity
     }
 
     /**
-     * Is base currency flag setter.
-     */
-    public function setIsBase(bool $isBase): void
-    {
-        $this->isBase = $isBase;
-    }
-
-    /**
-     * Is base currency flag getter.
-     */
-    public function getIsBase(): bool
-    {
-        return $this->isBase;
-    }
-
-    /**
      * Rate setter.
      */
-    public function setRate(float $rate): void
+    public function setRate(string $rate): void
     {
         $this->rate = $rate;
     }
@@ -59,7 +42,7 @@ class Currency extends BaseEntity
     /**
      * Rate getter.
      */
-    public function getRate(): float
+    public function getRate(): string
     {
         return $this->rate;
     }

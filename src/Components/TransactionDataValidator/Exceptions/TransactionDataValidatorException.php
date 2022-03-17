@@ -14,5 +14,4 @@ final class TransactionDataValidatorException extends CommissionTaskException
     public const INCORRECT_UNSIGNED_INTEGER_COLUMN_MESSAGE = 'Incorrect unsigned integer column';
     public const INCORRECT_UNSIGNED_FLOAT_COLUMN_MESSAGE = 'Incorrect unsigned float column';
     public const INCORRECT_IN_ARRAY_COLUMN_MESSAGE = 'The value is not included in the list of acceptable values';
-    public const INCORRECT_CURRENCY_CODE_COLUMN_MESSAGE = 'Incorrect currency code column';
 }

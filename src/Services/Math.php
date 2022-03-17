@@ -9,7 +9,6 @@ class Math
     public const NUMBER_SYSTEM_BASE = '10';
     public const FRACTION_SEPARATOR = '.';
     public const ZERO = '0';
-    public const MIN_SCALE = 0;
 
     public const COMP_RESULT_LT = -1;
     public const COMP_RESULT_EQ = 0;
@@ -45,6 +44,14 @@ class Math
     public function mul(string $leftOperand, string $rightOperand, int $scale): string
     {
         return bcmul($leftOperand, $rightOperand, $scale);
+    }
+
+    /**
+     * Divide two numbers.
+     */
+    public function div(string $leftOperand, string $rightOperand, int $scale): string
+    {
+        return bcdiv($leftOperand, $rightOperand, $scale);
     }
 
     /**

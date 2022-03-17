@@ -59,6 +59,7 @@ class Container
         $this->put(CsvTransactionDataFormatter::class, new CsvTransactionDataFormatter());
         $this->put(ApiCurrenciesDataFormatter::class, new ApiCurrenciesDataFormatter());
 
+        // Put data classes
         $this->put(StorageContract::class, new ArrayStorage());
         $this->put(TransactionsRepositoryContract::class, new TransactionsRepository(
             $this->get(StorageContract::class)
@@ -66,18 +67,8 @@ class Container
         $this->put(CurrenciesRepositoryContract::class, new CurrenciesRepository(
             $this->get(StorageContract::class)
         ));
-        $this->put(TransactionsDataReaderContract::class, new CsvTransactionsDataReader(
-            $this->get(FilesystemService::class)
-        ));
-        $this->put(TransactionDataValidatorContract::class, new CsvTransactionDataValidator(
-            $this->get(CsvTransactionDataFormatter::class),
-            $this->get(DateService::class)
-        ));
-        $this->put(TransactionSaverContract::class, new CsvTransactionSaver(
-            $this->get(TransactionsRepositoryContract::class),
-            $this->get(CsvTransactionDataFormatter::class),
-            $this->get(DateService::class)
-        ));
+
+        // Put classes of fee calculations instances
         $this->put(CurrenciesDataReaderContract::class, new ApiCurrenciesDataReader());
         $this->put(CurrenciesDataValidatorContract::class, new ApiCurrenciesDataValidator(
             $this->get(ApiCurrenciesDataFormatter::class),
@@ -85,10 +76,9 @@ class Container
         ));
         $this->put(CurrenciesUpdaterContract::class, new ApiCurrenciesUpdater(
             $this->get(CurrenciesRepositoryContract::class),
-            $this->get(ApiCurrenciesDataFormatter::class)
+            $this->get(ApiCurrenciesDataFormatter::class),
+            $this->get(MathService::class)
         ));
-
-        // Put classes of fee calculations instances
         $this->put(CurrencyService::class, new CurrencyService(
             $this->get(CurrenciesRepositoryContract::class),
             $this->get(CurrenciesDataReaderContract::class),
@@ -97,15 +87,17 @@ class Container
             $this->get(MathService::class)
         ));
         $this->put(DepositStrategy::class, new DepositStrategy(
+            $this->get(CurrencyService::class),
             $this->get(MathService::class)
         ));
         $this->put(WithdrawPrivateStrategy::class, new WithdrawPrivateStrategy(
-            $this->get(TransactionsRepositoryContract::class),
+            $this->get(CurrencyService::class),
             $this->get(MathService::class),
             $this->get(DateService::class),
-            $this->get(CurrencyService::class)
+            $this->get(TransactionsRepositoryContract::class)
         ));
         $this->put(WithdrawBusinessStrategy::class, new WithdrawBusinessStrategy(
+            $this->get(CurrencyService::class),
             $this->get(MathService::class)
         ));
         $this->put(TransactionFeeCalculatorStrategyResolverContract::class, new TransactionFeeCalculatorStrategyResolver(
@@ -117,6 +109,22 @@ class Container
             $this->get(TransactionFeeCalculatorStrategyResolverContract::class)
         ));
 
+        // Put classes of transactions handling
+        $this->put(TransactionsDataReaderContract::class, new CsvTransactionsDataReader(
+            $this->get(FilesystemService::class)
+        ));
+        $this->put(TransactionDataValidatorContract::class, new CsvTransactionDataValidator(
+            $this->get(CsvTransactionDataFormatter::class),
+            $this->get(DateService::class),
+            $this->get(CurrencyService::class)
+        ));
+        $this->put(TransactionSaverContract::class, new CsvTransactionSaver(
+            $this->get(TransactionsRepositoryContract::class),
+            $this->get(CsvTransactionDataFormatter::class),
+            $this->get(DateService::class)
+        ));
+
+        // Put classes for outputting handling
         $this->put(OutputterContract::class, new ConsoleOutputter());
     }
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionFeeCalculator\Interfaces;
 
-use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorException;
+use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorLogicException;
 use CommissionTask\Entities\Transaction;
 
 interface TransactionFeeCalculator
@@ -12,7 +12,7 @@ interface TransactionFeeCalculator
     /**
      * Calculate transaction fee for given transaction.
      *
-     * @throws TransactionFeeCalculatorException
+     * @throws TransactionFeeCalculatorLogicException
      */
     public function calculateTransactionFee(Transaction $transaction): string;
 }

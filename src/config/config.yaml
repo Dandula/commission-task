@@ -1,5 +1,13 @@
 currencies:
   baseCurrency: 'EUR'
+  rateScale: 6
+  acceptable:
+    - currencyCode: 'EUR'
+      scale: 2
+    - currencyCode: 'USD'
+      scale: 2
+    - currencyCode: 'JPY'
+      scale: 0
 currenciesApi:
   maxRequestsAttempts: 3
 feeCalculator:

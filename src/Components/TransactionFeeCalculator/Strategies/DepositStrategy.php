@@ -8,6 +8,7 @@ use CommissionTask\Components\TransactionFeeCalculator\Strategies\Interfaces\Tra
 use CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits\CommonCalculateOperations;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Services\Config as ConfigService;
+use CommissionTask\Services\Currency as CurrencyService;
 use CommissionTask\Services\Math as MathService;
 
 class DepositStrategy implements TransactionFeeCalculateStrategyContract
@@ -18,6 +19,7 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
      * Create a new transaction fee calculator strategy instance for deposit transactions.
      */
     public function __construct(
+        private CurrencyService $currencyService,
         private MathService $mathService
     ) {
     }
@@ -28,7 +30,7 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $amountScale = $this->determineScaleOfAmount($amount);
+        $amountScale = $this->currencyService->getCurrencyScale($transaction->getCurrencyCode());
         $taxableAmountScale = $amountScale + $this->getRoundedOffDigitsNumber();
 
         $feeAmount = $this->mathService->mul(

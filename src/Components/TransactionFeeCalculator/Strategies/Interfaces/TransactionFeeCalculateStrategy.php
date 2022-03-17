@@ -8,9 +8,6 @@ use CommissionTask\Entities\Transaction;
 
 interface TransactionFeeCalculateStrategy
 {
-    public const SCALE_NULL = 0;
-
-    public const FRACTIONAL_PART_REGEXP = '/\.(\d*$)/';
     public const NOT_ROUNDED_FRACTIONAL_PART_REGEXP = '/^0+$/';
 
     /**

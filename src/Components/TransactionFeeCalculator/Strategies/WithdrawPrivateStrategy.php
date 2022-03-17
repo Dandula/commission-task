@@ -21,10 +21,10 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      * Create a new transaction fee calculator strategy instance for withdraw transactions of private user.
      */
     public function __construct(
-        private TransactionsRepository $transactionsRepository,
+        private CurrencyService $currencyService,
         private MathService $mathService,
         private DateService $dateService,
-        private CurrencyService $currencyService
+        private TransactionsRepository $transactionsRepository
     ) {
     }
 
@@ -33,11 +33,9 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     public function calculateTransactionFee(Transaction $transaction): string
     {
-        $amount = $transaction->getAmount();
-
         $influentialTransactions = $this->getInfluentialTransactions($transaction);
 
-        $amountScale = $this->determineScaleOfAmount($amount);
+        $amountScale = $this->currencyService->getCurrencyScale($transaction->getCurrencyCode());
         $taxableAmountScale = $amountScale + $this->getRoundedOffDigitsNumber();
         $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions, $taxableAmountScale);
 
@@ -115,7 +113,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             return $transactionAmount;
         }
 
-        $nontaxableAmountScale = $this->determineScaleOfAmount($this->getNontaxableAmount())
+        $nontaxableAmountScale = $this->currencyService->getCurrencyScale($this->getNontaxableCurrencyCode())
             + $this->getRoundedOffDigitsNumber();
 
         // Calculate the non-taxable amount in the currency of the non-taxable limit

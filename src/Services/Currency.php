@@ -14,6 +14,7 @@ use CommissionTask\Services\Math as MathService;
 class Currency
 {
     public const BASE_CURRENCY_RATE = 1;
+    public const DEFAULT_SCALE_AMOUNT = 2;
 
     /**
      * Create currency service instance.
@@ -37,9 +38,11 @@ class Currency
         int $scale
     ): string {
         if ($fromCurrencyCode !== $toCurrencyCode) {
-            $fromCurrencyRate = $this->getCurrencyRate($fromCurrencyCode);
-            $toCurrencyRate = $this->getCurrencyRate($toCurrencyCode);
-            $relativeRate = $toCurrencyRate / $fromCurrencyRate;
+            $relativeRate = $this->mathService->div(
+                $this->getCurrencyRate($toCurrencyCode),
+                $this->getCurrencyRate($fromCurrencyCode),
+                $this->getRateScale()
+            );
         } else {
             $relativeRate = self::BASE_CURRENCY_RATE;
         }
@@ -52,7 +55,7 @@ class Currency
      *
      * @throws CommissionTaskException
      */
-    public function getCurrencyRate(string $currencyCode, bool $forcedCurrentRate = false): float
+    public function getCurrencyRate(string $currencyCode, bool $forcedCurrentRate = false): string
     {
         $currency = $this->currenciesRepository->getCurrencyByCode($currencyCode);
 
@@ -70,6 +73,23 @@ class Currency
     }
 
     /**
+     * Get currency scale by given currency code.
+     *
+     * @throws CommissionTaskException
+     */
+    public function getCurrencyScale(string $currencyCode): int
+    {
+        $filteredCurrenciesConfig = array_filter(
+            $this->getAcceptableCurrenciesConfig(),
+            static fn (array $acceptableCurrencyConfig) => $acceptableCurrencyConfig['currencyCode'] === $currencyCode
+        );
+
+        $currencyConfig = array_shift($filteredCurrenciesConfig);
+
+        return $currencyConfig['scale'] ?? self::DEFAULT_SCALE_AMOUNT;
+    }
+
+    /**
      * Update currencies rates.
      */
     private function updateCurrenciesRates(): void
@@ -77,5 +97,33 @@ class Currency
         $currenciesData = $this->currenciesDataReader->readCurrenciesData();
         $this->currenciesDataValidator->validateCurrenciesData($currenciesData);
         $this->currenciesUpdater->updateCurrencies($currenciesData);
+    }
+
+    /**
+     * Get acceptable currencies codes.
+     *
+     * @return string[]
+     */
+    public function getAcceptableCurrenciesCodes(): array
+    {
+        $acceptableConfig = $this->getAcceptableCurrenciesConfig();
+
+        return array_column($acceptableConfig, column_key: 'currencyCode');
+    }
+
+    /**
+     * Get acceptable currencies config.
+     */
+    private function getAcceptableCurrenciesConfig(): array
+    {
+        return Config::getConfigByName('currencies.acceptable');
+    }
+
+    /**
+     * Get rate scale.
+     */
+    private function getRateScale(): int
+    {
+        return Config::getConfigByName('currencies.rateScale');
     }
 }

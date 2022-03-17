@@ -9,7 +9,9 @@ use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as 
 use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
+use CommissionTask\Services\Config;
 use CommissionTask\Services\Config as ConfigService;
+use CommissionTask\Services\Math as MathService;
 
 class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
 {
@@ -20,7 +22,8 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function __construct(
         private CurrenciesRepository $currenciesRepository,
-        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter
+        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
+        private MathService $mathService
     ) {
     }
 
@@ -39,16 +42,23 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
             $applicationBaseCurrencyRate = $this->getApplicationBaseCurrencyRate($rates);
         }
 
+        $acceptableCurrenciesCodes = $this->getAcceptableCurrenciesCodes();
+
         foreach ($rates as $currencyCode => $currencyRate) {
-            $isBase = $currencyCode === $applicationBaseCurrencyCode;
+            if (!in_array($currencyCode, $acceptableCurrenciesCodes, strict: true)) {
+                continue;
+            }
+
+            $currencyRate = (string) $currencyRate;
 
             if ($isNeedRateRecalculation) {
-                $currencyRate = $isBase ? self::BASE_CURRENCY_RATE : $currencyRate / $applicationBaseCurrencyRate;
+                $currencyRate = $currencyCode === $applicationBaseCurrencyCode
+                    ? self::BASE_CURRENCY_RATE
+                    : $this->mathService->div($currencyRate, $applicationBaseCurrencyRate, $this->getRateScale());
             }
 
             $currency = new Currency(
                 currencyCode: $currencyCode,
-                isBase: $isBase,
                 rate: $currencyRate
             );
 
@@ -88,7 +98,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      *
      * @throws CurrenciesUpdaterException
      */
-    private function getApplicationBaseCurrencyRate(array $rates): float
+    private function getApplicationBaseCurrencyRate(array $rates): string
     {
         $applicationBaseCurrencyCode = $this->getApplicationBaseCurrencyCode();
 
@@ -96,6 +106,26 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
             throw new CurrenciesUpdaterException(CurrenciesUpdaterException::NO_BASE_CURRENCY_RATE_MESSAGE);
         }
 
-        return $rates[$applicationBaseCurrencyCode];
+        return (string) $rates[$applicationBaseCurrencyCode];
+    }
+
+    /**
+     * Get acceptable currencies codes.
+     *
+     * @return string[]
+     */
+    private function getAcceptableCurrenciesCodes(): array
+    {
+        $acceptableConfig = Config::getConfigByName('currencies.acceptable');
+
+        return array_column($acceptableConfig, column_key: 'currencyCode');
+    }
+
+    /**
+     * Get rate scale.
+     */
+    private function getRateScale(): int
+    {
+        return Config::getConfigByName('currencies.rateScale');
     }
 }

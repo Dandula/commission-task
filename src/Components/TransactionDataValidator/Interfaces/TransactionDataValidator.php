@@ -12,7 +12,6 @@ interface TransactionDataValidator
 
     public const UNSIGNED_INTEGER_REGEXP = '/^[1-9]\d*$/';
     public const UNSIGNED_FLOAT_REGEXP = '/^[1-9]\d*\.?\d*$/';
-    public const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
 
     /**
      * Read transactions data.
