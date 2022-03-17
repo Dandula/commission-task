@@ -7,7 +7,7 @@ namespace CommissionTask\Components\CurrenciesDataValidator;
 use CommissionTask\Components\CurrenciesDataValidator\Exceptions\CurrenciesDataValidatorException;
 use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorsContract;
 use CommissionTask\Components\CurrenciesDataValidator\Traits\FieldFormat;
-use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Date as DateService;
 
 class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
@@ -20,7 +20,6 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Create CSV transaction data validator instance.
      */
     public function __construct(
-        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
         private DateService $dateService
     ) {
     }
@@ -47,7 +46,6 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     {
         return $this->validateMainFieldsExistence()
             ->validateBaseCurrencyCodeMainField()
-            ->validateDateMainField()
             ->validateRatesMainField();
     }
 
@@ -61,7 +59,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     private function validateMainFieldsExistence(): self
     {
         if (array_diff(
-            $this->apiCurrenciesDataFormatter::MAIN_FIELDS,
+            $this->getRequiredCurrenciesApiFields(),
             array_keys($this->validatedData)
         )) {
             throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
@@ -79,24 +77,9 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateBaseCurrencyCodeMainField(): self
     {
-        return $this->validateCurrencyCodeField(
-            $this->validatedData[$this->apiCurrenciesDataFormatter::BASE_CURRENCY_CODE_FIELD]
-        );
-    }
+        $baseCurrencyCodeField = $this->getCurrenciesApiFieldName('baseCurrencyCode');
 
-    /**
-     * Validate date at main fields.
-     *
-     * @return $this
-     *
-     * @throws CurrenciesDataValidatorException
-     */
-    private function validateDateMainField(): self
-    {
-        return $this->validateDateField(
-            $this->validatedData[$this->apiCurrenciesDataFormatter::DATE_FIELD],
-            $this->apiCurrenciesDataFormatter::DATE_FORMAT
-        );
+        return $this->validateCurrencyCodeField($this->validatedData[$baseCurrencyCodeField]);
     }
 
     /**
@@ -108,7 +91,9 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateRatesMainField(): self
     {
-        return $this->validateIsArrayField($this->validatedData[$this->apiCurrenciesDataFormatter::RATES_FIELD]);
+        $ratesField = $this->getCurrenciesApiFieldName('rates');
+
+        return $this->validateIsArrayField($this->validatedData[$ratesField]);
     }
 
     /**
@@ -120,7 +105,8 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateCurrenciesRates(): self
     {
-        $currenciesRatesData = $this->validatedData[$this->apiCurrenciesDataFormatter::RATES_FIELD];
+        $ratesField = $this->getCurrenciesApiFieldName('rates');
+        $currenciesRatesData = $this->validatedData[$ratesField];
 
         foreach ($currenciesRatesData as $currencyCode => $currencyRate) {
             $this->validateCurrencyCodeField($currencyCode)
@@ -128,5 +114,23 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
         }
 
         return $this;
+    }
+
+    /**
+     * Get required currencies API fields.
+     *
+     * @return string[]
+     */
+    private function getRequiredCurrenciesApiFields(): array
+    {
+        return ConfigService::getConfigByName('currenciesApi.requiredFields');
+    }
+
+    /**
+     * Get currencies API field name.
+     */
+    private function getCurrenciesApiFieldName(string $name): string
+    {
+        return ConfigService::getConfigByName('currenciesApi.requiredFields.'.$name);
     }
 }

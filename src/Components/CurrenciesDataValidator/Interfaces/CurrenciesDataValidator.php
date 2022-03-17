@@ -8,8 +8,6 @@ use CommissionTask\Components\CurrenciesDataValidator\Exceptions\CurrenciesDataV
 
 interface CurrenciesDataValidator
 {
-    public const DEFAULT_DATE_FORMAT = 'Y-m-d';
-
     public const CURRENCY_CODE_REGEXP = '/^[A-Z]{3}$/';
 
     /**

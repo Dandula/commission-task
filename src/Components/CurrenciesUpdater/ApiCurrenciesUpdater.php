@@ -6,10 +6,8 @@ namespace CommissionTask\Components\CurrenciesUpdater;
 
 use CommissionTask\Components\CurrenciesUpdater\Exceptions\CurrenciesUpdaterException;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
-use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
 use CommissionTask\Entities\Currency;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
-use CommissionTask\Services\Config;
 use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Math as MathService;
 
@@ -22,7 +20,6 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function __construct(
         private CurrenciesRepository $currenciesRepository,
-        private ApiCurrenciesDataFormatter $apiCurrenciesDataFormatter,
         private MathService $mathService
     ) {
     }
@@ -32,8 +29,10 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function updateCurrencies($currenciesData): void
     {
-        $baseCurrencyCode = $currenciesData[$this->apiCurrenciesDataFormatter::BASE_CURRENCY_CODE_FIELD];
-        $rates = $currenciesData[$this->apiCurrenciesDataFormatter::RATES_FIELD];
+        $baseCurrencyCodeField = $this->getCurrenciesApiFieldName('baseCurrencyCode');
+        $ratesField = $this->getCurrenciesApiFieldName('rates');
+        $baseCurrencyCode = $currenciesData[$baseCurrencyCodeField];
+        $rates = $currenciesData[$ratesField];
 
         $applicationBaseCurrencyCode = $this->getApplicationBaseCurrencyCode();
 
@@ -116,9 +115,17 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     private function getAcceptableCurrenciesCodes(): array
     {
-        $acceptableConfig = Config::getConfigByName('currencies.acceptable');
+        $acceptableConfig = ConfigService::getConfigByName('currencies.acceptable');
 
         return array_column($acceptableConfig, column_key: 'currencyCode');
+    }
+
+    /**
+     * Get currencies API field name.
+     */
+    private function getCurrenciesApiFieldName(string $name): string
+    {
+        return ConfigService::getConfigByName('currenciesApi.requiredFields.'.$name);
     }
 
     /**
@@ -126,6 +133,6 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     private function getRateScale(): int
     {
-        return Config::getConfigByName('currencies.rateScale');
+        return ConfigService::getConfigByName('currencies.rateScale');
     }
 }

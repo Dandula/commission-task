@@ -10,8 +10,6 @@ use CommissionTask\Components\CurrenciesDataValidator\ApiCurrenciesDataValidator
 use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataValidator as CurrenciesDataValidatorContract;
 use CommissionTask\Components\CurrenciesUpdater\ApiCurrenciesUpdater;
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater as CurrenciesUpdaterContract;
-use CommissionTask\Components\DataFormatter\ApiCurrenciesDataFormatter;
-use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
 use CommissionTask\Components\Outputter\ConsoleOutputter;
 use CommissionTask\Components\Outputter\Interfaces\Outputter as OutputterContract;
 use CommissionTask\Components\Storage\ArrayStorage;
@@ -56,8 +54,6 @@ class Container
         $this->put(CommandLineService::class, new CommandLineService());
         $this->put(MathService::class, new MathService());
         $this->put(DateService::class, new DateService());
-        $this->put(CsvTransactionDataFormatter::class, new CsvTransactionDataFormatter());
-        $this->put(ApiCurrenciesDataFormatter::class, new ApiCurrenciesDataFormatter());
 
         // Put data classes
         $this->put(StorageContract::class, new ArrayStorage());
@@ -71,12 +67,10 @@ class Container
         // Put classes of fee calculations instances
         $this->put(CurrenciesDataReaderContract::class, new ApiCurrenciesDataReader());
         $this->put(CurrenciesDataValidatorContract::class, new ApiCurrenciesDataValidator(
-            $this->get(ApiCurrenciesDataFormatter::class),
             $this->get(DateService::class)
         ));
         $this->put(CurrenciesUpdaterContract::class, new ApiCurrenciesUpdater(
             $this->get(CurrenciesRepositoryContract::class),
-            $this->get(ApiCurrenciesDataFormatter::class),
             $this->get(MathService::class)
         ));
         $this->put(CurrencyService::class, new CurrencyService(
@@ -114,13 +108,11 @@ class Container
             $this->get(FilesystemService::class)
         ));
         $this->put(TransactionDataValidatorContract::class, new CsvTransactionDataValidator(
-            $this->get(CsvTransactionDataFormatter::class),
             $this->get(DateService::class),
             $this->get(CurrencyService::class)
         ));
         $this->put(TransactionSaverContract::class, new CsvTransactionSaver(
             $this->get(TransactionsRepositoryContract::class),
-            $this->get(CsvTransactionDataFormatter::class),
             $this->get(DateService::class)
         ));
 

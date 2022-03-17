@@ -22,8 +22,8 @@ try {
     $app->run();
 
     $exitCode = 0;
-} catch (CommissionTaskThrowable $exception) {
-    echo $exception->getMessage().PHP_EOL;
+} catch (\Throwable $exception) {
+    echo $exception->getTraceAsString().PHP_EOL;
 
     $exitCode = $exception->getCode();
 } finally {

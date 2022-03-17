@@ -27,24 +27,6 @@ trait FieldFormat
     }
 
     /**
-     * Validate date field.
-     *
-     * @return $this
-     *
-     * @throws CurrenciesDataValidatorException
-     */
-    private function validateDateField(mixed $value, string $format = self::DEFAULT_DATE_FORMAT): self
-    {
-        try {
-            $this->dateService->parseDate($value, $format);
-        } catch (CommissionTaskArgumentException) {
-            throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::INCORRECT_DATE_FIELD_MESSAGE);
-        }
-
-        return $this;
-    }
-
-    /**
      * Validate field in array of acceptable values.
      *
      * @return $this
@@ -71,6 +53,22 @@ trait FieldFormat
     {
         if (!(is_float($value) || is_int($value))) {
             throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::INCORRECT_CURRENCY_RATE_FIELD_MESSAGE);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Validate field in array of acceptable values.
+     *
+     * @return $this
+     *
+     * @throws CurrenciesDataValidatorException
+     */
+    private function validateInArrayField(mixed $value, array $acceptableValues): self
+    {
+        if (!in_array($value, $acceptableValues, strict: true)) {
+            throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::INCORRECT_IN_ARRAY_COLUMN_MESSAGE);
         }
 
         return $this;

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace CommissionTask\Components\TransactionSaver;
 
-use CommissionTask\Components\DataFormatter\CsvTransactionDataFormatter;
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver as TransactionSaverContract;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Date as DateService;
 
 class CsvTransactionSaver implements TransactionSaverContract
@@ -17,7 +17,6 @@ class CsvTransactionSaver implements TransactionSaverContract
      */
     public function __construct(
         private TransactionsRepository $transactionsRepository,
-        private CsvTransactionDataFormatter $csvTransactionDataFormatter,
         private DateService $dateService
     ) {
     }
@@ -37,17 +36,25 @@ class CsvTransactionSaver implements TransactionSaverContract
     private function makeTransaction(mixed $transactionData): Transaction
     {
         $date = $this->dateService->parseDate(
-            $transactionData[$this->csvTransactionDataFormatter::COLUMN_DATE_NUMBER],
-            $this->csvTransactionDataFormatter::COLUMN_DATE_FORMAT
+            $transactionData[$this->getColumnNumber('date')],
+            ConfigService::getConfigByName('transactionsCsv.dateFormat')
         );
 
         return new Transaction(
             $date,
-            (int) $transactionData[$this->csvTransactionDataFormatter::COLUMN_USER_ID_NUMBER],
-            $transactionData[$this->csvTransactionDataFormatter::COLUMN_USER_TYPE_NUMBER],
-            $transactionData[$this->csvTransactionDataFormatter::COLUMN_TYPE_NUMBER],
-            $transactionData[$this->csvTransactionDataFormatter::COLUMN_AMOUNT_NUMBER],
-            $transactionData[$this->csvTransactionDataFormatter::COLUMN_CURRENCY_CODE_NUMBER]
+            (int) $transactionData[$this->getColumnNumber('userId')],
+            $transactionData[$this->getColumnNumber('userType')],
+            $transactionData[$this->getColumnNumber('type')],
+            $transactionData[$this->getColumnNumber('amount')],
+            $transactionData[$this->getColumnNumber('currencyCode')]
         );
+    }
+
+    /**
+     * Get column number.
+     */
+    private function getColumnNumber(string $column): int
+    {
+        return ConfigService::getConfigByName('transactionsCsv.columnsNumbers.'.$column);
     }
 }

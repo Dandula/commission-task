@@ -11,7 +11,7 @@ final class CurrenciesDataValidatorException extends CommissionTaskException
     public const NO_REQUIRED_FIELDS_MESSAGE = 'No required fields';
 
     public const INCORRECT_CURRENCY_CODE_FIELD_MESSAGE = 'Incorrect currency code value';
-    public const INCORRECT_DATE_FIELD_MESSAGE = 'Incorrect date';
     public const INCORRECT_IS_ARRAY_FIELD_MESSAGE = 'Incorrect array field';
     public const INCORRECT_CURRENCY_RATE_FIELD_MESSAGE = 'Incorrect currency rate field';
+    public const INCORRECT_IN_ARRAY_COLUMN_MESSAGE = 'The value is not included in the list of acceptable values';
 }
