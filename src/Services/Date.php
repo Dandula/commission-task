@@ -11,10 +11,11 @@ use DateTime;
 class Date
 {
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
-    public const WEEK_MUTABLE_FORMAT_STRING = '%d days';
 
-    public const HOURS_MIN = 0;
-    public const MINUTES_MIN = 0;
+    private const WEEK_MUTABLE_FORMAT_STRING = '%d days';
+
+    private const HOURS_MIN = 0;
+    private const MINUTES_MIN = 0;
 
     /**
      * Parse date at given format.

@@ -37,16 +37,49 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
 
         $influentialTransactions = $this->getInfluentialTransactions($transaction);
 
-        $taxableAmountScale = $this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber();
+        $amountScale = $this->determineScaleOfAmount($amount);
+        $taxableAmountScale = $amountScale + $this->getRoundedOffDigitsNumber();
         $taxableAmount = $this->getTaxableAmount($transaction, $influentialTransactions, $taxableAmountScale);
 
         $feeAmount = $this->mathService->mul(
             $taxableAmount,
-            ConfigService::getConfigByName('feeCalculator.feeRateWithdrawPrivate'),
+            $this->getFeeRate(),
             $taxableAmountScale
         );
 
-        return $this->ceilAmount($feeAmount);
+        return $this->ceilAmount($feeAmount, $amountScale);
+    }
+
+    /**
+     * Get fee rate.
+     */
+    private function getFeeRate(): string
+    {
+        return ConfigService::getConfigByName('feeCalculator.feeRateWithdrawPrivate');
+    }
+
+    /**
+     * Get non-taxable amount.
+     */
+    private function getNontaxableAmount(): string
+    {
+        return ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate');
+    }
+
+    /**
+     * Get currency code of non-taxable amount.
+     */
+    private function getNontaxableCurrencyCode(): string
+    {
+        return ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate');
+    }
+
+    /**
+     * Get preferential operations number.
+     */
+    private function getPreferentialOperationsNumber(): int
+    {
+        return ConfigService::getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate');
     }
 
     /**
@@ -78,11 +111,11 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         $transactionAmount = $transaction->getAmount();
 
         // If more than 3 transactions charge commission for the full amount
-        if (count($influentialTransactions) >= ConfigService::getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate')) {
+        if (count($influentialTransactions) >= $this->getPreferentialOperationsNumber()) {
             return $transactionAmount;
         }
 
-        $nontaxableAmountScale = $this->determineScaleOfAmount(ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate'))
+        $nontaxableAmountScale = $this->determineScaleOfAmount($this->getNontaxableAmount())
             + $this->getRoundedOffDigitsNumber();
 
         // Calculate the non-taxable amount in the currency of the non-taxable limit
@@ -115,7 +148,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function calculateLostNontaxableAmount(array $influentialTransactions, int $nontaxableAmountScale): string
     {
-        $lostNontaxableAmount = ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate');
+        $lostNontaxableAmount = $this->getNontaxableAmount();
 
         // Subtracts the amount of previous transactions for the week from the non-taxable amount
         while (
@@ -126,7 +159,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             $influentialTransactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
                 $influentialTransaction->getAmount(),
                 $influentialTransaction->getCurrencyCode(),
-                ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate'),
+                $this->getNontaxableCurrencyCode(),
                 $nontaxableAmountScale
             );
             $lostNontaxableAmount = $this->mathService->sub(
@@ -149,7 +182,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
         int $taxableAmountScale,
         int $nontaxableAmountScale
     ): string {
-        $nontaxableCurrencyCode = ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate');
+        $nontaxableCurrencyCode = $this->getNontaxableCurrencyCode();
 
         // Convert the transaction amount to the currency of the non-taxable limit
         $transactionAmountAtNontaxableCurrency = $this->currencyService->convertAmountToCurrency(
@@ -179,7 +212,9 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
             $taxableAmountScale
         );
 
+        $ceilScale = $taxableAmountScale - $this->getRoundedOffDigitsNumber();
+
         // Round up the taxable amount and return it
-        return $this->ceilAmount($taxableAmount);
+        return $this->ceilAmount($taxableAmount, $ceilScale);
     }
 }

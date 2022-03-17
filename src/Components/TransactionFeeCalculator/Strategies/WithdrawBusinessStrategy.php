@@ -28,14 +28,23 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
     public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
-        $taxableAmountScale = $this->determineScaleOfAmount($amount) + $this->getRoundedOffDigitsNumber();
+        $amountScale = $this->determineScaleOfAmount($amount);
+        $taxableAmountScale = $amountScale + $this->getRoundedOffDigitsNumber();
 
         $feeAmount = $this->mathService->mul(
             $amount,
-            ConfigService::getConfigByName('feeCalculator.feeRateWithdrawBusiness'),
+            $this->getFeeRate(),
             $taxableAmountScale
         );
 
-        return $this->ceilAmount($feeAmount);
+        return $this->ceilAmount($feeAmount, $amountScale);
+    }
+
+    /**
+     * Get fee rate.
+     */
+    private function getFeeRate(): string
+    {
+        return ConfigService::getConfigByName('feeCalculator.feeRateWithdrawBusiness');
     }
 }

@@ -7,7 +7,7 @@ namespace CommissionTask\Services;
 class Math
 {
     public const NUMBER_SYSTEM_BASE = '10';
-    public const DECIMAL_SEPARATOR = '.';
+    public const FRACTION_SEPARATOR = '.';
     public const ZERO = '0';
     public const MIN_SCALE = 0;
 

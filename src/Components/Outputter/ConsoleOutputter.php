@@ -8,10 +8,10 @@ use CommissionTask\Components\Outputter\Interfaces\Outputter;
 
 class ConsoleOutputter implements Outputter
 {
-    public const STRING_TYPE = 'string';
-    public const ARRAY_TYPE = 'array';
+    private const STRING_TYPE = 'string';
+    private const ARRAY_TYPE = 'array';
 
-    public const LINE_SEPARATOR = PHP_EOL;
+    private const LINE_SEPARATOR = PHP_EOL;
 
     /**
      * {@inheritDoc}

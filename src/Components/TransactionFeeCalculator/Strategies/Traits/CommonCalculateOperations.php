@@ -6,14 +6,11 @@ namespace CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits;
 
 use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorException;
 use CommissionTask\Services\Config as ConfigService;
-use CommissionTask\Services\Math as MathService;
 
 trait CommonCalculateOperations
 {
     /**
      * Get rounded off digits number.
-     *
-     * @throws TransactionFeeCalculatorException
      */
     private function getRoundedOffDigitsNumber(): int
     {
@@ -42,23 +39,37 @@ trait CommonCalculateOperations
     }
 
     /**
-     * Round amount fractions up.
+     * Round amount fractions upwards.
      */
-    private function ceilAmount(string $amount): string
+    private function ceilAmount(string $amount, int $ceilScale): string
     {
+        // Get the number of rounded digits
         $roundedOffDigitsNumber = $this->getRoundedOffDigitsNumber();
-        $ceilScale = max(
-            $this->determineScaleOfAmount($amount) - $roundedOffDigitsNumber,
-            MathService::MIN_SCALE
-        );
+
+        // If there are no rounded digits, return the amount as it is
+        if ($roundedOffDigitsNumber === 0) {
+            return $amount;
+        }
+
+        // Get the digits from the rounded digits
         $lastDigits = substr($amount, offset: -$roundedOffDigitsNumber);
+
+        // Check if there are enough digits in the amount for rounding
+        if (str_contains($lastDigits, $this->mathService::FRACTION_SEPARATOR)) {
+            throw new TransactionFeeCalculatorException(TransactionFeeCalculatorException::INSUFFICIENT_ACCURACY_MESSAGE);
+        }
+
+        // Discard the rounded digits
         $amount = substr($amount, offset: 0, length: -$roundedOffDigitsNumber);
+        // Get the last character before the rounded digits
         $previousLastDigitCharacter = substr($amount, offset: -1);
 
-        if ($previousLastDigitCharacter === $this->mathService::DECIMAL_SEPARATOR) {
+        // If the last character before the rounded digits is a decimal separator, discard it
+        if ($previousLastDigitCharacter === $this->mathService::FRACTION_SEPARATOR) {
             $amount = substr($amount, offset: 0, length: -1);
         }
 
+        // If the rounded digits are not zero, round the last digit upwards
         if (!preg_match(self::NOT_ROUNDED_FRACTIONAL_PART_REGEXP, $lastDigits)) {
             $additionalCorrection = $this->mathService->pow(
                 $this->mathService::NUMBER_SYSTEM_BASE,
