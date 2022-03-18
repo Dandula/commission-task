@@ -16,7 +16,7 @@ trait FieldFormat
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateDateField(mixed $value, string $format = self::DEFAULT_DATE_FORMAT): self
+    private function validateDateField(mixed $value, string $format = self::DEFAULT_DATE_FORMAT): static
     {
         try {
             $this->dateService->parseDate($value, $format);
@@ -34,7 +34,7 @@ trait FieldFormat
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedIntegerField(mixed $value): self
+    private function validateUnsignedIntegerField(mixed $value): static
     {
         if (!preg_match(self::UNSIGNED_INTEGER_REGEXP, $value)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_UNSIGNED_INTEGER_COLUMN_MESSAGE);
@@ -50,7 +50,7 @@ trait FieldFormat
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateUnsignedFloatField(mixed $value): self
+    private function validateUnsignedFloatField(mixed $value): static
     {
         if (!preg_match(self::UNSIGNED_FLOAT_REGEXP, $value)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_UNSIGNED_FLOAT_COLUMN_MESSAGE);
@@ -66,7 +66,7 @@ trait FieldFormat
      *
      * @throws TransactionDataValidatorException
      */
-    private function validateInArrayField(mixed $value, array $acceptableValues): self
+    private function validateInArrayField(mixed $value, array $acceptableValues): static
     {
         if (!in_array($value, $acceptableValues, strict: true)) {
             throw new TransactionDataValidatorException(TransactionDataValidatorException::INCORRECT_IN_ARRAY_COLUMN_MESSAGE);

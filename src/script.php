@@ -14,16 +14,13 @@ try {
     $container->init();
 
     // Create the Application
-    $app = new Application(
-        realpath(__DIR__),
-        $container
-    );
+    $app = new Application($container);
 
-    $app->run();
+    $app->run($argc, $argv);
 
     $exitCode = 0;
-} catch (\Throwable $exception) {
-    echo $exception->getTraceAsString().PHP_EOL;
+} catch (CommissionTaskThrowable $exception) {
+    echo $exception->getMessage().PHP_EOL;
 
     $exitCode = $exception->getCode();
 } finally {

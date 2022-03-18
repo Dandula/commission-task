@@ -39,15 +39,15 @@ class Currency
         string $toCurrencyCode,
         int $scale
     ): string {
-        if ($fromCurrencyCode !== $toCurrencyCode) {
-            $relativeRate = $this->mathService->div(
-                $this->getCurrencyRate($toCurrencyCode),
-                $this->getCurrencyRate($fromCurrencyCode),
-                $this->getRateScale()
-            );
-        } else {
-            $relativeRate = self::BASE_CURRENCY_RATE;
+        if ($fromCurrencyCode === $toCurrencyCode) {
+            return $amount;
         }
+
+        $relativeRate = $this->mathService->div(
+            $this->getCurrencyRate($toCurrencyCode),
+            $this->getCurrencyRate($fromCurrencyCode),
+            $this->getRateScale()
+        );
 
         return $this->mathService->mul($amount, (string) $relativeRate, $scale);
     }

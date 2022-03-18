@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace CommissionTask\Components\TransactionFeeCalculator\Strategies\Traits;
 
 use CommissionTask\Components\TransactionFeeCalculator\Exceptions\TransactionFeeCalculatorLogicException;
-use CommissionTask\Services\Config as ConfigService;
 
 trait CommonCalculateOperations
 {

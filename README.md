@@ -16,7 +16,7 @@ composer run post-root-package-install
 
 ## Execution
 ```shell
-php src/script.php input.csv
+php src/script.php /absolute/path/input.csv
 ```
 
 ## Testing

@@ -19,35 +19,32 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Application
 {
-    public const FILEPATH_PARAMETER_NUMBER = 1;
-
-    /**
-     * The base path for the application installation.
-     */
-    protected string $basePath;
+    private const FILEPATH_PARAMETER_NUMBER = 1;
 
     /**
      * The service container for the application.
      */
-    protected Container $container;
+    private Container $container;
 
     /**
      * Create a new application instance.
      */
-    public function __construct(string $basePath, Container $container)
+    public function __construct(Container $container)
     {
-        $this->setContainer($container)
-            ->setBasePath($basePath);
+        $this->setContainer($container);
     }
 
     /**
      * Run the application.
      *
+     * @param int $argc
+     * @param string[] $argv
+     *
      * @throws CommissionTaskThrowable
      */
-    public function run(): void
+    public function run(int $argc, array $argv): void
     {
-        $this->initApplication();
+        $this->initApplication($argc, $argv);
 
         $rawTransactionsData = $this->readRawTransactionsData();
 
@@ -62,11 +59,17 @@ class Application
 
     /**
      * Read raw data of transactions.
+     *
+     * @param int $argc
+     * @param string[] $argv
      */
-    private function initApplication(): void
+    private function initApplication(int $argc, array $argv): void
     {
         $commandLineService = $this->container->get(ConfigService::class);
         $commandLineService->initConfig();
+
+        $commandLineService = $this->container->get(CommandLineService::class);
+        $commandLineService->initCommandLineParameters($argc, $argv);
     }
 
     /**
@@ -139,24 +142,6 @@ class Application
         $outputter = $this->container->get(Outputter::class);
 
         $outputter->output($outputData);
-    }
-
-    /**
-     * Set the base path for the application.
-     *
-     * @return $this
-     *
-     * @throws CommissionTaskKernelException
-     */
-    private function setBasePath(string $basePath): self
-    {
-        $this->basePath = rtrim($basePath, '\/');
-
-        if ($fileSystemService = $this->container->get(FilesystemService::class)) {
-            $fileSystemService->setBasePath($this->basePath);
-        }
-
-        return $this;
     }
 
     /**

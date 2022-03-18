@@ -9,6 +9,22 @@ use CommissionTask\Exceptions\CommissionTaskKernelException;
 
 class CommandLine
 {
+    private int $argc;
+
+    /**
+     * @var string[]
+     */
+    private array $argv;
+
+    /**
+     * Init command line parameters.
+     */
+    public function initCommandLineParameters(int $argc, array $argv): void
+    {
+        $this->argc = $argc;
+        $this->argv = $argv;
+    }
+
     /**
      * Get command line parameters by number.
      *
@@ -18,13 +34,11 @@ class CommandLine
     {
         $this->checkIsCommandLineApplication();
 
-        $commandLineParameters = $_SERVER['argv'];
-
-        if (!isset($commandLineParameters[$number])) {
+        if (!isset($this->argv[$number])) {
             throw new CommissionTaskException(sprintf(CommissionTaskException::COMMAND_LINE_PARAMETER_IS_NOT_SET_MESSAGE, $number));
         }
 
-        return $commandLineParameters[$number];
+        return $this->argv[$number];
     }
 
     /**
@@ -34,7 +48,7 @@ class CommandLine
      */
     private function checkIsCommandLineApplication(): void
     {
-        if (!isset($_SERVER['argv'], $_SERVER['argc'])) {
+        if (!isset($this->argc, $this->argv)) {
             throw new CommissionTaskKernelException(CommissionTaskKernelException::SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE);
         }
     }
