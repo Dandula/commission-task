@@ -10,64 +10,46 @@ use CommissionTask\Services\Filesystem as FilesystemService;
 
 class CsvTransactionsDataReader implements TransactionsDataReaderContract
 {
-    private string $filePath;
+    /**
+     * @var resource
+     */
+    private $fileResource;
 
     /**
      * Create a new CSV transactions data reader instance.
      */
-    public function __construct(private FilesystemService $filesystemService)
-    {
+    public function __construct(
+        private FilesystemService $filesystemService
+    ) {
     }
 
     /**
-     * Set path to CSV file.
+     * Destroy current CSV transactions data reader instance.
      */
-    public function setFilePath(string $filePath): void
+    public function __destruct()
     {
-        $this->filePath = $filePath;
+        if ($this->fileResource !== null) {
+            $this->filesystemService->closeFile($this->fileResource);
+        }
+    }
+
+    /**
+     * Open CSV file.
+     */
+    public function openFile(string $filePath): void
+    {
+        if (!$this->filesystemService->isFileExists($filePath)) {
+            throw new TransactionsDataReaderException(sprintf(TransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $filePath));
+        }
+
+        $this->fileResource = $this->filesystemService->openFile($filePath);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function readTransactionsData(): array
+    public function readTransactionsData(): iterable
     {
-        $transactionsRawData = $this->readCsvStrings();
-
-        return $this->parseCsvStrings($transactionsRawData);
-    }
-
-    /**
-     * Read CSV strings.
-     *
-     * @return string[]
-     *
-     * @throws TransactionsDataReaderException
-     */
-    private function readCsvStrings(): array
-    {
-        if (!isset($this->filePath)) {
-            throw new TransactionsDataReaderException(TransactionsDataReaderException::UNDEFINED_CSV_FILEPATH_MESSAGE);
-        }
-
-        if (!$this->filesystemService->isFileExists($this->filePath)) {
-            throw new TransactionsDataReaderException(sprintf(TransactionsDataReaderException::CSV_FILE_DOESNT_EXISTS_MESSAGE, $this->filePath));
-        }
-
-        return $this->filesystemService->readFile($this->filePath);
-    }
-
-    /**
-     * Parse CSV strings.
-     *
-     * @param string[] $transactionsRawData
-     */
-    private function parseCsvStrings(array $transactionsRawData): array
-    {
-        foreach ($transactionsRawData as &$transactionRawData) {
-            $transactionRawData = str_getcsv($transactionRawData);
-        }
-
-        return $transactionsRawData;
+        yield from $this->filesystemService->readCsvRows($this->fileResource);
     }
 }

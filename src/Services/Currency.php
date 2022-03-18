@@ -14,7 +14,6 @@ use CommissionTask\Services\Math as MathService;
 
 class Currency
 {
-    public const BASE_CURRENCY_RATE = 1;
     public const DEFAULT_SCALE_AMOUNT = 2;
 
     /**
@@ -49,7 +48,7 @@ class Currency
             $this->getRateScale()
         );
 
-        return $this->mathService->mul($amount, (string) $relativeRate, $scale);
+        return $this->mathService->mul($amount, $relativeRate, $scale);
     }
 
     /**

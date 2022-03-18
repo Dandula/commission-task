@@ -17,23 +17,37 @@ class Filesystem extends Singleton
     }
 
     /**
-     * Read file line by line to array.
+     * Open file.
      *
-     * @return string[]
+     * @return false|resource
      */
-    public function readFile(string $filePath): array
+    public function openFile(string $filePath)
     {
-        $fileResource = fopen($filePath, 'rb');
+        return fopen($filePath, mode: 'rb');
+    }
 
-        try {
-            $content = [];
-            while (!feof($fileResource) && ($buffer = fgets($fileResource)) !== false) {
-                $content[] = rtrim($buffer);
-            }
-        } finally {
-            fclose($fileResource);
+    /**
+     * Read CSV file line by line.
+     *
+     * @param resource $fileResource
+     */
+    public function readCsvRows($fileResource): iterable
+    {
+        while (
+            !feof($fileResource)
+            && $buffer = fgetcsv($fileResource, length: 4096)
+        ) {
+            yield $buffer;
         }
+    }
 
-        return $content;
+    /**
+     * Close file.
+     *
+     * @param resource $fileResource
+     */
+    public function closeFile($fileResource): void
+    {
+        fclose($fileResource);
     }
 }

@@ -13,5 +13,5 @@ interface TransactionsDataReader
      *
      * @throws TransactionsDataReaderException
      */
-    public function readTransactionsData(): array;
+    public function readTransactionsData(): iterable;
 }

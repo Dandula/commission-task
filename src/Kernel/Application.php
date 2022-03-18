@@ -10,12 +10,10 @@ use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFee
 use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
 use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader;
 use CommissionTask\Entities\Transaction;
-use CommissionTask\Exceptions\CommissionTaskKernelException;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
 use CommissionTask\Repositories\Interfaces\TransactionsRepository;
 use CommissionTask\Services\CommandLine as CommandLineService;
 use CommissionTask\Services\Config as ConfigService;
-use CommissionTask\Services\Filesystem as FilesystemService;
 
 class Application
 {
@@ -37,7 +35,6 @@ class Application
     /**
      * Run the application.
      *
-     * @param int $argc
      * @param string[] $argv
      *
      * @throws CommissionTaskThrowable
@@ -46,11 +43,7 @@ class Application
     {
         $this->initApplication($argc, $argv);
 
-        $rawTransactionsData = $this->readRawTransactionsData();
-
-        $this->validateRawTransactionsData($rawTransactionsData);
-
-        $this->saveTransactions($rawTransactionsData);
+        $this->loadTransactions();
 
         $transactionsFees = $this->calculateTransactionsFees();
 
@@ -60,7 +53,6 @@ class Application
     /**
      * Read raw data of transactions.
      *
-     * @param int $argc
      * @param string[] $argv
      */
     private function initApplication(int $argc, array $argv): void
@@ -73,40 +65,23 @@ class Application
     }
 
     /**
-     * Read raw data of transactions.
+     * Load transactions.
      */
-    private function readRawTransactionsData(): array
+    private function loadTransactions(): void
     {
         $commandLineService = $this->container->get(CommandLineService::class);
         $filePath = $commandLineService->getCommandLineParameterByNumber(self::FILEPATH_PARAMETER_NUMBER);
 
         $transactionsDataReader = $this->container->get(TransactionsDataReader::class);
-        $transactionsDataReader->setFilePath($filePath);
+        $transactionsDataReader->openFile($filePath);
 
-        return $transactionsDataReader->readTransactionsData();
-    }
-
-    /**
-     * Validate raw data of transactions.
-     */
-    private function validateRawTransactionsData(array $rawTransactionsData): void
-    {
         $transactionsDataValidator = $this->container->get(TransactionDataValidator::class);
 
-        foreach ($rawTransactionsData as $rawTransactionData) {
-            $transactionsDataValidator->validateTransactionData($rawTransactionData);
-        }
-    }
-
-    /**
-     * Save raw data of transactions to transactions entities.
-     */
-    private function saveTransactions(array $rawTransactionsData): void
-    {
         $transactionSaver = $this->container->get(TransactionSaver::class);
 
-        foreach ($rawTransactionsData as $rawTransactionDataItem) {
-            $transactionSaver->saveTransaction($rawTransactionDataItem);
+        foreach ($transactionsDataReader->readTransactionsData() as $rawTransactionData) {
+            $transactionsDataValidator->validateTransactionData($rawTransactionData);
+            $transactionSaver->saveTransaction($rawTransactionData);
         }
     }
 
@@ -114,8 +89,6 @@ class Application
      * Calculate fees of transactions.
      *
      * @return string[]
-     *
-     * @throws CommissionTaskKernelException
      */
     private function calculateTransactionsFees(): array
     {

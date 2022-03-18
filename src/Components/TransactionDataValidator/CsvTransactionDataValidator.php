@@ -35,12 +35,27 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
     {
         $this->validatedData = $transactionData;
 
-        $this->validateDate()
+        $this->validateColumnsCount()
+            ->validateDate()
             ->validateUserId()
             ->validateUserType()
             ->validateType()
             ->validateAmount()
             ->validateCurrencyCode();
+    }
+
+    /**
+     * Validate columns count.
+     *
+     * @throws TransactionDataValidatorException
+     */
+    private function validateColumnsCount(): self
+    {
+        if (count($this->validatedData) < $this->getTransactionsCsvColumnNumber()) {
+            throw new TransactionDataValidatorException(TransactionDataValidatorException::INSUFFICIENT_NUMBER_COLUMNS_MESSAGE);
+        }
+
+        return $this;
     }
 
     /**
@@ -159,5 +174,13 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
         }
 
         return $this;
+    }
+
+    /**
+     * Get required number of columns.
+     */
+    public function getTransactionsCsvColumnNumber(): int
+    {
+        return count($this->configService->getConfigByName('transactionsCsv.columnsNumbers'));
     }
 }
