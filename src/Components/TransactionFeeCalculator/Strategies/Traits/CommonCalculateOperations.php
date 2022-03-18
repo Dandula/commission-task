@@ -14,7 +14,7 @@ trait CommonCalculateOperations
      */
     private function getRoundedOffDigitsNumber(): int
     {
-        return ConfigService::getConfigByName('feeCalculator.roundedOffDigitsNumber');
+        return $this->configService->getConfigByName('feeCalculator.roundedOffDigitsNumber');
     }
 
     /**
@@ -40,11 +40,9 @@ trait CommonCalculateOperations
 
         // Discard the rounded digits
         $amount = substr($amount, offset: 0, length: -$roundedOffDigitsNumber);
-        // Get the last character before the rounded digits
-        $previousLastDigitCharacter = substr($amount, offset: -1);
 
         // If the last character before the rounded digits is a decimal separator, discard it
-        if ($previousLastDigitCharacter === $this->mathService::FRACTION_SEPARATOR) {
+        if (str_ends_with($amount, $this->mathService::FRACTION_SEPARATOR)) {
             $amount = substr($amount, offset: 0, length: -1);
         }
 

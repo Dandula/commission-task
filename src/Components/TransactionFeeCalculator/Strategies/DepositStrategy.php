@@ -19,6 +19,7 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
      * Create a new transaction fee calculator strategy instance for deposit transactions.
      */
     public function __construct(
+        private ConfigService $configService,
         private CurrencyService $currencyService,
         private MathService $mathService
     ) {
@@ -47,6 +48,6 @@ class DepositStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getFeeRate(): string
     {
-        return ConfigService::getConfigByName('feeCalculator.feeRateDeposit');
+        return $this->configService->getConfigByName('feeCalculator.feeRateDeposit');
     }
 }

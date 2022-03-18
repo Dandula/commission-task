@@ -65,7 +65,8 @@ class Application
      */
     private function initApplication(): void
     {
-        ConfigService::initConfig();
+        $commandLineService = $this->container->get(ConfigService::class);
+        $commandLineService->initConfig();
     }
 
     /**

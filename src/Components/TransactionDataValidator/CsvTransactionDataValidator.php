@@ -22,6 +22,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      * Create CSV transaction data validator instance.
      */
     public function __construct(
+        private ConfigService $configService,
         private DateService $dateService,
         private CurrencyService $currencyService
     ) {
@@ -51,12 +52,12 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateDate(): self
     {
-        $columnDateNumber = $this->getColumnNumber('date');
+        $columnDateNumber = $this->configService->getTransactionsCsvColumnNumber('date');
 
         return $this->validateColumnSet($columnDateNumber)
             ->validateDateField(
                 $this->validatedData[$columnDateNumber],
-                ConfigService::getConfigByName('transactionsCsv.dateFormat')
+                $this->configService->getConfigByName('transactionsCsv.dateFormat')
             );
     }
 
@@ -69,7 +70,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateUserId(): self
     {
-        $columnUserIdNumber = $this->getColumnNumber('userId');
+        $columnUserIdNumber = $this->configService->getTransactionsCsvColumnNumber('userId');
 
         return $this->validateColumnSet($columnUserIdNumber)
             ->validateUnsignedIntegerField($this->validatedData[$columnUserIdNumber]);
@@ -84,7 +85,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateUserType(): self
     {
-        $columnUserTypeNumber = $this->getColumnNumber('userType');
+        $columnUserTypeNumber = $this->configService->getTransactionsCsvColumnNumber('userType');
 
         return $this->validateColumnSet($columnUserTypeNumber)
             ->validateInArrayField(
@@ -102,7 +103,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateType(): self
     {
-        $columnTypeNumber = $this->getColumnNumber('type');
+        $columnTypeNumber = $this->configService->getTransactionsCsvColumnNumber('type');
 
         return $this->validateColumnSet($columnTypeNumber)
             ->validateInArrayField(
@@ -120,7 +121,7 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateAmount(): self
     {
-        $columnAmountNumber = $this->getColumnNumber('amount');
+        $columnAmountNumber = $this->configService->getTransactionsCsvColumnNumber('amount');
 
         return $this->validateColumnSet($columnAmountNumber)
             ->validateUnsignedFloatField($this->validatedData[$columnAmountNumber]);
@@ -135,12 +136,12 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
      */
     private function validateCurrencyCode(): self
     {
-        $columnCurrencyCodeNumber = $this->getColumnNumber('currencyCode');
+        $columnCurrencyCodeNumber = $this->configService->getTransactionsCsvColumnNumber('currencyCode');
 
         return $this->validateColumnSet($columnCurrencyCodeNumber)
             ->validateInArrayField(
                 $this->validatedData[$columnCurrencyCodeNumber],
-                $this->currencyService->getAcceptableCurrenciesCodes()
+                $this->configService->getAcceptableCurrenciesCodes()
             );
     }
 
@@ -158,13 +159,5 @@ class CsvTransactionDataValidator implements TransactionDataValidatorContract
         }
 
         return $this;
-    }
-
-    /**
-     * Get column number.
-     */
-    private function getColumnNumber(string $column): int
-    {
-        return ConfigService::getConfigByName('transactionsCsv.columnsNumbers.'.$column);
     }
 }

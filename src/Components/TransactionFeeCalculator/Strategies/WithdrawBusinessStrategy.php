@@ -19,6 +19,7 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
      * Create a new transaction fee calculator strategy instance for withdraw transactions of business user.
      */
     public function __construct(
+        private ConfigService $configService,
         private CurrencyService $currencyService,
         private MathService $mathService
     ) {
@@ -47,6 +48,6 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
      */
     private function getFeeRate(): string
     {
-        return ConfigService::getConfigByName('feeCalculator.feeRateWithdrawBusiness');
+        return $this->configService->getConfigByName('feeCalculator.feeRateWithdrawBusiness');
     }
 }

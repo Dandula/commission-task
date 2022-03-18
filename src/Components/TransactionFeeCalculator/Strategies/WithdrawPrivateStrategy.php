@@ -21,6 +21,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      * Create a new transaction fee calculator strategy instance for withdraw transactions of private user.
      */
     public function __construct(
+        private ConfigService $configService,
         private CurrencyService $currencyService,
         private MathService $mathService,
         private DateService $dateService,
@@ -53,7 +54,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getFeeRate(): string
     {
-        return ConfigService::getConfigByName('feeCalculator.feeRateWithdrawPrivate');
+        return $this->configService->getConfigByName('feeCalculator.feeRateWithdrawPrivate');
     }
 
     /**
@@ -61,7 +62,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getNontaxableAmount(): string
     {
-        return ConfigService::getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate');
+        return $this->configService->getConfigByName('feeCalculator.nontaxableAmountWithdrawPrivate');
     }
 
     /**
@@ -69,7 +70,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getNontaxableCurrencyCode(): string
     {
-        return ConfigService::getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate');
+        return $this->configService->getConfigByName('feeCalculator.nontaxableCurrencyCodeWithdrawPrivate');
     }
 
     /**
@@ -77,7 +78,7 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      */
     private function getPreferentialOperationsNumber(): int
     {
-        return ConfigService::getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate');
+        return $this->configService->getConfigByName('feeCalculator.preferentialOperationsNumberWithdrawPrivate');
     }
 
     /**

@@ -12,6 +12,14 @@ use JsonException;
 class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
 {
     /**
+     * Create API currencies data reader instance.
+     */
+    public function __construct(
+        private ConfigService $configService
+    ) {
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function readCurrenciesData(): array
@@ -30,10 +38,10 @@ class ApiCurrenciesDataReader implements CurrenciesDataReaderContract
     {
         $curl = curl_init();
 
-        curl_setopt($curl, option: CURLOPT_URL, value: ConfigService::getEnvByName('CURRENCIES_API_URL'));
+        curl_setopt($curl, option: CURLOPT_URL, value: $this->configService->getEnvByName('CURRENCIES_API_URL'));
         curl_setopt($curl, option: CURLOPT_RETURNTRANSFER, value: 1);
 
-        $remainingRequestsAttemptsCount = ConfigService::getConfigByName('currenciesApi.maxRequestsAttempts');
+        $remainingRequestsAttemptsCount = $this->configService->getConfigByName('currenciesApi.maxRequestsAttempts');
 
         do {
             $currenciesData = curl_exec($curl);

@@ -20,6 +20,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function __construct(
         private CurrenciesRepository $currenciesRepository,
+        private ConfigService $configService,
         private MathService $mathService
     ) {
     }
@@ -29,8 +30,8 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     public function updateCurrencies($currenciesData): void
     {
-        $baseCurrencyCodeField = $this->getCurrenciesApiFieldName('baseCurrencyCode');
-        $ratesField = $this->getCurrenciesApiFieldName('rates');
+        $baseCurrencyCodeField = $this->configService->getCurrenciesApiFieldName('baseCurrencyCode');
+        $ratesField = $this->configService->getCurrenciesApiFieldName('rates');
         $baseCurrencyCode = $currenciesData[$baseCurrencyCodeField];
         $rates = $currenciesData[$ratesField];
 
@@ -41,7 +42,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
             $applicationBaseCurrencyRate = $this->getApplicationBaseCurrencyRate($rates);
         }
 
-        $acceptableCurrenciesCodes = $this->getAcceptableCurrenciesCodes();
+        $acceptableCurrenciesCodes = $this->configService->getAcceptableCurrenciesCodes();
 
         foreach ($rates as $currencyCode => $currencyRate) {
             if (!in_array($currencyCode, $acceptableCurrenciesCodes, strict: true)) {
@@ -87,7 +88,7 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     private function getApplicationBaseCurrencyCode(): string
     {
-        return ConfigService::getConfigByName('currencies.baseCurrency');
+        return $this->configService->getConfigByName('currencies.baseCurrency');
     }
 
     /**
@@ -109,30 +110,10 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
     }
 
     /**
-     * Get acceptable currencies codes.
-     *
-     * @return string[]
-     */
-    private function getAcceptableCurrenciesCodes(): array
-    {
-        $acceptableConfig = ConfigService::getConfigByName('currencies.acceptable');
-
-        return array_column($acceptableConfig, column_key: 'currencyCode');
-    }
-
-    /**
-     * Get currencies API field name.
-     */
-    private function getCurrenciesApiFieldName(string $name): string
-    {
-        return ConfigService::getConfigByName('currenciesApi.requiredFields.'.$name);
-    }
-
-    /**
      * Get rate scale.
      */
     private function getRateScale(): int
     {
-        return ConfigService::getConfigByName('currencies.rateScale');
+        return $this->configService->getConfigByName('currencies.rateScale');
     }
 }

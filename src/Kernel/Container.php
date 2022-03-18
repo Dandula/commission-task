@@ -33,6 +33,7 @@ use CommissionTask\Repositories\Interfaces\CurrenciesRepository as CurrenciesRep
 use CommissionTask\Repositories\Interfaces\TransactionsRepository as TransactionsRepositoryContract;
 use CommissionTask\Repositories\TransactionsRepository;
 use CommissionTask\Services\CommandLine as CommandLineService;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Currency as CurrencyService;
 use CommissionTask\Services\Date as DateService;
 use CommissionTask\Services\Filesystem as FilesystemService;
@@ -51,6 +52,7 @@ class Container
         $this->put(FilesystemService::class, FilesystemService::getInstance());
 
         // Put other classes instances
+        $this->put(ConfigService::class, new ConfigService());
         $this->put(CommandLineService::class, new CommandLineService());
         $this->put(MathService::class, new MathService());
         $this->put(DateService::class, new DateService());
@@ -65,12 +67,16 @@ class Container
         ));
 
         // Put classes of fee calculations instances
-        $this->put(CurrenciesDataReaderContract::class, new ApiCurrenciesDataReader());
+        $this->put(CurrenciesDataReaderContract::class, new ApiCurrenciesDataReader(
+            $this->get(ConfigService::class)
+        ));
         $this->put(CurrenciesDataValidatorContract::class, new ApiCurrenciesDataValidator(
+            $this->get(ConfigService::class),
             $this->get(DateService::class)
         ));
         $this->put(CurrenciesUpdaterContract::class, new ApiCurrenciesUpdater(
             $this->get(CurrenciesRepositoryContract::class),
+            $this->get(ConfigService::class),
             $this->get(MathService::class)
         ));
         $this->put(CurrencyService::class, new CurrencyService(
@@ -78,19 +84,23 @@ class Container
             $this->get(CurrenciesDataReaderContract::class),
             $this->get(CurrenciesDataValidatorContract::class),
             $this->get(CurrenciesUpdaterContract::class),
+            $this->get(ConfigService::class),
             $this->get(MathService::class)
         ));
         $this->put(DepositStrategy::class, new DepositStrategy(
+            $this->get(ConfigService::class),
             $this->get(CurrencyService::class),
             $this->get(MathService::class)
         ));
         $this->put(WithdrawPrivateStrategy::class, new WithdrawPrivateStrategy(
+            $this->get(ConfigService::class),
             $this->get(CurrencyService::class),
             $this->get(MathService::class),
             $this->get(DateService::class),
             $this->get(TransactionsRepositoryContract::class)
         ));
         $this->put(WithdrawBusinessStrategy::class, new WithdrawBusinessStrategy(
+            $this->get(ConfigService::class),
             $this->get(CurrencyService::class),
             $this->get(MathService::class)
         ));
@@ -108,11 +118,13 @@ class Container
             $this->get(FilesystemService::class)
         ));
         $this->put(TransactionDataValidatorContract::class, new CsvTransactionDataValidator(
+            $this->get(ConfigService::class),
             $this->get(DateService::class),
             $this->get(CurrencyService::class)
         ));
         $this->put(TransactionSaverContract::class, new CsvTransactionSaver(
             $this->get(TransactionsRepositoryContract::class),
+            $this->get(ConfigService::class),
             $this->get(DateService::class)
         ));
 

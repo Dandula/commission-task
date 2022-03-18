@@ -9,6 +9,7 @@ use CommissionTask\Components\CurrenciesDataValidator\Interfaces\CurrenciesDataV
 use CommissionTask\Components\CurrenciesUpdater\Interfaces\CurrenciesUpdater;
 use CommissionTask\Exceptions\CommissionTaskException;
 use CommissionTask\Repositories\Interfaces\CurrenciesRepository;
+use CommissionTask\Services\Config as ConfigService;
 use CommissionTask\Services\Math as MathService;
 
 class Currency
@@ -24,6 +25,7 @@ class Currency
         private CurrenciesDataReader $currenciesDataReader,
         private CurrenciesDataValidator $currenciesDataValidator,
         private CurrenciesUpdater $currenciesUpdater,
+        private ConfigService $configService,
         private MathService $mathService
     ) {
     }
@@ -80,7 +82,7 @@ class Currency
     public function getCurrencyScale(string $currencyCode): int
     {
         $filteredCurrenciesConfig = array_filter(
-            $this->getAcceptableCurrenciesConfig(),
+            $this->configService->getAcceptableCurrenciesConfig(),
             static fn (array $acceptableCurrencyConfig) => $acceptableCurrencyConfig['currencyCode'] === $currencyCode
         );
 
@@ -100,30 +102,10 @@ class Currency
     }
 
     /**
-     * Get acceptable currencies codes.
-     *
-     * @return string[]
-     */
-    public function getAcceptableCurrenciesCodes(): array
-    {
-        $acceptableConfig = $this->getAcceptableCurrenciesConfig();
-
-        return array_column($acceptableConfig, column_key: 'currencyCode');
-    }
-
-    /**
-     * Get acceptable currencies config.
-     */
-    private function getAcceptableCurrenciesConfig(): array
-    {
-        return Config::getConfigByName('currencies.acceptable');
-    }
-
-    /**
      * Get rate scale.
      */
     private function getRateScale(): int
     {
-        return Config::getConfigByName('currencies.rateScale');
+        return $this->configService->getConfigByName('currencies.rateScale');
     }
 }

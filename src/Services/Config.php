@@ -4,33 +4,32 @@ declare(strict_types=1);
 
 namespace CommissionTask\Services;
 
-use CommissionTask\Exceptions\CommissionTaskException;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Yaml\Yaml;
 
-abstract class Config
+class Config
 {
     private const CONFIG_NAME_SEPARATOR = '.';
 
-    private static array $configSet;
+    private array $configSet;
 
     /**
      * Init configuration.
      */
-    public static function initConfig(): void
+    public function initConfig(): void
     {
-        self::initEnvironments();
-        self::initConfigSet();
+        $this->initEnvironments();
+        $this->initConfigSet();
     }
 
     /**
      * Get config value by name.
      */
-    public static function getConfigByName(string $name): mixed
+    public function getConfigByName(string $name): mixed
     {
-        $configKeys = self::resolveConfigName($name);
+        $configKeys = $this->resolveConfigName($name);
 
-        $configValue = self::$configSet;
+        $configValue = $this->configSet;
 
         while ($configKeys && $configValue !== null) {
             $configKey = array_shift($configKeys);
@@ -44,32 +43,78 @@ abstract class Config
     /**
      * Get config value by name.
      */
-    public static function getEnvByName(string $name): string
+    public function getEnvByName(string $name): string
     {
         return $_ENV[$name];
     }
 
     /**
-     * Init global environments.
+     * Get transactions CSV column number.
      */
-    private static function initEnvironments(): void
+    public function getTransactionsCsvColumnNumber(string $column): int
     {
-        $dotenv = new Dotenv();
-        $dotenv->load(self::getEnvPath());
+        return $this->getConfigByName('transactionsCsv.columnsNumbers.'.$column);
+    }
+
+    /**
+     * Get acceptable currencies config.
+     */
+    public function getAcceptableCurrenciesConfig(): array
+    {
+        return $this->getConfigByName('currencies.acceptable');
+    }
+
+    /**
+     * Get acceptable currencies codes.
+     *
+     * @return string[]
+     */
+    public function getAcceptableCurrenciesCodes(): array
+    {
+        $acceptableConfig = $this->getAcceptableCurrenciesConfig();
+
+        return array_column($acceptableConfig, column_key: 'currencyCode');
+    }
+
+    /**
+     * Get required currencies API fields.
+     *
+     * @return string[]
+     */
+    public function getRequiredCurrenciesApiFields(): array
+    {
+        return $this->getConfigByName('currenciesApi.requiredFields');
+    }
+
+    /**
+     * Get currencies API field name.
+     */
+    public function getCurrenciesApiFieldName(string $name): string
+    {
+        return $this->getConfigByName('currenciesApi.requiredFields.'.$name);
     }
 
     /**
      * Init global environments.
      */
-    private static function initConfigSet(): void
+    private function initEnvironments(): void
     {
-        self::$configSet = Yaml::parseFile(self::getConfigPath());
+        $dotenv = new Dotenv();
+        $dotenv->load($this->getEnvPath());
+    }
+
+    /**
+     * Init global environments.
+     */
+    private function initConfigSet(): void
+    {
+        $this->configSet = Yaml::parseFile($this->getConfigPath());
     }
 
     /**
      * Get full path to config file.
      */
-    private static function getConfigPath(): string
+    private function getConfigPath(): string
     {
         $unresolvedPath = __DIR__
             .DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'config'
@@ -81,7 +126,7 @@ abstract class Config
     /**
      * Get full path to .env file.
      */
-    private static function getEnvPath(): string
+    private function getEnvPath(): string
     {
         $unresolvedPath = __DIR__
             .DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'
@@ -94,10 +139,8 @@ abstract class Config
      * Resolve config name to array of keys in config set.
      *
      * @return string[]
-     *
-     * @throws CommissionTaskException
      */
-    private static function resolveConfigName(string $name): array
+    private function resolveConfigName(string $name): array
     {
         if (!$name) {
             return [];

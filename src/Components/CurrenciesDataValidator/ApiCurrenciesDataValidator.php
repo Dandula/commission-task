@@ -20,6 +20,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      * Create CSV transaction data validator instance.
      */
     public function __construct(
+        private ConfigService $configService,
         private DateService $dateService
     ) {
     }
@@ -59,7 +60,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
     private function validateMainFieldsExistence(): self
     {
         if (array_diff(
-            $this->getRequiredCurrenciesApiFields(),
+            $this->configService->getRequiredCurrenciesApiFields(),
             array_keys($this->validatedData)
         )) {
             throw new CurrenciesDataValidatorException(CurrenciesDataValidatorException::NO_REQUIRED_FIELDS_MESSAGE);
@@ -77,7 +78,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateBaseCurrencyCodeMainField(): self
     {
-        $baseCurrencyCodeField = $this->getCurrenciesApiFieldName('baseCurrencyCode');
+        $baseCurrencyCodeField = $this->configService->getCurrenciesApiFieldName('baseCurrencyCode');
 
         return $this->validateCurrencyCodeField($this->validatedData[$baseCurrencyCodeField]);
     }
@@ -91,7 +92,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateRatesMainField(): self
     {
-        $ratesField = $this->getCurrenciesApiFieldName('rates');
+        $ratesField = $this->configService->getCurrenciesApiFieldName('rates');
 
         return $this->validateIsArrayField($this->validatedData[$ratesField]);
     }
@@ -105,7 +106,7 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
      */
     private function validateCurrenciesRates(): self
     {
-        $ratesField = $this->getCurrenciesApiFieldName('rates');
+        $ratesField = $this->configService->getCurrenciesApiFieldName('rates');
         $currenciesRatesData = $this->validatedData[$ratesField];
 
         foreach ($currenciesRatesData as $currencyCode => $currencyRate) {
@@ -114,23 +115,5 @@ class ApiCurrenciesDataValidator implements CurrenciesDataValidatorsContract
         }
 
         return $this;
-    }
-
-    /**
-     * Get required currencies API fields.
-     *
-     * @return string[]
-     */
-    private function getRequiredCurrenciesApiFields(): array
-    {
-        return ConfigService::getConfigByName('currenciesApi.requiredFields');
-    }
-
-    /**
-     * Get currencies API field name.
-     */
-    private function getCurrenciesApiFieldName(string $name): string
-    {
-        return ConfigService::getConfigByName('currenciesApi.requiredFields.'.$name);
     }
 }

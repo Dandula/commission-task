@@ -17,6 +17,7 @@ class CsvTransactionSaver implements TransactionSaverContract
      */
     public function __construct(
         private TransactionsRepository $transactionsRepository,
+        private ConfigService $configService,
         private DateService $dateService
     ) {
     }
@@ -36,25 +37,17 @@ class CsvTransactionSaver implements TransactionSaverContract
     private function makeTransaction(mixed $transactionData): Transaction
     {
         $date = $this->dateService->parseDate(
-            $transactionData[$this->getColumnNumber('date')],
-            ConfigService::getConfigByName('transactionsCsv.dateFormat')
+            $transactionData[$this->configService->getTransactionsCsvColumnNumber('date')],
+            $this->configService->getConfigByName('transactionsCsv.dateFormat')
         );
 
         return new Transaction(
             $date,
-            (int) $transactionData[$this->getColumnNumber('userId')],
-            $transactionData[$this->getColumnNumber('userType')],
-            $transactionData[$this->getColumnNumber('type')],
-            $transactionData[$this->getColumnNumber('amount')],
-            $transactionData[$this->getColumnNumber('currencyCode')]
+            (int) $transactionData[$this->configService->getTransactionsCsvColumnNumber('userId')],
+            $transactionData[$this->configService->getTransactionsCsvColumnNumber('userType')],
+            $transactionData[$this->configService->getTransactionsCsvColumnNumber('type')],
+            $transactionData[$this->configService->getTransactionsCsvColumnNumber('amount')],
+            $transactionData[$this->configService->getTransactionsCsvColumnNumber('currencyCode')]
         );
-    }
-
-    /**
-     * Get column number.
-     */
-    private function getColumnNumber(string $column): int
-    {
-        return ConfigService::getConfigByName('transactionsCsv.columnsNumbers.'.$column);
     }
 }
