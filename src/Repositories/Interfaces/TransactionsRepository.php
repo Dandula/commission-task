@@ -44,9 +44,9 @@ interface TransactionsRepository
     public function deleteAll(): void;
 
     /**
-     * Get withdraw transactions of user from one date to another date.
+     * Get early withdraw transactions of user from start of week.
      *
      * @return Transaction[]
      */
-    public function getUserWithdrawTransactionsBetweenDates(int $userId, DateTime $fromDate, DateTime $toDate): array;
+    public function getEarlyUserWithdrawTransactionsFromStartOfWeek(int $userId, DateTime $fromDate, int $toId): array;
 }

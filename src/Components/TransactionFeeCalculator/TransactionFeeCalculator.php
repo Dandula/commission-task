@@ -21,10 +21,10 @@ class TransactionFeeCalculator implements TransactionFeeCalculatorContract
     /**
      * {@inheritDoc}
      */
-    public function calculateTransactionFee(Transaction $transaction): string
+    public function calculateTransactionFee(Transaction $transaction, int $id): string
     {
         $transactionFeeCalculatorStrategy = $this->transactionFeeCalculatorStrategyFactory->getTransactionFeeCalculatorStrategy($transaction);
 
-        return $transactionFeeCalculatorStrategy->calculateTransactionFee($transaction);
+        return $transactionFeeCalculatorStrategy->calculateTransactionFee($transaction, $id);
     }
 }

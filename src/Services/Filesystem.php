@@ -8,6 +8,8 @@ use CommissionTask\Kernel\Singleton;
 
 class Filesystem extends Singleton
 {
+    private const MAX_LENGTH_LINE_CSV = 128;
+
     /**
      * Check is file exists.
      */
@@ -35,7 +37,7 @@ class Filesystem extends Singleton
     {
         while (
             !feof($fileResource)
-            && $buffer = fgetcsv($fileResource, length: 4096)
+            && $buffer = fgetcsv($fileResource, length: self::MAX_LENGTH_LINE_CSV)
         ) {
             yield $buffer;
         }

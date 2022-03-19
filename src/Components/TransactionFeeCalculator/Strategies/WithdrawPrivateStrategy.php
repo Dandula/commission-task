@@ -32,9 +32,9 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
     /**
      * {@inheritDoc}
      */
-    public function calculateTransactionFee(Transaction $transaction): string
+    public function calculateTransactionFee(Transaction $transaction, int $id): string
     {
-        $influentialTransactions = $this->getInfluentialTransactions($transaction);
+        $influentialTransactions = $this->getInfluentialTransactions($transaction, $id);
 
         $amountScale = $this->currencyService->getCurrencyScale($transaction->getCurrencyCode());
         $taxableAmountScale = $amountScale + $this->getRoundedOffDigitsNumber();
@@ -86,14 +86,14 @@ class WithdrawPrivateStrategy implements TransactionFeeCalculateStrategyContract
      *
      * @return Transaction[]
      */
-    private function getInfluentialTransactions(Transaction $transaction): array
+    private function getInfluentialTransactions(Transaction $transaction, int $id): array
     {
         $transactionDate = $transaction->getDate();
 
-        return $this->transactionsRepository->getUserWithdrawTransactionsBetweenDates(
+        return $this->transactionsRepository->getEarlyUserWithdrawTransactionsFromStartOfWeek(
             $transaction->getUserId(),
             $this->dateService->getStartOfWeek($transactionDate),
-            $transactionDate
+            $id
         );
     }
 

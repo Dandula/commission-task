@@ -71,16 +71,16 @@ class TransactionsRepository implements TransactionsRepositoryContract
     /**
      * {@inheritDoc}
      */
-    public function getUserWithdrawTransactionsBetweenDates(int $userId, DateTime $fromDate, DateTime $toDate): array
+    public function getEarlyUserWithdrawTransactionsFromStartOfWeek(int $userId, DateTime $fromDate, int $toId): array
     {
         $filteredTransactions = [];
 
         foreach ($this->all() as $id => $transaction) {
             if (
-                $transaction->getUserId() === $userId
+                $id < $toId
+                && $transaction->getUserId() === $userId
                 && $transaction->getType() === Transaction::TYPE_WITHDRAW
                 && $transaction->getDate() >= $fromDate
-                && $transaction->getDate() < $toDate
             ) {
                 $filteredTransactions[$id] = $transaction;
             }

@@ -14,9 +14,9 @@ try {
     $container->init();
 
     // Create the Application
-    $app = new Application($container);
+    $application = new Application($container);
 
-    $app->run($argc, $argv);
+    $application->run($argc, $argv);
 
     $exitCode = 0;
 } catch (CommissionTaskThrowable $exception) {

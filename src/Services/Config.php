@@ -23,13 +23,29 @@ class Config
     }
 
     /**
+     * Get config set.
+     */
+    public function getConfigSet(): array
+    {
+        return $this->configSet;
+    }
+
+    /**
+     * Get environment variables set.
+     */
+    public function getEnvSet(): array
+    {
+        return $_ENV;
+    }
+
+    /**
      * Get config value by name.
      */
     public function getConfigByName(string $name): mixed
     {
         $configKeys = $this->resolveConfigName($name);
 
-        $configValue = $this->configSet;
+        $configValue = $this->getConfigSet();
 
         while ($configKeys && $configValue !== null) {
             $configKey = array_shift($configKeys);
@@ -45,7 +61,9 @@ class Config
      */
     public function getEnvByName(string $name): string
     {
-        return $_ENV[$name];
+        $envSet = $this->getEnvSet();
+
+        return $envSet[$name];
     }
 
     /**

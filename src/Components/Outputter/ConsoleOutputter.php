@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommissionTask\Components\Outputter;
 
 use CommissionTask\Components\Outputter\Interfaces\Outputter;
+use Stringable;
 
 class ConsoleOutputter implements Outputter
 {
@@ -16,7 +17,7 @@ class ConsoleOutputter implements Outputter
     /**
      * {@inheritDoc}
      */
-    public function output(string|array ...$outputtingDataItems): void
+    public function output(string|Stringable|array ...$outputtingDataItems): void
     {
         foreach ($outputtingDataItems as $outputtingDataItem) {
             switch (gettype($outputtingDataItem)) {

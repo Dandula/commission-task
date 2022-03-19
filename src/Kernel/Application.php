@@ -57,8 +57,8 @@ class Application
      */
     private function initApplication(int $argc, array $argv): void
     {
-        $commandLineService = $this->container->get(ConfigService::class);
-        $commandLineService->initConfig();
+        $configService = $this->container->get(ConfigService::class);
+        $configService->initConfig();
 
         $commandLineService = $this->container->get(CommandLineService::class);
         $commandLineService->initCommandLineParameters($argc, $argv);
@@ -100,8 +100,9 @@ class Application
         /**
          * @var Transaction $transaction
          */
-        foreach ($transactionsRepository->all() as $transaction) {
-            $transactionsFees[] = $transactionFeeCalculator->calculateTransactionFee($transaction);
+        foreach ($transactionsRepository->all() as $id => $transaction) {
+            $fee = $transactionFeeCalculator->calculateTransactionFee($transaction, $id);
+            $transactionsFees[] = $fee;
         }
 
         return $transactionsFees;
