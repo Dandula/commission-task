@@ -4,16 +4,8 @@ declare(strict_types=1);
 
 namespace CommissionTask\Kernel;
 
-use CommissionTask\Components\Outputter\Interfaces\Outputter;
-use CommissionTask\Components\TransactionDataValidator\Interfaces\TransactionDataValidator;
-use CommissionTask\Components\TransactionFeeCalculator\Interfaces\TransactionFeeCalculator;
-use CommissionTask\Components\TransactionSaver\Interfaces\TransactionSaver;
-use CommissionTask\Components\TransactionsDataReader\Interfaces\TransactionsDataReader;
 use CommissionTask\Entities\Transaction;
 use CommissionTask\Exceptions\Interfaces\CommissionTaskThrowable;
-use CommissionTask\Repositories\Interfaces\TransactionsRepository;
-use CommissionTask\Services\CommandLine as CommandLineService;
-use CommissionTask\Services\Config as ConfigService;
 
 class Application
 {
@@ -57,10 +49,10 @@ class Application
      */
     private function initApplication(int $argc, array $argv): void
     {
-        $configService = $this->container->get(ConfigService::class);
+        $configService = $this->container->get('configService');
         $configService->initConfig();
 
-        $commandLineService = $this->container->get(CommandLineService::class);
+        $commandLineService = $this->container->get('commandLineService');
         $commandLineService->initCommandLineParameters($argc, $argv);
     }
 
@@ -69,15 +61,15 @@ class Application
      */
     private function loadTransactions(): void
     {
-        $commandLineService = $this->container->get(CommandLineService::class);
+        $commandLineService = $this->container->get('commandLineService');
         $filePath = $commandLineService->getCommandLineParameterByNumber(self::FILEPATH_PARAMETER_NUMBER);
 
-        $transactionsDataReader = $this->container->get(TransactionsDataReader::class);
+        $transactionsDataReader = $this->container->get('transactionsDataReader');
         $transactionsDataReader->openFile($filePath);
 
-        $transactionsDataValidator = $this->container->get(TransactionDataValidator::class);
+        $transactionsDataValidator = $this->container->get('transactionDataValidator');
 
-        $transactionSaver = $this->container->get(TransactionSaver::class);
+        $transactionSaver = $this->container->get('transactionSaver');
 
         foreach ($transactionsDataReader->readTransactionsData() as $rawTransactionData) {
             $transactionsDataValidator->validateTransactionData($rawTransactionData);
@@ -92,8 +84,8 @@ class Application
      */
     private function calculateTransactionsFees(): array
     {
-        $transactionsRepository = $this->container->get(TransactionsRepository::class);
-        $transactionFeeCalculator = $this->container->get(TransactionFeeCalculator::class);
+        $transactionsRepository = $this->container->get('transactionsRepository');
+        $transactionFeeCalculator = $this->container->get('transactionFeeCalculator');
 
         $transactionsFees = [];
 
@@ -113,7 +105,7 @@ class Application
      */
     private function output(mixed $outputData): void
     {
-        $outputter = $this->container->get(Outputter::class);
+        $outputter = $this->container->get('outputter');
 
         $outputter->output($outputData);
     }

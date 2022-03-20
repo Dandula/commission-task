@@ -11,6 +11,8 @@ class CommissionTaskKernelException extends Exception implements CommissionTaskT
 {
     public const DEFAULT_MESSAGE = 'Application system error';
 
+    public const UNDEFINED_SERVICE_MESSAGE = 'Undefined service %s';
+
     public const CANNOT_DESERIALIZE_SINGLETON = 'Cannot deserialize singleton';
 
     public const SCRIPT_IS_NOT_RUN_FROM_COMMAND_LINE_MESSAGE = 'The script is not run from the command line';
