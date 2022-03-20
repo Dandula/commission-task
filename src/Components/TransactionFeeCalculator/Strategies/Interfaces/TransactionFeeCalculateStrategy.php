@@ -13,5 +13,5 @@ interface TransactionFeeCalculateStrategy
     /**
      * Calculate transaction fee for given transaction.
      */
-    public function calculateTransactionFee(Transaction $transaction, int $id): string;
+    public function calculateTransactionFee(Transaction $transaction): string;
 }

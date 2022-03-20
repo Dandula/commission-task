@@ -92,9 +92,8 @@ class Application
         /**
          * @var Transaction $transaction
          */
-        foreach ($transactionsRepository->all() as $id => $transaction) {
-            $fee = $transactionFeeCalculator->calculateTransactionFee($transaction, $id);
-            $transactionsFees[] = $fee;
+        foreach ($transactionsRepository->all() as $transaction) {
+            $transactionsFees[] = $transactionFeeCalculator->calculateTransactionFee($transaction);
         }
 
         return $transactionsFees;

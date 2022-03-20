@@ -71,13 +71,10 @@ class ApiCurrenciesUpdater implements CurrenciesUpdaterContract
      */
     private function updateCurrency(Currency $currency): void
     {
-        $updatingCurrencyFilterMethod =
-            fn (Currency $checkedCurrency) => $checkedCurrency->getCurrencyCode() === $currency->getCurrencyCode();
+        $existingCurrency = $this->currenciesRepository->getCurrencyByCode($currency->getCurrencyCode());
 
-        $existingCurrencies = $this->currenciesRepository->filter($updatingCurrencyFilterMethod);
-
-        if ($existingCurrencies) {
-            $this->currenciesRepository->update(array_key_first($existingCurrencies), $currency);
+        if ($existingCurrency !== null) {
+            $this->currenciesRepository->update($existingCurrency->getId(), $currency);
         } else {
             $this->currenciesRepository->create($currency);
         }

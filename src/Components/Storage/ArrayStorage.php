@@ -6,13 +6,21 @@ namespace CommissionTask\Components\Storage;
 
 use CommissionTask\Components\Storage\Exceptions\OutOfBoundsStorageException;
 use CommissionTask\Components\Storage\Interfaces\Storage as StorageContract;
+use CommissionTask\Entities\BaseEntity as Entity;
 
 class ArrayStorage implements StorageContract
 {
+    private const MIN_ID = 0;
+
     /**
      * @var array[]
      */
     private array $array = [];
+
+    /**
+     * @var int[]
+     */
+    private array $lastIds = [];
 
     /**
      * {@inheritDoc}
@@ -25,7 +33,7 @@ class ArrayStorage implements StorageContract
     /**
      * {@inheritDoc}
      */
-    public function findById(string $part, int|string $id): mixed
+    public function findById(string $part, int|string $id): Entity
     {
         if (!isset($this->array[$part][$id])) {
             throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
@@ -39,27 +47,34 @@ class ArrayStorage implements StorageContract
      */
     public function filter(string $part, callable $filterMethod): array
     {
-        return array_filter($this->safeAccessToPart($part), $filterMethod);
+        return array_filter($this->safeAccessToPart($part), $filterMethod, mode: ARRAY_FILTER_USE_BOTH);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function create(string $part, mixed $data): void
+    public function create(string $part, Entity $entityInstance): void
     {
-        $this->array[$part][] = $data;
+        $generatedId = $this->generateId($part);
+
+        $entityInstance->setId($generatedId);
+
+        $this->array[$part][$generatedId] = $entityInstance;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function update(string $part, int|string $id, mixed $data): void
+    public function update(string $part, int|string $id, Entity $entityInstance): void
     {
+        $updatingInstance = clone $entityInstance;
+        $updatingInstance->setId($id);
+
         if (!isset($this->array[$part][$id])) {
             throw new OutOfBoundsStorageException(sprintf(OutOfBoundsStorageException::DATA_ITEM_ID_DOESNT_EXISTS_MESSAGE, (string) $id, $part));
         }
 
-        $this->array[$part][$id] = $data;
+        $this->array[$part][$id] = $entityInstance;
     }
 
     /**
@@ -84,5 +99,15 @@ class ArrayStorage implements StorageContract
     private function safeAccessToPart(string $part): array
     {
         return $this->array[$part] ?? [];
+    }
+
+    /**
+     * Generate autoincrement ID for next data item.
+     */
+    private function generateId(string $part): int
+    {
+        $this->lastIds[$part] = isset($this->lastIds[$part]) ? $this->lastIds[$part] + 1 : self::MIN_ID;
+
+        return $this->lastIds[$part];
     }
 }

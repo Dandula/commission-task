@@ -62,16 +62,14 @@ final class ApplicationTest extends TestCase
     }
 
     /**
-     * @param string[] $expectation
-     *
      * @dataProvider dataProviderForRunTesting
      */
-    public function testRun(string $filePath, array $expectation): void
+    public function testRun(string $filePath, string $expectation): void
     {
         $argv = ['script.php', $filePath];
         $this->application->run(argc: count($argv), argv: $argv);
 
-        $this->expectOutputString(implode(PHP_EOL, $expectation).PHP_EOL);
+        $this->expectOutputString($expectation);
     }
 
     public function dataProviderForRunTesting(): array
@@ -95,7 +93,7 @@ final class ApplicationTest extends TestCase
         return [
             'run application with example data' => [
                 '/absolute/path/input.csv',
-                $calculatedTransactionsFees,
+                implode(PHP_EOL, $calculatedTransactionsFees).PHP_EOL,
             ],
         ];
     }

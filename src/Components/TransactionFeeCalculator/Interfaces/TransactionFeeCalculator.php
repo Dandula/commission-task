@@ -14,5 +14,5 @@ interface TransactionFeeCalculator
      *
      * @throws TransactionFeeCalculatorLogicException
      */
-    public function calculateTransactionFee(Transaction $transaction, int $id): string;
+    public function calculateTransactionFee(Transaction $transaction): string;
 }

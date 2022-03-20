@@ -28,7 +28,7 @@ class WithdrawBusinessStrategy implements TransactionFeeCalculateStrategyContrac
     /**
      * {@inheritDoc}
      */
-    public function calculateTransactionFee(Transaction $transaction, int $id): string
+    public function calculateTransactionFee(Transaction $transaction): string
     {
         $amount = $transaction->getAmount();
         $amountScale = $this->currencyService->getCurrencyScale($transaction->getCurrencyCode());

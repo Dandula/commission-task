@@ -8,6 +8,24 @@ use CommissionTask\Exceptions\CommissionTaskException;
 
 abstract class BaseEntity
 {
+    private int $id;
+
+    /**
+     * ID setter.
+     */
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * ID getter.
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
     public function __set(string $name, mixed $value): void
     {
         $this->propertyAccessError($name);
