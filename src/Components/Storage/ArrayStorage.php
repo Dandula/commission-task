@@ -10,7 +10,7 @@ use CommissionTask\Entities\BaseEntity as Entity;
 
 class ArrayStorage implements StorageContract
 {
-    private const MIN_ID = 0;
+    public const MIN_ID = 0;
 
     /**
      * @var array[]

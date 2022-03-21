@@ -78,11 +78,17 @@ class TransactionsRepository implements TransactionsRepositoryContract
 
         $filteredTransactions = [];
 
-        foreach ($this->all() as $checkedTransactionId => $checkedTransaction) {
+        $checkedTransactionId = $toId;
+
+        while (--$checkedTransactionId >= $this->storage::MIN_ID) {
+            $checkedTransaction = $this->read($checkedTransactionId);
+
+            if ($checkedTransaction->getDate() < $fromDate) {
+                break;
+            }
+
             if (
-                $checkedTransactionId < $toId
-                && $checkedTransaction->getDate() >= $fromDate
-                && $checkedTransaction->getUserId() === $userId
+                $checkedTransaction->getUserId() === $userId
                 && $checkedTransaction->getType() === Transaction::TYPE_WITHDRAW
             ) {
                 $filteredTransactions[$checkedTransactionId] = $checkedTransaction;
